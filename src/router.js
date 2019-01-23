@@ -1,25 +1,59 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-import Home from './views/Home.vue';
+import Layout from '@/views/layout/layout.vue';
 
 Vue.use(Router);
 
 export default new Router({
   mode: 'history',
-  base: process.env.BASE_URL,
   routes: [
     {
-      path: '/',
-      name: 'home',
-      component: Home,
+      path: '/login',
+      name: 'login',
+      component: () => import('@/views/pages/login/login.vue'),
     },
     {
-      path: '/about',
-      name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (about.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import(/* webpackChunkName: "about" */ './views/About.vue'),
+      path: '/',
+      name: '',
+      component: Layout,
+      redirect: 'dashboard',
+      meta: {
+        title: '首頁',
+      },
+      children: [
+        {
+          path: 'dashboard',
+          name: 'dashboard',
+          component: () => import('@/views/pages/dashboard/dashboard.vue'),
+          meta: {
+            title: '首页',
+          },
+        },
+        {
+          path: 'orderList',
+          name: 'orderList',
+          component: () => import('@/views/pages/orderList/orderList.vue'),
+          meta: {
+            title: '訂單資訊',
+          },
+        },
+        {
+          path: 'userList',
+          name: 'userList',
+          component: () => import('@/views/pages/userList/userList.vue'),
+          meta: {
+            title: '使用者列表',
+          },
+        },
+        {
+          path: 'roomRepairList',
+          name: 'roomRepairList',
+          component: () => import('@/views/pages/roomRepairList/roomRepairList.vue'),
+          meta: {
+            title: '修理列表',
+          },
+        },
+      ],
     },
   ],
 });

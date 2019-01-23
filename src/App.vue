@@ -1,25 +1,55 @@
 <template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view/>
+  <div class="phelomi">
+    <router-view></router-view>
+    <v-snackbar
+      v-model="notifySetting.open"
+      top
+      right
+      multi-line
+      :timeout="notifySetting.timeout"
+      :color="notifySetting.color"
+    >{{notifySetting.text}}<v-btn
+        flat
+        @click="notifySetting.open = false"
+      >
+        <v-icon color="white">mdi-close</v-icon>
+      </v-btn>
+    </v-snackbar>
   </div>
 </template>
-<style lang="stylus">
-#app
-  font-family 'Avenir', Helvetica, Arial, sans-serif
-  -webkit-font-smoothing antialiased
-  -moz-osx-font-smoothing grayscale
-  text-align center
-  color #2c3e50
+<script>
+import { dateTime } from '@/utils/calculation';
+import { mapGetters } from 'vuex';
 
-#nav
-  padding 30px
-  a
-    font-weight bold
-    color #2c3e50
-    &.router-link-exact-active
-      color #42b983
-</style>
+export default {
+  name: 'app',
+  created() {
+    if (process.env.BUILD_TIME) {
+      console.info(
+        '%c build ',
+        'background-color:#bf360c;color:#fff',
+        dateTime(process.env.BUILD_TIME),
+      );
+    }
+  },
+  mounted() {
+    window.addEventListener('resize', this.onResize, { passive: true });
+    console.log('​onResize -> this.$vuetify.breakpoint', this.$vuetify.breakpoint);
+  },
+  computed: {
+    ...mapGetters({
+      notifySetting: 'global/notifySetting',
+    }),
+  },
+  methods: {
+    onResize() {
+      console.log('​onResize -> this.$vuetify.breakpoint', this.$vuetify.breakpoint);
+    },
+  },
+  beforeDestroy() {
+    if (typeof window !== 'undefined') {
+      window.removeEventListener('resize', this.onResize, { passive: true });
+    }
+  },
+};
+</script>

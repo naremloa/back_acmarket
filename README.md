@@ -1,4 +1,4 @@
-# proj_phelomi
+# phelomi
 
 ## Project setup
 ```
@@ -27,3 +27,12 @@ npm run lint
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
+
+### JSON Generator
+到網址：https://next.json-generator.com/
+貼上 server/initJson/jsonGenerator.js
+
+### 導入資料到資料庫中國年
+```
+mongoimport -d phelomi -c <collection> <file> --jsonArray
+```

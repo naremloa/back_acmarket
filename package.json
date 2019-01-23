@@ -1,18 +1,50 @@
 {
-  "name": "proj_phelomi",
+  "name": "phelomi",
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve",
+    "serve": "vue-cli-service serve --open --host starrysky.family --port 8080",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "dev": "nodemon --exec babel-node --config-file ./server/.babelrc server/main.js",
+    "start": "node server/index.js",
+    "dev:api": "apidoc -i server/routes/api/ -o apidoc/ && http-server apidoc/. -p 4000 -o"
+  },
+  "nodemonConfig": {
+    "delay": "3000",
+    "ignore": [
+      "src/*"
+    ]
   },
   "dependencies": {
-    "vue": "^2.5.21",
+    "@babel/polyfill": "^7.2.5",
+    "@mdi/font": "^3.3.92",
+    "axios": "^0.18.0",
+    "bcrypt": "^3.0.3",
+    "body-parser": "^1.18.3",
+    "connect-mongo": "^2.0.3",
+    "cors": "^2.8.5",
+    "express": "^4.16.4",
+    "express-session": "^1.15.6",
+    "helmet": "^3.15.0",
+    "js-cookie": "^2.2.0",
+    "lodash": "^4.17.11",
+    "mongodb": "^3.1.10",
+    "mongoose": "^5.4.0",
+    "register-service-worker": "^1.5.2",
+    "roboto-fontface": "*",
+    "svg-captcha": "^1.3.12",
+    "vue": "^2.5.17",
     "vue-router": "^3.0.1",
+    "vuetify": "^1.3.0",
     "vuex": "^3.0.1"
   },
   "devDependencies": {
+    "@babel/cli": "^7.2.3",
+    "@babel/core": "^7.2.2",
+    "@babel/node": "^7.2.2",
+    "@babel/preset-env": "^7.2.3",
+    "nodemon": "^1.18.9",
     "@vue/cli-plugin-babel": "^3.3.0",
     "@vue/cli-plugin-eslint": "^3.3.0",
     "@vue/cli-service": "^3.3.0",
@@ -22,6 +54,8 @@
     "eslint-plugin-vue": "^5.0.0",
     "stylus": "^0.54.5",
     "stylus-loader": "^3.0.2",
-    "vue-template-compiler": "^2.5.21"
+    "vue-cli-plugin-vuetify": "^0.4.6",
+    "vue-template-compiler": "^2.5.21",
+    "vuetify-loader": "^1.0.5"
   }
 }

@@ -1,0 +1,44 @@
+[
+  {
+    "id": 1001,
+    "dataKey": "user",
+    "name": "帳號管理",
+    "apiRoot": "",
+    "rootId": 0,
+    "childNode": [
+      {
+        "id": 1010,
+        "dataKey": "userList",
+        "name": "帳號列表",
+        "apiRoot": ["/user", "/router"],
+        "rootId": 1001,
+        "childNode": []
+      }
+    ]
+  },
+  {
+    "id": 1002,
+    "dataKey": "manager",
+    "name": "日常管理",
+    "apiRoot": "",
+    "rootId": 0,
+    "childNode": [
+      {
+        "id": 1011,
+        "dataKey": "orderList",
+        "name": "訂單列表",
+        "apiRoot": "/order",
+        "rootId": 1002,
+        "childNode": []
+      },
+      {
+        "id": 1012,
+        "dataKey": "roomList",
+        "name": "房間列表",
+        "apiRoot": "/room",
+        "rootId": 1002,
+        "childNode": []
+      }
+    ]
+  }
+]
