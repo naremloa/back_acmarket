@@ -1,0 +1,13 @@
+{
+  "id": "1104946",
+  "certificateNumber": "940295afkb2456",
+  "content": "家具",
+  "income": 0,
+  "outcome": 20000,
+  "balance": 180000,
+  "type": 2,
+  "createTIme": 1548314639000,
+  "createAccount": "张三",
+  "modifyTime": 1548314639000,
+  "modifyAccount": "张三"
+}
