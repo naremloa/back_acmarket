@@ -66,8 +66,8 @@ export const order = {
 
 /**
  * cashSchema
- * @param {Number}  id 帳單編號(內部)
- * @param {String}  cashId 帳單單號
+ * @param {String}  id 訂單號
+ * @param {String}  certificateNumber 憑證號
  * @param {String}  content 摘要
  * @param {Number}  income 收入金額
  * @param {Number}  outcome 支出金額
@@ -79,8 +79,8 @@ export const order = {
  * @param {String}  modifyAccount 修改帳號
  */
 export const cash = {
-  id: Number,
-  cashId: Number,
+  id: String,
+  certificateNumber: String,
   content: String,
   income: Number,
   outcome: Number,
