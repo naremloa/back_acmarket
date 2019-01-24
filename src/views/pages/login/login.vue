@@ -1,7 +1,7 @@
 <template>
   <v-layout class="login" fill-height align-center row>
     <v-flex lg4 md6 sm12  offset-md3 offset-lg4>
-      <v-card class="pa-4">
+      <v-card :class="$vuetify.breakpoint.smAndUp ? 'pa-4' : null">
         <v-card-title primary-title class="text-md-center login-title">
           <div>
             <h3 class="headline mb-2">{{pageType[type].text}}</h3>
