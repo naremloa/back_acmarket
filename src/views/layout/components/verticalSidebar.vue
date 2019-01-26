@@ -1,30 +1,61 @@
 <template>
   <v-navigation-drawer
-    app
+    :value="showDrawer"
+    @input="ts"
     :mini-variant="!localDrawer"
     mini-variant-width="36"
+    app
     width="180"
     class="secondary"
     >
     <v-list dense>
-      <v-tooltip
+      <div
         v-for="(item,idx) in verticalSidebarList"
         :key="`verticalSidebarList${idx}`"
-        right
-        :disabled="localDrawer">
-        <v-list-tile
-          :class="activeClass(item.url)"
-          @click="$router.push(item.url)"
-          slot="activator" >
-          <v-list-tile-action>
-            <v-icon>{{item.icon}}</v-icon>
-          </v-list-tile-action>
-          <v-list-tile-content>
-            <v-list-tile-title>{{item.title}}</v-list-tile-title>
-          </v-list-tile-content>
-        </v-list-tile>
-        <span>{{item.title}}</span>
-      </v-tooltip>
+      >
+        <v-tooltip
+          v-if="item.url"
+          right
+          :disabled="localDrawer">
+          <v-list-tile
+            :class="activeClass(item.url)"
+            @click="$router.push(item.url)"
+            slot="activator" >
+            <v-list-tile-action>
+              <v-icon>{{item.icon}}</v-icon>
+            </v-list-tile-action>
+            <v-list-tile-content>
+              <v-list-tile-title>{{item.title}}</v-list-tile-title>
+            </v-list-tile-content>
+          </v-list-tile>
+          <span>{{item.title}}</span>
+        </v-tooltip>
+        <v-list-group
+          v-else
+          v-model="item.active"
+          :key="item.title"
+          :prepend-icon="item.icon"
+          no-action
+        >
+            <v-list-tile slot="activator">
+              <v-list-tile-content>
+                <v-list-tile-title>{{ item.title }}</v-list-tile-title>
+              </v-list-tile-content>
+            </v-list-tile>
+            <v-list-tile
+            v-for="subItem in item.items"
+            :key="subItem.title"
+              @click="subItem.url ? $router.push(subItem.url): null"
+            >
+              <v-list-tile-action>
+                <v-icon>{{ subItem.icon }}</v-icon>
+              </v-list-tile-action>
+              <v-list-tile-content>
+                <v-list-tile-title>{{ subItem.title }}</v-list-tile-title>
+              </v-list-tile-content>
+            </v-list-tile>
+        </v-list-group>
+      </div>
     </v-list>
   </v-navigation-drawer>
 </template>
@@ -53,7 +84,23 @@ export default {
         {
           icon: 'mdi-account-box',
           title: '使用者列表',
-          url: '/userList',
+          items: [
+            {
+              title: '使用者列表',
+              url: '/userList',
+              icon: 'mdi-book-open-variant',
+            },
+            {
+              title: '審核帳號',
+              url: '/userList',
+              icon: 'mdi-briefcase',
+            },
+            {
+              title: '變更帳號權限',
+              url: '/userList',
+              icon: 'mdi-call-made',
+            },
+          ],
         },
         {
           icon: 'mdi-wrench',
@@ -64,6 +111,9 @@ export default {
     };
   },
   computed: {
+    showDrawer() {
+      return this.$vuetify.breakpoint.lgAndUp || this.localDrawer;
+    },
   },
   watch: {
     localDrawer(val, oldVal) {
@@ -80,6 +130,11 @@ export default {
   mounted() {
   },
   methods: {
+    ts(val) {
+      if (val !== this.localDrawer) {
+        this.localDrawer = val;
+      }
+    },
     activeClass(path) {
       return this.$route.path === path ? 'v-list__tile--active' : '';
     },
