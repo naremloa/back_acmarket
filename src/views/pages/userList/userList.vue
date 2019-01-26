@@ -34,7 +34,7 @@
           >{{ formatStatus(props.item.status).statusText }}</td>
           <td class="text-xs-center">
             <v-btn color="error" @click="methodVerifyStatus(props.item, false)">不通過</v-btn>
-            <v-btn @click="methodVerifyStatus(props.item, true)">通過</v-btn>
+            <v-btn color="success" @click="methodVerifyStatus(props.item, true)">通過</v-btn>
           </td>
           <!-- <td class="text-xs-center">{{ props.item.softDelete }}</td> -->
           <td class="text-xs-center">{{ props.item.modifyUser }}</td>
