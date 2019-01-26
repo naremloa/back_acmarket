@@ -28,11 +28,18 @@
           <td class="text-xs-center">{{ props.item.accountAlias }}</td>
           <!-- <td class="text-xs-center">{{ props.item.role }}</td> -->
           <!-- <td class="text-xs-center">{{ props.item.level }}</td> -->
-          <td class="text-xs-center">{{ formatStatus(props.item.status) }}</td>
+          <td
+            class="text-xs-center"
+            :class="formatStatus(props.item.status).class"
+          >{{ formatStatus(props.item.status).statusText }}</td>
+          <td class="text-xs-center">
+            <v-btn color="error" @click="methodVerifyStatus(props.item, false)">不通過</v-btn>
+            <v-btn @click="methodVerifyStatus(props.item, true)">通過</v-btn>
+          </td>
           <!-- <td class="text-xs-center">{{ props.item.softDelete }}</td> -->
           <td class="text-xs-center">{{ props.item.modifyUser }}</td>
-          <td class="text-xs-center">{{ dateTime(props.item.registerTime) }}</td>
           <td class="text-xs-center">{{ dateTime(props.item.modifyTime) }}</td>
+          <td class="text-xs-center">{{ dateTime(props.item.registerTime) }}</td>
           <td class="text-xs-center">{{ dateTime(props.item.lastLoginTime) }}</td>
         </template>
         <v-alert slot="no-results" :value="true" color="warning" icon="mdi-alert">
@@ -48,13 +55,24 @@
         </template>
       </v-data-table>
     </v-card>
+    <confirmDialog
+      :openDialog="confirmDialogInfo.openDialog"
+      @valueChange="methodChangeOpenDialog"
+      :title="confirmDialogInfo.title"
+      :content="confirmDialogInfo.content"
+      :confirmMethod="confirmDialogInfo.confirmMethod"
+    />
   </div>
 </template>
 <script>
 import httpMethod from '@/utils/httpMethod';
 import { dateTime } from '@/utils/calculation';
+import confirmDialog from '@/views/layout/components/confirmDialog.vue';
 
 export default {
+  components: {
+    confirmDialog,
+  },
   data() {
     return {
       search: '',
@@ -69,32 +87,46 @@ export default {
         // { text: '角色', value: 'role', sortable: false },
         // { text: '權限', value: 'level', sortable: false },
         { text: '帳號狀態', value: 'status', sortable: false },
+        { text: '操作', value: '', sortable: false },
         // { text: '已刪除', value: 'softDelete', sortable: false },
         { text: '修改人', value: 'modifyUser', sortable: false },
-        { text: '註冊時間', value: 'registerTime', sortable: false },
         { text: '修改時間', value: 'modifyTime', sortable: false },
+        { text: '註冊時間', value: 'registerTime', sortable: false },
         { text: '最後登入時間', value: 'lastLoginTime', sortable: false },
       ],
       userList: [],
+      confirmDialogInfo: {
+        openDialog: false,
+        title: '',
+        content: '',
+        confirmMethod: null,
+      },
     };
   },
   mounted() {
     this.getUserList();
+    setTimeout(async () => {
+      const res = await httpMethod({
+        url: '/v1/api/user/role/list',
+        method: 'GET',
+      });
+      console.log('​mounted -> res', res);
+    });
   },
   methods: {
     dateTime,
     formatStatus(val) {
       const statusList = [
-        { val: 0, status: '無審核通過' },
-        { val: 1, status: '正常啟用' },
-        { val: 2, status: '停用' },
-        { val: 3, status: '刪除' },
+        { val: 0, statusText: '無審核通過', class: 'warning--text' },
+        { val: 1, statusText: '正常啟用', class: 'success--text' },
+        { val: 2, statusText: '停用', class: 'error--text' },
+        { val: 3, statusText: '刪除', class: '' },
       ];
       const res = statusList.filter(item => item.val === val);
       if (res.length) {
-        return res[0].status;
+        return res[0];
       }
-      return '錯誤！無此狀態';
+      return { val: null, statusText: '錯誤！無此狀態', class: 'purple--text' };
     },
     async getUserList() {
       const res = await httpMethod({
@@ -107,6 +139,37 @@ export default {
       } else {
         this.userList = [];
       }
+    },
+    tsc(val) {
+      console.log('​tsc -> val', val);
+    },
+    async postUserList(params) {
+      const res = await httpMethod({
+        url: '/v1/api/user/review',
+        method: 'POST',
+        params,
+      });
+      if (!res.code) {
+        console.log('​getUserList -> res.data', res.data);
+      } else {
+      }
+    },
+    methodChangeOpenDialog(val) {
+      this.confirmDialogInfo.openDialog = val;
+    },
+    methodVerifyStatus(rowData, pass) {
+      console.log('​methodVerifyStatus -> rowData', rowData);
+      const { account } = rowData;
+      const params = {
+        status: pass ? 1 : 3,
+      };
+      this.confirmDialogInfo = {
+        ...this.confirmDialogInfo,
+        openDialog: true,
+        title: '帳號審核',
+        content: `您確定要審核${account}為 ${pass ? '通過' : '不通過'}`,
+        confirmMethod: () => this.tsc(params),
+      };
     },
   },
 };

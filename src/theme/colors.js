@@ -9,7 +9,7 @@ const themeColors = {
       secondary: colors.shades.white,
       accent: colors.shades.white,
       error: colors.red.accent2,
-      warning: colors.amber.base,
+      warning: colors.amber.darken2,
       info: colors.blue.base,
       success: colors.green.base,
     },
@@ -22,8 +22,8 @@ const themeColors = {
       secondary: colors.lightBlue.lighten3,
       accent: colors.blueGrey.lighten5,
       error: colors.red.lighten1,
-      warning: colors.yellow.lighten1,
-      info: colors.lightBlue.lighten1,
+      warning: colors.yellow.darken3,
+      info: colors.lightBlue.darken2,
       success: colors.green.lighten1,
     },
   },
@@ -34,10 +34,10 @@ const themeColors = {
       primary: colors.teal.darken4,
       secondary: colors.teal.darken3,
       accent: '#042f28',
-      error: colors.deepOrange.darken3,
-      warning: colors.yellow.darken3,
-      info: colors.lightBlue.darken3,
-      success: colors.lightGreen.darken3,
+      error: colors.deepOrange.lighten1,
+      warning: colors.yellow.lighten1,
+      info: colors.lightBlue.lighten3,
+      success: colors.lightGreen.lighten1,
     },
   },
   lightGrey: {
@@ -47,10 +47,10 @@ const themeColors = {
       primary: colors.blueGrey.darken1,
       secondary: colors.blueGrey.lighten3,
       accent: colors.blueGrey.lighten5,
-      error: colors.red.base,
-      warning: colors.yellow.base,
-      info: colors.blue.base,
-      success: colors.green.base,
+      error: colors.red.darken1,
+      warning: colors.yellow.darken3,
+      info: colors.blue.darken1,
+      success: colors.green.darken2,
     },
   },
   deepGrey: {
@@ -60,10 +60,10 @@ const themeColors = {
       primary: colors.blueGrey.darken3,
       secondary: colors.blueGrey.darken2,
       accent: colors.blueGrey.darken1,
-      error: colors.red.darken3,
-      warning: colors.orange.darken3,
-      info: colors.blue.darken3,
-      success: colors.green.darken3,
+      error: colors.red.lighten2,
+      warning: colors.orange.lighten2,
+      info: colors.blue.lighten2,
+      success: colors.green.lighten2,
     },
   },
 };
@@ -74,7 +74,10 @@ Object.keys(themeColors).forEach((item) => {
   themePrimaryColor[primaryKey] = themeColors[item].theme.primary;
 });
 Object.keys(themeColors).map((item) => {
-  themeColors[item].theme = { ...themeColors[item].theme, ...themePrimaryColor };
+  themeColors[item].theme = {
+    ...themeColors[item].theme,
+    ...themePrimaryColor,
+  };
   return item;
 });
 
