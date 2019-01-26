@@ -53,6 +53,14 @@ export default new Router({
             title: '修理列表',
           },
         },
+        {
+          path: 'cashList',
+          name: 'cashList',
+          component: () => import('@/views/pages/cashList/cashList.vue'),
+          meta: {
+            title: '收支明細',
+          },
+        },
       ],
     },
   ],
