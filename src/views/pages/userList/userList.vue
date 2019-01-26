@@ -144,14 +144,16 @@ export default {
       console.log('​tsc -> val', val);
     },
     async postUserList(params) {
+      console.log('​postUserList -> params', params);
       const res = await httpMethod({
         url: '/v1/api/user/review',
         method: 'POST',
-        params,
+        data: params,
       });
       if (!res.code) {
         console.log('​getUserList -> res.data', res.data);
       } else {
+        // TODO: error
       }
     },
     methodChangeOpenDialog(val) {
@@ -159,16 +161,18 @@ export default {
     },
     methodVerifyStatus(rowData, pass) {
       console.log('​methodVerifyStatus -> rowData', rowData);
-      const { account } = rowData;
+      const { account, accountId } = rowData;
       const params = {
         status: pass ? 1 : 3,
+        id: pass ? accountId : null,
+        role: pass ? 1000 : null,
       };
       this.confirmDialogInfo = {
         ...this.confirmDialogInfo,
         openDialog: true,
         title: '帳號審核',
         content: `您確定要審核${account}為 ${pass ? '通過' : '不通過'}`,
-        confirmMethod: () => this.tsc(params),
+        confirmMethod: () => this.postUserList(params),
       };
     },
   },
