@@ -17,9 +17,10 @@ const outputUserInfo = (userInfo) => {
   if (localUserInfo.length === undefined) localUserInfo = [localUserInfo];
   return localUserInfo.map(
     ({
-      account, accountAlias, status, modifyUser,
+      _id, account, accountAlias, status, modifyUser,
       registerTime, modifyTime, lastLoginTime,
     }) => ({
+      accountId: _id,
       account,
       accountAlias,
       status,
