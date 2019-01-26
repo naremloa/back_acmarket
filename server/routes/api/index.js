@@ -133,7 +133,29 @@ router.get(
   getUser,
 );
 
-// 審核帳號
+/**
+ * @api {post} /user/review 審核帳號接口
+ * @apiPermission login
+ * @apiName userReview
+ * @apiGroup user
+ *
+ * @apiParam {Number=1,3} status 審核狀態, 1為通過, 3為不通過
+ * @apiParam {Number} role 角色id
+ * @apiParam {String} id 帳號objectId
+ * @apiParamExample {json} Request-example:
+ * # 通過
+ * {
+ *    "status": "1",
+ *    "role": "1000",
+ *    "id": "5c49e2ac363210458eb621dc"
+ * }
+ *
+ * # 不通過
+ * {
+ *    "status": 3,
+ * }
+ *
+ */
 router.post(
   '/user/review',
   middlewareCheckLoginStatusSession,
