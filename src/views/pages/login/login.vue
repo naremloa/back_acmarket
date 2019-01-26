@@ -4,7 +4,7 @@
       <v-card :class="$vuetify.breakpoint.smAndUp ? 'pa-4' : null">
         <v-card-title primary-title class="text-md-center login-title">
           <div>
-            <h3 class="headline mb-2">{{pageType[type].text}}</h3>
+            <h3 class="headline mb-2 text-xs-center">{{pageType[type].text}}</h3>
             <div>Located two hours south of Sydney in the
               <br>Southern Highlands of New South Wales, ...</div>
           </div>
@@ -60,8 +60,8 @@ export default {
     return {
       valid: false,
       pageType: {
-        1: { text: '登入', action: 'login' },
-        2: { text: '註冊', action: 'register' },
+        1: { text: '系統登入', action: 'login' },
+        2: { text: '註冊帳號', action: 'register' },
       },
       type: 1,
       account: '',
