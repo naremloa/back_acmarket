@@ -76,4 +76,41 @@
     }
   }
 ]
+// cashSchema
+[
+  {
+    'repeat(50)': {
+      id: function (currentObj) {
+        return `abc${currentObj.integer(17, 19)}${currentObj.integer(1, 12)}${currentObj.index(100, 999)}`;
+      },
+      certificateNumber: function (currentObj) {
+        var textArr = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0'];
+        var a = '';
+        Array.from(Array(14)).map(() => {
+          a += textArr[currentObj.integer(0, 35)];
+        });
+        return a;
+      },
+      content: '{{random("家具", "花草", "鏡子", "地毯", "棉被", "地墊", "裝飾", "文具", "衛生紙", "雜物")}}',
+      income: function (currentObj) {
+        var isIncome = currentObj.bool();
+        var cash = isIncome ? currentObj.integer(1000, 300000) : 0;
+        return cash;
+      },
+      outcome: function (currentObj) {
+        var isOutcome = this.income === 0;
+        var cash = isOutcome ? currentObj.integer(1000, 300000) : 0;
+        return cash;
+      },
+      balance: '{{integer(1000000, 5000000)}}',
+      type: '{{integer(1, 2)}}',
+      createTime: '{{moment(this.date(new Date(2014, 0, 1), new Date())).startOf("day").valueOf()}}',
+      createAccount: '{{surname().toLowerCase()}}',
+      modifyTime: function (currentObj) {
+        return this.createTime + currentObj.integer(1, 14) * 24 * 60 * 60 * 1000;
+      },
+      modifyAccount: '{{surname().toLowerCase()}}',
+    }
+  }
+]
 /* eslint-enable */
