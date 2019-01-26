@@ -190,6 +190,15 @@ router.get(
   getRoleList,
 );
 
+/**
+ * @api {post} /user/role/add 角色添加接口
+ * @apiPermission login admin
+ * @apiName userRoleAdd
+ * @apiGroup User
+ *
+ * @apiParam {String} name 角色名稱
+ * @apiParam {Array} routerGroup 角色有權路由組
+ */
 router.post(
   '/user/role/add',
   middlewareCheckLoginStatusSession,

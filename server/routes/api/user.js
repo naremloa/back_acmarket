@@ -62,9 +62,9 @@ const updateUserStatus = async (req, res) => {
   const { body: { status, role, id }, session: sess } = req;
   const { userInfo: { account } } = sess;
   const targetUserInfo = await userFindById(id);
-  const queryRole = await role ? idFindOne(role) : role;
+  const queryRole = await (role ? idFindOne(role) : role);
   // 驗證值有效和正確性
-  if (targetUserInfo && targetUserInfo.status !== 0) res.send(outputError('更新帳號狀態異常'));
+  if (targetUserInfo && targetUserInfo.status !== 0) return res.send(outputError('更新帳號狀態異常'));
   if (!verifyUserStatusChange(targetUserInfo.status, status)
     || status !== 1 || status !== 3) return res.send(outputError('更新狀態值異常'));
   if (status === 1 && !queryRole) return res.send(outputError('分配角色異常'));
