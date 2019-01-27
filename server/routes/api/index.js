@@ -17,7 +17,7 @@ import {
 import {
   getRouter,
   getRouterRoleList,
-  getRouterAll,g==g
+  getRouterAll,
 } from './router';
 import {
   getUser,
