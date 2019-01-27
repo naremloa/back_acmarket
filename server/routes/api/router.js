@@ -45,23 +45,36 @@ const getRouter = async (req, res) => {
 };
 
 const getRouterRoleList = async (req, res) => {
-  const { query: { id } } = req;
-  const roleInfo = await idFindOne(id);
+  const { query: { id: queryId } } = req;
+  const { routerGroup } = await idFindOne(queryId);
   const routerAll = await getRouterAboutAll();
-  // const { role: { routerGroup } } = await userFindOne({ account });
 
-  // function recursiveRouterTree({
-  //   id, name, rootId, childNode,
-  // }) {
-  //   let checked = false;
-  //   if (routerGroup.includes(id)) checked = true;
-  //   if (childNode.length) childNode = childNode.map(recursiveRouterTree);
-  //   return {
-  //     id, name, rootId, checked, childNode,
-  //   };
-  // }
-  // const result = routerAll.map(recursiveRouterTree);
-  // return res.send(outputSuccess(result));
+  function recursiveRouterTree({
+    id, name, rootId, childNode,
+  }) {
+    let checked = false;
+    if (routerGroup.includes(id)) checked = true;
+    if (childNode.length) childNode = childNode.map(recursiveRouterTree);
+    return {
+      id, name, rootId, checked, childNode,
+    };
+  }
+  const result = routerAll.map(recursiveRouterTree);
+  return res.send(outputSuccess(result));
+};
+
+const getRouterAll = async (req, res) => {
+  const routerAll = await getRouterAboutAll();
+  function recursiveRouterTree({
+    id, name, rootId, childNode,
+  }) {
+    if (childNode.length) childNode = childNode.map(recursiveRouterTree);
+    return {
+      id, name, rootId, childNode,
+    };
+  }
+  const result = routerAll.map(recursiveRouterTree);
+  return res.send(outputSuccess(result));
 };
 
 export {
@@ -70,4 +83,5 @@ export {
   getRouterAboutRole,
   getRouter,
   getRouterRoleList,
+  getRouterAll,
 };

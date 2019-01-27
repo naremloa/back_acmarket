@@ -17,6 +17,7 @@ import {
 import {
   getRouter,
   getRouterRoleList,
+  getRouterAll,g==g
 } from './router';
 import {
   getUser,
@@ -125,12 +126,12 @@ router.get(
   getRouterRoleList,
 );
 
-// router.get(
-//   '/router/all',
-//   middlewareCheckLoginStatusSession,
-//   middlewareCheckAuthorization,
-//   get
-// );
+router.get(
+  '/router/all',
+  middlewareCheckLoginStatusSession,
+  middlewareCheckAuthorization,
+  getRouterAll,
+);
 
 // 帳號接口
 router.get(
