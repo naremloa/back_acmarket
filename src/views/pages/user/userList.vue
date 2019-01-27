@@ -81,7 +81,6 @@ export default {
       rowsPerPageItems: [20, 30, 50, 80, 100],
       pagination: {
         rowsPerPage: 20,
-        sortBy: 'account',
       },
       headers: [
         { text: '帳號', value: 'account', sortable: false },

@@ -54,7 +54,7 @@ export default {
       rowsPerPageItems: [20, 30, 50, 80, 100],
       pagination: {
         rowsPerPage: 20,
-        sortBy: 'id',
+        // sortBy: 'id',
       },
       headers: [
         { text: '角色ID', value: 'id', sortable: false },

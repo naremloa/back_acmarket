@@ -54,7 +54,6 @@ export default {
       rowsPerPageItems: [20, 30, 50, 80, 100],
       pagination: {
         rowsPerPage: 20,
-        sortBy: 'id',
       },
       headers: [
         { text: '頁面ID', value: 'id', sortable: false },
