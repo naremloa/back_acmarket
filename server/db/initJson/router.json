@@ -13,6 +13,17 @@
         "apiRoot": ["/user", "/router"],
         "rootId": 1001,
         "childNode": []
+      },
+      {
+        "id": 1013,
+        "dataKey": "roleList",
+        "name": "角色列表",
+        "apiRoot": [
+          "/user",
+          "/router"
+        ],
+        "rootId": 1001,
+        "childNode": []
       }
     ]
   },

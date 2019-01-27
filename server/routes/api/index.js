@@ -16,7 +16,7 @@ import {
 } from './order';
 import {
   getRouter,
-  getRouterAll,
+  getRouterRoleList,
 } from './router';
 import {
   getUser,
@@ -119,11 +119,18 @@ router.get(
 
 // 獲取指定用戶所有路由接口(帶權限標示)
 router.get(
-  '/router/list/all',
+  '/router/role/list',
   middlewareCheckLoginStatusSession,
   middlewareCheckAuthorization,
-  getRouterAll,
+  getRouterRoleList,
 );
+
+// router.get(
+//   '/router/all',
+//   middlewareCheckLoginStatusSession,
+//   middlewareCheckAuthorization,
+//   get
+// );
 
 // 帳號接口
 router.get(
