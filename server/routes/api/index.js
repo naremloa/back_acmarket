@@ -118,7 +118,18 @@ router.get(
   getRouter,
 );
 
-// 獲取指定用戶所有路由接口(帶權限標示)
+/**
+ * @api {get} /router/role/list 獲取指定用戶所有路由接口(帶權限標示)
+ * @apiPermission login admin
+ * @apiName routerRoleList
+ * @apiGroup Router
+ *
+ * @apiParam {Number} id 角色id
+ * @apiParamExample {json} Request-example:
+ * {
+ *    "id": 1000
+ * }
+ */
 router.get(
   '/router/role/list',
   middlewareCheckLoginStatusSession,
