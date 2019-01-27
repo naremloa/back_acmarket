@@ -61,7 +61,6 @@ export default {
       rowsPerPageItems: [20, 30, 50, 80, 100],
       pagination: {
         rowsPerPage: 20,
-        sortBy: 'id',
       },
       headers: [
         { text: '房間ID', value: 'id', sortable: false },

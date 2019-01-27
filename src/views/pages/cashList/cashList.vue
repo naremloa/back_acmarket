@@ -63,7 +63,6 @@ export default {
       rowsPerPageItems: [20, 30, 50, 80, 100],
       pagination: {
         rowsPerPage: 20,
-        sortBy: 'id',
       },
       headers: [
         { text: '訂單號', value: 'id', sortable: false },
