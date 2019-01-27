@@ -83,7 +83,7 @@ export default {
         },
         {
           icon: 'mdi-account-box',
-          title: '使用者列表',
+          title: '使用者管理',
           items: [
             {
               title: '使用者列表',
@@ -91,14 +91,14 @@ export default {
               icon: 'mdi-book-open-variant',
             },
             {
-              title: '審核帳號',
-              url: '/userList',
+              title: '使用者角色列表',
+              url: '/roleList',
               icon: 'mdi-briefcase',
             },
             {
-              title: '變更帳號權限',
-              url: '/userList',
-              icon: 'mdi-call-made',
+              title: '路由列表',
+              url: '/routerList',
+              icon: 'mdi-camera-control',
             },
           ],
         },

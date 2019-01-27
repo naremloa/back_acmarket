@@ -40,9 +40,25 @@ export default new Router({
         {
           path: 'userList',
           name: 'userList',
-          component: () => import('@/views/pages/userList/userList.vue'),
+          component: () => import('@/views/pages/user/userList.vue'),
           meta: {
             title: '使用者列表',
+          },
+        },
+        {
+          path: 'roleList',
+          name: 'roleList',
+          component: () => import('@/views/pages/user/roleList.vue'),
+          meta: {
+            title: '使用者角色列表',
+          },
+        },
+        {
+          path: 'routerList',
+          name: 'routerList',
+          component: () => import('@/views/pages/user/routerList.vue'),
+          meta: {
+            title: '路由列表',
           },
         },
         {

@@ -2,7 +2,7 @@
   <div class="room-repair-list">
     <v-card>
       <v-card-title>
-        修理列表
+        路由列表
         <v-spacer></v-spacer>
         <v-text-field
           v-model="search"
@@ -25,15 +25,8 @@
       >
         <template slot="items" slot-scope="props">
           <td class="text-xs-center">{{ props.item.id }}</td>
-          <td class="text-xs-center">{{ props.item.position }}</td>
-          <td class="text-xs-center">{{ props.item.content }}</td>
-          <td class="text-xs-center">{{ currencies(props.item.internalCost) }}</td>
-          <td class="text-xs-center">{{ currencies(props.item.outsourcedCost) }}</td>
-          <td class="text-xs-center">{{ props.item.note }}</td>
-          <td class="text-xs-center">{{ dateTime(props.item.createTime) }}</td>
-          <td class="text-xs-center">{{ props.item.createAccount }}</td>
-          <td class="text-xs-center">{{ dateTime(props.item.modifyTime) }}</td>
-          <td class="text-xs-center">{{ props.item.modifyAccount }}</td>
+          <td class="text-xs-center">{{ props.item.name }}</td>
+
         </template>
         <v-alert slot="no-results" :value="true" color="warning" icon="mdi-alert">
           找不到有關於 "{{ search }}" 的資料
@@ -64,16 +57,8 @@ export default {
         sortBy: 'id',
       },
       headers: [
-        { text: '房間ID', value: 'id', sortable: false },
-        { text: '維修位置', value: 'position', sortable: false },
-        { text: '維修內容', value: 'content', sortable: false },
-        { text: '自修配件費', value: 'internalCost', sortable: false },
-        { text: '委外維修費', value: 'outsourcedCost', sortable: false },
-        { text: '備註', value: 'note', sortable: false },
-        { text: '創建時間', value: 'createTime', sortable: false },
-        { text: '創建帳號', value: 'createAccount', sortable: false },
-        { text: '修改時間', value: 'modifyTime', sortable: false },
-        { text: '修改帳號', value: 'modifyAccount', sortable: false },
+        { text: '頁面ID', value: 'id', sortable: false },
+        { text: '頁面名稱', value: 'name', sortable: false },
       ],
       roomRepairList: [],
     };
@@ -86,7 +71,7 @@ export default {
     currencies,
     async getRoomRepairList() {
       const res = await httpMethod({
-        url: '/v1/api/room/maintenance/list',
+        url: '/v1/api/router/list',
         method: 'GET',
       });
       if (!res.code) {

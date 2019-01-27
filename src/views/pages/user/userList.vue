@@ -33,8 +33,10 @@
             :class="formatStatus(props.item.status).class"
           >{{ formatStatus(props.item.status).statusText }}</td>
           <td class="text-xs-center">
-            <v-btn color="error" @click="methodVerifyStatus(props.item, false)">不通過</v-btn>
-            <v-btn color="success" @click="methodVerifyStatus(props.item, true)">通過</v-btn>
+            <div v-if="props.item.status === 0">
+              <v-btn color="error" @click="methodVerifyStatus(props.item, false)">不通過</v-btn>
+              <v-btn color="success" @click="methodVerifyStatus(props.item, true)">通過</v-btn>
+            </div>
           </td>
           <!-- <td class="text-xs-center">{{ props.item.softDelete }}</td> -->
           <td class="text-xs-center">{{ props.item.modifyUser }}</td>
@@ -110,7 +112,6 @@ export default {
         url: '/v1/api/user/role/list',
         method: 'GET',
       });
-      console.log('​mounted -> res', res);
     });
   },
   methods: {
@@ -135,36 +136,43 @@ export default {
       });
       if (!res.code) {
         this.userList = res.data;
-        console.log('​getUserList -> res.data', res.data);
       } else {
         this.userList = [];
       }
     },
-    tsc(val) {
-      console.log('​tsc -> val', val);
-    },
     async postUserList(params) {
-      console.log('​postUserList -> params', params);
       const res = await httpMethod({
         url: '/v1/api/user/review',
         method: 'POST',
         data: params,
       });
       if (!res.code) {
-        console.log('​getUserList -> res.data', res.data);
+        if (res.data) {
+          const alert = {
+            open: true,
+            text: '審核操作成功',
+            color: 'success',
+          };
+          this.$store.commit('global/setNotifySetting', alert);
+        }
       } else {
-        // TODO: error
+        const alert = {
+          open: true,
+          text: res.msg || '審核操作失敗',
+          color: 'error',
+        };
+        this.$store.commit('global/setNotifySetting', alert);
       }
+      this.getUserList();
     },
     methodChangeOpenDialog(val) {
       this.confirmDialogInfo.openDialog = val;
     },
     methodVerifyStatus(rowData, pass) {
-      console.log('​methodVerifyStatus -> rowData', rowData);
       const { account, accountId } = rowData;
       const params = {
         status: pass ? 1 : 3,
-        id: pass ? accountId : null,
+        id: accountId,
         role: pass ? 1000 : null,
       };
       this.confirmDialogInfo = {
