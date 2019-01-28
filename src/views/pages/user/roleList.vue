@@ -1,5 +1,10 @@
 <template>
   <div class="room-repair-list">
+    <v-layout row wrap justify-end>
+        <v-btn slot="activator" @click="methodNewRole">
+          <v-icon>mdi-plus</v-icon>新增角色
+        </v-btn>
+    </v-layout>
     <v-card>
       <v-card-title>
         使用者角色列表
@@ -41,13 +46,25 @@
         </template>
       </v-data-table>
     </v-card>
+    <dialogComponent
+      :openDialog="confirmDialogInfo.openDialog"
+      @valueChange="methodChangeOpenDialog"
+      :title="confirmDialogInfo.title"
+      :contentFilePath="confirmDialogInfo.contentFilePath"
+      :confirmMethod="confirmDialogInfo.confirmMethod"
+    />
   </div>
 </template>
 <script>
 import httpMethod from '@/utils/httpMethod';
 import { dateTime, currencies } from '@/utils/calculation';
+import dialogComponent from '@/views/layout/components/dialog.vue';
+// import newRole from '@/views/pages/user/newRole.vue';
 
 export default {
+  components: {
+    dialogComponent,
+  },
   data() {
     return {
       search: '',
@@ -61,6 +78,12 @@ export default {
         { text: '角色名稱', value: 'value', sortable: false },
       ],
       roomRepairList: [],
+      confirmDialogInfo: {
+        openDialog: false,
+        title: '',
+        contentFilePath: '',
+        confirmMethod: null,
+      },
     };
   },
   mounted() {
@@ -80,6 +103,17 @@ export default {
       } else {
         this.roomRepairList = [];
       }
+    },
+    methodChangeOpenDialog(val) {
+      this.confirmDialogInfo.openDialog = val;
+    },
+    methodNewRole() {
+      this.confirmDialogInfo = {
+        ...this.confirmDialogInfo,
+        openDialog: true,
+        title: '新增角色',
+        contentFilePath: 'pages/user/newRole.vue',
+      };
     },
   },
 };

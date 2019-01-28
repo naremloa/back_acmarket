@@ -5,7 +5,12 @@
         class="headline grey lighten-2"
         primary-title
       >{{localTitle}}</v-card-title>
-      <v-card-text>{{localContent}}</v-card-text>
+      <v-card-text>
+      <div
+        id="mount-component"
+      ></div>
+      <component :is="componentLoader" @closeDialog="methodCloseDialog" />
+      </v-card-text>
       <v-divider></v-divider>
       <v-card-actions>
         <v-spacer></v-spacer>
@@ -22,8 +27,10 @@
 </template>
 
 <script>
+import Vue from 'vue';
+
 export default {
-  props: ['openDialog', 'title', 'content', 'confirmMethod'],
+  props: ['openDialog', 'title', 'contentFilePath', 'confirmMethod'],
   data() {
     return {
       localTitle: '系統提醒',
@@ -44,16 +51,35 @@ export default {
     title(val) {
       this.localTitle = val;
     },
-    content(val) {
-      this.localContent = val;
-    },
+    // contentFilePath(val) {
+    //   this.importComponent(val).then((importItem) => {
+    //     // new ImportComponent({
+    //     //   propsData: {
+    //     //     aa: this.localTitle,
+    //     //   },
+    //     //   on: {
+    //     //     closeDialog: this.methodCloseDialog(),
+    //     //   },
+    //     // }).$mount('#mount-component');
+    //   });
+    // },
     confirmMethod(val) {
       this.localConfirmMethod = val;
+    },
+  },
+  computed: {
+    componentLoader() {
+			console.log('TCL: componentLoader -> this.contentFilePath', this.contentFilePath);
+      return () => import(`@/views/${this.contentFilePath}`);
     },
   },
   methods: {
     methodConfirm() {
       if (this.localConfirmMethod) this.localConfirmMethod();
+      this.localOpenDialog = false;
+    },
+    methodCloseDialog() {
+      console.log('TCL: methodCloseDialog -> methodCloseDialog');
       this.localOpenDialog = false;
     },
   },
