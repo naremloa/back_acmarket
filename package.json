@@ -3,11 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve --open --host starrysky.family --port 8080",
-    "build": "vue-cli-service build",
+    "dev:front": "vue-cli-service serve --open --host starrysky.family --port 8080",
+    "build:front": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "dev": "nodemon --exec babel-node --config-file ./server/.babelrc server/main.js",
-    "start": "node server/index.js",
+    "dev:back": "nodemon --exec babel-node --config-file ./server/babel.config.js server/index.js",
+    "build:back": "babel server --out-dir lib --config-file ./server/babel.config.js",
+    "prod:back": "node lib/index.js",
     "dev:api": "apidoc -i server/routes/api/ -o apidoc/ && http-server apidoc/. -p 4000 -o"
   },
   "nodemonConfig": {

@@ -1,3 +1,5 @@
+require('@babel/polyfill');
+const path = require('path');
 const bodyParser = require('body-parser');
 const express = require('express');
 const session = require('express-session');
@@ -43,7 +45,7 @@ app.use('/v1/api', api);
 
 // TODO: production
 // 访问静态资源文件 这里是访问所有dist目录下的静态资源文件
-// app.use(express.static(path.resolve(__dirname, '../dist')));
+app.use(express.static(path.resolve(__dirname, '../dist')));
 // 因为是单页应用 所有请求都走/dist/index.html
 // app.get('*', (req, res) => {
 //   const html = fs.readFileSync(path.resolve(__dirname, '../dist/index.html'), 'utf-8');
