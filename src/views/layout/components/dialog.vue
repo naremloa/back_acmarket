@@ -27,8 +27,6 @@
 </template>
 
 <script>
-import Vue from 'vue';
-
 export default {
   props: ['openDialog', 'title', 'contentFilePath', 'confirmMethod'],
   data() {
@@ -69,7 +67,7 @@ export default {
   },
   computed: {
     componentLoader() {
-			console.log('TCL: componentLoader -> this.contentFilePath', this.contentFilePath);
+      console.log('TCL: componentLoader -> this.contentFilePath', this.contentFilePath);
       return () => import(`@/views/${this.contentFilePath}`);
     },
   },

@@ -111,6 +111,7 @@ export default {
         url: '/v1/api/user/role/list',
         method: 'GET',
       });
+      console.log('TCL: mounted -> res', res);
     });
   },
   methods: {
