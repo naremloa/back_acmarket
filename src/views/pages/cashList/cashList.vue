@@ -1,5 +1,5 @@
 <template>
-  <div class="room-repair-list">
+  <div class="cash-list">
     <v-card>
       <v-card-title>
         收支列表
