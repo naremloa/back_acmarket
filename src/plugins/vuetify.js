@@ -1,11 +1,48 @@
 import Vue from 'vue';
-import Vuetify from 'vuetify/lib';
-import 'vuetify/src/stylus/app.styl';
+import Vuetify, {
+  VApp,
+  VNavigationDrawer,
+  VFooter,
+  VToolbar,
+  VMenu,
+  VIcon,
+  VRadioGroup,
+  VSnackbar,
+  VCard,
+  VTextField,
+  VDataTable,
+  VDivider,
+  VDialog,
+  VAlert,
+  VBtn,
+  VList,
+  VTooltip,
+} from 'vuetify/lib';
 import zhHant from 'vuetify/es5/locale/zh-Hant';
-
+import 'vuetify/src/stylus/app.styl';
 import { Scroll } from 'vuetify/lib/directives';
 
+
 Vue.use(Vuetify, {
+  components: {
+    VApp,
+    VNavigationDrawer,
+    VFooter,
+    VToolbar,
+    VMenu,
+    VIcon,
+    VRadioGroup,
+    VSnackbar,
+    VCard,
+    VTextField,
+    VDataTable,
+    VDivider,
+    VDialog,
+    VAlert,
+    VBtn,
+    VList,
+    VTooltip,
+  },
   theme: {
     primary: '#ee44aa',
     secondary: '#424242',
