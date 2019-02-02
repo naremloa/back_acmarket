@@ -53,6 +53,7 @@
             lazy
             transition="scale-transition"
             offset-y
+            full-width
           >
             <v-text-field
               slot="activator"
@@ -68,6 +69,7 @@
               no-title
               locale="zh-Hant"
               show-current
+              class="d-flex"
             >
               <v-spacer></v-spacer>
               <v-btn
