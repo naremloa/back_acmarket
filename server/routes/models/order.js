@@ -20,6 +20,11 @@ const orderInsert = async (orderObj) => {
   return res;
 };
 
+const orderFindById = async (id) => {
+  const res = await Order.findById(ObjectId(id));
+  return res;
+};
+
 const orderFindByIdAndUpdate = async (id, updateObj) => {
   const res = await Order.findByIdAndUpdate(
     ObjectId(id),
@@ -33,4 +38,5 @@ export {
   orderCount,
   orderInsert,
   orderFindByIdAndUpdate,
+  orderFindById,
 };

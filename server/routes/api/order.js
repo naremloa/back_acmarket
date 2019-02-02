@@ -5,8 +5,9 @@ import {
   orderCount,
   orderInsert,
   orderFindByIdAndUpdate,
+  orderFindById,
 } from '../models/order';
-import { outputSuccess } from '../utils/outputFormat';
+import { outputSuccess, outputError } from '../utils/outputFormat';
 
 const getOrder = async (req, res) => {
   const { query } = req;
@@ -46,7 +47,7 @@ const createOrderSchema = async ({
     price,
     totalPrice,
     totalValidPrice: 0,
-    status: 0,
+    status: 1,
     latestModifyAccount: account,
     lastestModifyTime: nowTime,
     note,
@@ -125,8 +126,50 @@ const updateOrder = async (req, res) => {
   return res.send(outputSuccess({}, '老婆兒老婆兒，啊啊啊啊，幸苦咧'));
 };
 
+/**
+ * 訂單狀態更新有規則
+ * 已下訂單 1: 已付款(2), 已取消(5)
+ * 已付款 2: 已入住(3), 已取消(5)
+ * 已入住 3: 已退房(4)
+ * 已退房 4:
+ */
+const validStatusChange = {
+  1: [2, 5],
+  2: [3, 5],
+  3: [4],
+};
+
+const verifyOrderStatusChange = (preStatus, afterStatus) => {
+  const tmp = validStatusChange[preStatus];
+  return tmp === undefined || tmp.includes(afterStatus);
+};
+
+const updateOrderStatus = async (req, res) => {
+  const {
+    body: {
+      cid,
+      status,
+    },
+    session: sess,
+  } = req;
+  const targetOrder = await orderFindById(cid);
+  if (!targetOrder) return res.send(outputError('更新帳單異常'));
+  if (!verifyOrderStatusChange(targetOrder.status, status)) return res.send(outputError('更新狀態值異常'));
+
+  const { userInfo: { account } } = sess;
+  const nowTime = new Date().getTime();
+  const updateObj = {
+    status,
+    latestModifyAccount: account,
+    lastestModifyTime: nowTime,
+  };
+  await orderFindByIdAndUpdate(cid, updateObj);
+  return res.send(outputSuccess({}, '老婆兒啊， 明天我們休息一天去玩'));
+};
+
 export {
   getOrder,
   addOrder,
   updateOrder,
+  updateOrderStatus,
 };
