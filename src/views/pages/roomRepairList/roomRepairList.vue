@@ -1,5 +1,93 @@
 <template>
   <div class="room-repair-list">
+    <v-layout row wrap>
+      <v-flex sm12 md4 lg3 px-1>
+        <v-btn>
+          <v-icon>mdi-plus</v-icon>
+          新增訂單
+        </v-btn>
+      </v-flex>
+    </v-layout>
+    <v-expansion-panel class="mb-2">
+      <v-expansion-panel-content class="accent">
+        <div slot="header" class="subheading">搜尋選項</div>
+        <v-form v-model="valid" class="px-2">
+          <v-layout row wrap>
+            <v-flex
+              sm12
+              md4
+              lg3
+              px-1
+              v-for="(item, idx) in searchItemParams"
+              :key="`searchItemParams${idx}`"
+            >
+              <v-text-field
+                v-model="searchParams[item.key]"
+                :label="item.label"
+                clearable
+              ></v-text-field>
+            </v-flex>
+          </v-layout>
+          <v-layout row wrap>
+            <v-flex
+              sm12
+              md3
+              lg3
+              px-1
+              v-for="(item, idx) in searchTimeParams"
+              :key="`searchTimeParams${idx}`"
+            >
+              <v-menu
+                :ref="`menu${idx}`"
+                :close-on-content-click="false"
+                v-model="selectMenu[idx]"
+                :nudge-right="40"
+                :value="searchParams[item.key]"
+                lazy
+                transition="scale-transition"
+                offset-y
+                full-width
+              >
+                <v-text-field
+                  slot="activator"
+                  v-model="searchParams[item.key]"
+                  :label="item.label"
+                  clearable
+                  prepend-icon="mdi-calendar"
+                  readonly
+                ></v-text-field>
+                <v-date-picker
+                  v-model="searchParams[item.key]"
+                  scrollable
+                  no-title
+                  locale="zh-Hant"
+                  show-current
+                  class="d-flex"
+                >
+                  <v-spacer></v-spacer>
+                  <v-btn
+                    flat
+                    color="primary"
+                    @click="$set(selectMenu,idx,false)"
+                  >Cancel</v-btn>
+                  <v-btn
+                    flat
+                    color="primary"
+                    @click="$refs[`menu${idx}`][0].save(searchParams[item.key])"
+                  >OK</v-btn>
+                </v-date-picker>
+              </v-menu>
+            </v-flex>
+            <v-flex text-xs-right>
+              <v-btn flat @click="methodFormReset">重置</v-btn>
+              <v-btn color="primary" @click="methodProcessParams">
+                <v-icon>mdi-magnify</v-icon>搜尋
+              </v-btn>
+            </v-flex>
+          </v-layout>
+        </v-form>
+      </v-expansion-panel-content>
+    </v-expansion-panel>
     <v-card>
       <v-card-title>
         修理列表
@@ -55,6 +143,7 @@ import httpMethod from '@/utils/httpMethod';
 import { dateTime, currencies } from '@/utils/calculation';
 
 export default {
+  name: 'roomRepairList',
   data() {
     return {
       search: '',
@@ -75,6 +164,23 @@ export default {
         { text: '修改帳號', value: 'modifyAccount', sortable: false },
       ],
       roomRepairList: [],
+      valid: false,
+      searchParams: this.getParamsOrigin(),
+      searchItemParams: [
+        { label: '房間ID', key: 'idShow' },
+        { label: '維修位置', key: 'positionShow' },
+        { label: '維修內容', key: 'contentShow' },
+        { label: '備註', key: 'noteShow' },
+        { label: '創建帳號', key: 'createAccountShow' },
+        { label: '修改帳號', key: 'modifyAccountShow' },
+      ],
+      searchTimeParams: [
+        { label: '創建開始時間', key: 'createTimeStartShow' },
+        { label: '創建結束時間', key: 'createTimeEndShow' },
+        { label: '修改開始時間', key: 'modifyTimeStartShow' },
+        { label: '修改結束時間', key: 'modifyTimeEndShow' },
+      ],
+      selectMenu: [false, false, false, false],
     };
   },
   mounted() {
@@ -83,10 +189,11 @@ export default {
   methods: {
     dateTime,
     currencies,
-    async getRoomRepairList() {
+    async getRoomRepairList(params) {
       const res = await httpMethod({
         url: '/v1/api/room/maintenance/list',
         method: 'GET',
+        params,
       });
       if (!res.code) {
         this.roomRepairList = res.data;
@@ -94,6 +201,52 @@ export default {
       } else {
         this.roomRepairList = [];
       }
+    },
+    getParamsOrigin() {
+      return {
+        idShow: null,
+        positionShow: null,
+        contentShow: null,
+        noteShow: null,
+        createAccountShow: null,
+        modifyAccountShow: null,
+        createTimeStartShow: null,
+        createTimeEndShow: null,
+        modifyTimeStartShow: null,
+        modifyTimeEndShow: null,
+      };
+    },
+    methodFormReset() {
+      this.searchParams = this.getParamsOrigin();
+    },
+    methodProcessParams() {
+      console.log('TCL: methodProcessParams -> methodProcessParams');
+      const {
+        idShow,
+        positionShow,
+        contentShow,
+        noteShow,
+        createAccountShow,
+        modifyAccountShow,
+        createTimeStartShow,
+        createTimeEndShow,
+        modifyTimeStartShow,
+        modifyTimeEndShow,
+      } = this.searchParams;
+      const params = {};
+      if (idShow) params.id = idShow;
+      if (positionShow) params.position = positionShow;
+      if (contentShow) params.content = contentShow;
+      if (noteShow) params.note = noteShow;
+      if (createAccountShow) params.createAccount = createAccountShow;
+      if (modifyAccountShow) params.modifyAccount = modifyAccountShow;
+
+      if (createTimeStartShow) params.createTimeStart = new Date(createTimeStartShow).valueOf();
+      if (createTimeEndShow) params.createTimeEnd = new Date(createTimeEndShow).valueOf();
+      if (modifyTimeStartShow) params.modifyTimeStart = new Date(modifyTimeStartShow).valueOf();
+      if (modifyTimeEndShow) params.modifyTimeEnd = new Date(modifyTimeEndShow).valueOf();
+
+      this.getRoomRepairList(params);
     },
   },
 };

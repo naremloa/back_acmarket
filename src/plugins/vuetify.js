@@ -19,6 +19,7 @@ import Vuetify, {
   VTooltip,
   VPagination,
   VDataIterator,
+  VExpansionPanel,
 } from 'vuetify/lib';
 import zhHant from 'vuetify/es5/locale/zh-Hant';
 // import 'vuetify/src/stylus/app.styl';
@@ -46,6 +47,7 @@ Vue.use(Vuetify, {
     VTooltip,
     VPagination,
     VDataIterator,
+    VExpansionPanel,
   },
   theme: {
     primary: '#ee44aa',

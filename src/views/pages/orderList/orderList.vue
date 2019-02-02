@@ -1,98 +1,111 @@
 <template>
   <div class="order-list">
-    <v-form v-model="valid" class="mb-2">
-      <v-layout row wrap>
-        <v-flex
-          sm12
-          md4
-          lg3
-          px-1
-          v-for="(item, idx) in searchItemParams"
-          :key="`searchItemParams${idx}`"
-        >
-          <v-text-field
-            v-model="searchParams[item.key]"
-            :label="item.label"
-            clearable
-          ></v-text-field>
-        </v-flex>
-        <v-flex sm12 md4 lg3 px-1 >
-          <v-select
-            v-model="searchParams.roomType"
-            :items="constList.roomTypeList"
-            item-text="value"
-            item-value="id"
-            label="訂房房型"
-          ></v-select>
-        </v-flex>
-        <v-flex sm12 md4 lg3 px-1 >
-          <v-select
-            v-model="searchParams.status"
-            :items="constList.orderStatusList"
-            item-text="value"
-            item-value="id"
-            label="訂單狀態"
-          ></v-select>
-        </v-flex>
-      </v-layout>
-      <v-layout row wrap>
-        <v-flex
-          sm12
-          md3
-          lg3
-          px-1
-          v-for="(item, idx) in searchTimeParams"
-          :key="`searchTimeParams${idx}`"
-        >
-          <v-menu
-            :ref="`menu${idx}`"
-            :close-on-content-click="false"
-            v-model="selectMenu[idx]"
-            :nudge-right="40"
-            :value="searchParams[item.key]"
-            lazy
-            transition="scale-transition"
-            offset-y
-            full-width
-          >
-            <v-text-field
-              slot="activator"
-              v-model="searchParams[item.key]"
-              :label="item.label"
-              clearable
-              prepend-icon="mdi-calendar"
-              readonly
-            ></v-text-field>
-            <v-date-picker
-              v-model="searchParams[item.key]"
-              scrollable
-              no-title
-              locale="zh-Hant"
-              show-current
-              class="d-flex"
+    <v-layout row wrap>
+      <v-flex sm12 md4 lg3 px-1>
+        <v-btn>
+          <v-icon>mdi-plus</v-icon>
+          新增訂單
+        </v-btn>
+      </v-flex>
+    </v-layout>
+    <v-expansion-panel class="mb-2">
+      <v-expansion-panel-content class="accent">
+        <div slot="header" class="subheading">搜尋選項</div>
+        <v-form v-model="valid" class="px-2">
+          <v-layout row wrap>
+            <v-flex
+              sm12
+              md4
+              lg3
+              px-1
+              v-for="(item, idx) in searchItemParams"
+              :key="`searchItemParams${idx}`"
             >
-              <v-spacer></v-spacer>
-              <v-btn
-                flat
-                color="primary"
-                @click="$set(selectMenu,idx,false)"
-              >Cancel</v-btn>
-              <v-btn
-                flat
-                color="primary"
-                @click="$refs[`menu${idx}`][0].save(searchParams[item.key])"
-              >OK</v-btn>
-            </v-date-picker>
-          </v-menu>
-        </v-flex>
-        <v-flex text-xs-right>
-          <v-btn flat @click="methodFormReset">重置</v-btn>
-          <v-btn color="primary" @click="methodProcessParams">
-            <v-icon>mdi-magnify</v-icon>搜尋
-          </v-btn>
-        </v-flex>
-      </v-layout>
-    </v-form>
+              <v-text-field
+                v-model="searchParams[item.key]"
+                :label="item.label"
+                clearable
+              ></v-text-field>
+            </v-flex>
+            <v-flex sm12 md4 lg3 px-1 >
+              <v-select
+                v-model="searchParams.roomType"
+                :items="constList.roomTypeList"
+                item-text="value"
+                item-value="id"
+                label="訂房房型"
+              ></v-select>
+            </v-flex>
+            <v-flex sm12 md4 lg3 px-1 >
+              <v-select
+                v-model="searchParams.status"
+                :items="constList.orderStatusList"
+                item-text="value"
+                item-value="id"
+                label="訂單狀態"
+              ></v-select>
+            </v-flex>
+          </v-layout>
+          <v-layout row wrap>
+            <v-flex
+              sm12
+              md3
+              lg3
+              px-1
+              v-for="(item, idx) in searchTimeParams"
+              :key="`searchTimeParams${idx}`"
+            >
+              <v-menu
+                :ref="`menu${idx}`"
+                :close-on-content-click="false"
+                v-model="selectMenu[idx]"
+                :nudge-right="40"
+                :value="searchParams[item.key]"
+                lazy
+                transition="scale-transition"
+                offset-y
+                full-width
+              >
+                <v-text-field
+                  slot="activator"
+                  v-model="searchParams[item.key]"
+                  :label="item.label"
+                  clearable
+                  prepend-icon="mdi-calendar"
+                  readonly
+                ></v-text-field>
+                <v-date-picker
+                  v-model="searchParams[item.key]"
+                  scrollable
+                  no-title
+                  locale="zh-Hant"
+                  show-current
+                  class="d-flex"
+                >
+                  <v-spacer></v-spacer>
+                  <v-btn
+                    flat
+                    color="primary"
+                    @click="$set(selectMenu,idx,false)"
+                  >Cancel</v-btn>
+                  <v-btn
+                    flat
+                    color="primary"
+                    @click="$refs[`menu${idx}`][0].save(searchParams[item.key])"
+                  >OK</v-btn>
+                </v-date-picker>
+              </v-menu>
+            </v-flex>
+            <v-flex text-xs-right>
+              <v-btn flat @click="methodFormReset">重置</v-btn>
+              <v-btn color="primary" @click="methodProcessParams">
+                <v-icon>mdi-magnify</v-icon>搜尋
+              </v-btn>
+            </v-flex>
+          </v-layout>
+        </v-form>
+      </v-expansion-panel-content>
+    </v-expansion-panel>
     <v-card>
       <v-card-title>
         訂單資訊
@@ -204,7 +217,7 @@ export default {
         { label: '最近操作訂單開始時間', key: 'latestModifyTimeStartShow' },
         { label: '最近操作訂單結束時間', key: 'latestModifyTimeEndShow' },
       ],
-      selectMenu: [false, false, false, false, false, false],
+      selectMenu: [false, false, false, false, false, false, false, false],
     };
   },
   mounted() {
