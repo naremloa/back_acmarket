@@ -1,47 +1,93 @@
 // import { pickBy } from 'lodash';
+import { omitDateKey, formatDateKey } from '../utils/formatQuery';
+import {
+  orderFind,
+  orderCount,
+  orderInsert,
+} from '../models/order';
+import { outputSuccess } from '../utils/outputFormat';
 
-const { Order } = require('../../db').Models;
-const { outputSuccess, outputError } = require('../utils/outputFormat');
-
-const getOrder = (req, res) => {
+const getOrder = async (req, res) => {
   const { query } = req;
-  const queryKey = [
-    'orderId, name, checkInStartTime', 'checkInEndTime',
-    'checkOutStartTime', 'checkOutEndTime', 'roomType',
-    'status', 'currentPage', 'pageSize',
-  ];
-  // const checkQueryKey = (v, k) => queryKey.includes(k) && v !== undefined;
-  // const localQuery = pickBy(
-  //   query, checkQueryKey,
-  // );
-  console.log('checkQuery', query, req.query);
-  Order.find(query, (err, docs) => {
-    res.send(outputSuccess(docs));
+  const dateCheck = ['checkOut', 'checkIn', 'create'];
+  const localQuery = omitDateKey(dateCheck, query);
+  const dateQuery = formatDateKey(dateCheck, query);
+
+  const order = await orderFind({ ...localQuery, ...dateQuery });
+  res.send(outputSuccess(order));
+};
+
+const createOrderSchema = async ({
+  name,
+  phone,
+  email,
+  nationality,
+  checkInTime,
+  checkOutTime,
+  roomType,
+  price,
+  totalPrice,
+  account,
+  note,
+}) => {
+  const nowTime = new Date().getTime();
+  const count = await orderCount();
+  return {
+    orderId: count + 1,
+    name,
+    phone,
+    email,
+    nationality,
+    checkInTime,
+    checkOutTime,
+    createTime: nowTime,
+    roomType,
+    price,
+    totalPrice,
+    totalValidPrice: 0,
+    status: 0,
+    latestModifyAccount: account,
+    lastestModifyTime: nowTime,
+    note,
+  };
+};
+
+const addOrder = async (req, res) => {
+  const {
+    body: {
+      name,
+      phone,
+      email,
+      nationality,
+      checkInTime,
+      checkOutTime,
+      roomType,
+      price,
+      totalPrice,
+      note,
+    },
+    sess,
+  } = req;
+  const { userInfo: { account } } = sess;
+  const newOrder = await createOrderSchema({
+    name,
+    phone,
+    email,
+    nationality,
+    checkInTime,
+    checkOutTime,
+    roomType,
+    price,
+    totalPrice,
+    account,
+    note,
   });
-
-  // // TODO: 查詢值有效性檢查
-  // const {
-  //   validOrderId = true,
-  //   validName = true,
-  //   validCheckInTime = true,
-  //   validCheckOutTime = true,
-  //   validCreateTime = true,
-  //   validRoomType = true,
-  //   validStatus = true,
-  // } = {};
-
-  // const query = {};
-  // if (validOrderId) query.orderId = orderId;
-  // if (validName) query.name = name;
-  // if (validCheckInTime) query.checkInTime = { $gte: checkInStartTime, $lte: checkInEndTime };
-  // if (validCheckOutTime) query.checkOutTime = { $gte: checkOutStartTime, $lte: checkOutEndTime };
-  // if (validCreateTime) query.createTime = { $gte: createStartTime, $lte: createEndTime };
-  // if (validRoomType) query.roomType = roomType;
-  // if (validStatus) query.status = status;
-
-  // Order.find(query);
+  await orderInsert(newOrder);
+  // TODO:
+  return res.send(outputSuccess({}, '老婆兒大人我愛你，不要氣噗噗了嘛好不好'));
 };
 
 export {
   getOrder,
+  addOrder,
 };
