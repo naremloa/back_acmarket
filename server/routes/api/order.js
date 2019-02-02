@@ -4,6 +4,7 @@ import {
   orderFind,
   orderCount,
   orderInsert,
+  orderFindByIdAndUpdate,
 } from '../models/order';
 import { outputSuccess } from '../utils/outputFormat';
 
@@ -87,7 +88,45 @@ const addOrder = async (req, res) => {
   return res.send(outputSuccess({}, '老婆兒大人我愛你，不要氣噗噗了嘛好不好'));
 };
 
+const updateOrder = async (req, res) => {
+  const {
+    body: {
+      cid,
+      name,
+      phone,
+      email,
+      nationality,
+      checkInTime,
+      checkOutTime,
+      roomType,
+      price,
+      totalPrice,
+      note,
+    },
+    sess,
+  } = req;
+  const { userInfo: { account } } = sess;
+  const nowTime = new Date().getTime();
+  const updateObj = {
+    name,
+    phone,
+    email,
+    nationality,
+    checkInTime,
+    checkOutTime,
+    roomType,
+    price,
+    totalPrice,
+    note,
+    latestModifyAccount: account,
+    lastestModifyTime: nowTime,
+  };
+  await orderFindByIdAndUpdate(cid, updateObj);
+  return res.send(outputSuccess({}, '老婆兒老婆兒，啊啊啊啊，幸苦咧'));
+};
+
 export {
   getOrder,
   addOrder,
+  updateOrder,
 };

@@ -40,7 +40,7 @@ const addMaintenance = async (req, res) => {
   };
   const result = await roomInsert(roomObj);
   if (result) return res.send(outputSuccess(true));
-  res.send(outputError('未知錯誤'));
+  return res.send(outputError('未知錯誤'));
 };
 
 // const updateMaintenance = async (req, res) => {

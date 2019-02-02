@@ -1,6 +1,9 @@
+import mongoose from 'mongoose';
 import { Models } from '../../db';
 
 const { Order } = Models;
+
+const { ObjectId } = mongoose.Types;
 
 const orderFind = async (query) => {
   const res = await Order.find(query);
@@ -17,8 +20,17 @@ const orderInsert = async (orderObj) => {
   return res;
 };
 
+const orderFindByIdAndUpdate = async (id, updateObj) => {
+  const res = await Order.findByIdAndUpdate(
+    ObjectId(id),
+    updateObj,
+  );
+  return res;
+};
+
 export {
   orderFind,
   orderCount,
   orderInsert,
+  orderFindByIdAndUpdate,
 };

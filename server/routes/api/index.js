@@ -14,6 +14,7 @@ import {
 import {
   getOrder,
   addOrder,
+  updateOrder,
 } from './order';
 import {
   getRouter,
@@ -133,6 +134,30 @@ router.post(
   middlewareCheckLoginStatusSession,
   middlewareCheckAuthorization,
   addOrder,
+);
+
+/**
+ * @api {post} /order/update 新增訂單接口
+ * @apiPermission login admin
+ * @apiName orderUpdate
+ * @apiGroup Order
+ *
+ * @apiParam {String} cid 訂單id
+ * @apiParam {String} name 訂房姓名
+ * @apiParam {String} phone 訂房電話
+ * @apiParam {String} nationality 訂房人國籍
+ * @apiParam {Number} checkInTime 入住時間
+ * @apiParam {Number} checkOutTime 退房時間
+ * @apiParam {Number} roomType 訂房房型
+ * @apiParam {Number} price 房型單價
+ * @apiParam {Number} totalPrice 總價
+ * @apiParam {String} note 備註
+ */
+router.post(
+  '/order/update',
+  middlewareCheckLoginStatusSession,
+  middlewareCheckAuthorization,
+  updateOrder,
 );
 
 // 獲取有權(登入用戶)路由接口
