@@ -1,4 +1,3 @@
-
 import bcrypt from 'bcrypt';
 import { isArray } from 'lodash';
 import svgCaptcha from 'svg-captcha';

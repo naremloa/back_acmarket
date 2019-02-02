@@ -53,7 +53,7 @@ const addMaintenance = async (req, res) => {
     session: sess,
   } = req;
   const { userInfo: { account } } = sess;
-  const newMaintenance = createMaintenanceSchema({
+  const newMaintenance = await createMaintenanceSchema({
     roomId,
     position,
     content,
@@ -62,7 +62,6 @@ const addMaintenance = async (req, res) => {
     note,
     account,
   });
-  console.log('check', newMaintenance);
 
   await roomInsert(newMaintenance);
   return res.send(outputSuccess({}, '無敵破壞光線～～biu biu biu'));
