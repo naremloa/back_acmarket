@@ -49,6 +49,14 @@
         "apiRoot": "/room",
         "rootId": 1002,
         "childNode": []
+      },
+      {
+        "id": 1013,
+        "dataKey": "cashList",
+        "name": "收支明細",
+        "apiRoot": "/cash",
+        "rootId": 1002,
+        "childNode": []
       }
     ]
   }

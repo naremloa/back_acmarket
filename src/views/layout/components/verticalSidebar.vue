@@ -107,6 +107,11 @@ export default {
           title: '修理列表',
           url: '/roomRepairList',
         },
+        {
+          icon: 'mdi-cash',
+          title: '收支列表',
+          url: '/cashList',
+        },
       ],
     };
   },

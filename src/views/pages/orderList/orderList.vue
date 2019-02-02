@@ -95,7 +95,8 @@ export default {
     currencies,
     async getOrder() {
       const query = {
-        name: 'Karen Trevino',
+        name: 'Harmon',
+        // phone: '+886 (932) 511-327',
       };
       const res = await httpMethod({
         url: '/v1/api/order/list',
