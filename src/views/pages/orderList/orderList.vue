@@ -234,7 +234,7 @@ export default {
       confirmDialogInfo: {
         openDialog: false,
         title: '',
-        contentFilePath: '',
+        contentFilePath: 'pages/orderList/addOrder.vue',
         confirmMethod: null,
         otherMethod: null,
       },
