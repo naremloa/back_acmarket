@@ -33,6 +33,7 @@ import {
 import {
   getMaintenance,
   addMaintenance,
+  updateMaintenance,
 } from './room';
 
 const router = express.Router();
@@ -287,6 +288,13 @@ router.post(
   middlewareCheckLoginStatusSession,
   middlewareCheckAuthorization,
   addMaintenance,
+);
+
+router.post(
+  '/room/maintenance/update',
+  middlewareCheckLoginStatusSession,
+  middlewareCheckAuthorization,
+  updateMaintenance,
 );
 
 module.exports = router;
