@@ -7,6 +7,18 @@ const cashFind = async (query) => {
   return res;
 };
 
+const cashCount = async () => {
+  const res = await Cash.estimatedDocumentCount();
+  return res;
+};
+
+const cashInsert = async (cashObj) => {
+  const res = await Cash.create(cashObj);
+  return res;
+};
+
 export {
   cashFind,
+  cashCount,
+  cashInsert,
 };
