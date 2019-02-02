@@ -62,9 +62,10 @@ const addMaintenance = async (req, res) => {
     note,
     account,
   });
+  console.log('check', newMaintenance);
 
   await roomInsert(newMaintenance);
-  return res.send({}, '無敵破壞光線～～biu biu biu');
+  return res.send(outputSuccess({}, '無敵破壞光線～～biu biu biu'));
 };
 
 const updateMaintenance = async (req, res) => {
