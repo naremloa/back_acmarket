@@ -2,7 +2,7 @@
   <div class="order-list">
     <v-layout row wrap>
       <v-flex sm12 md4 lg3 px-1>
-        <v-btn>
+        <v-btn @click="methodAddOrder">
           <v-icon>mdi-plus</v-icon>
           新增訂單
         </v-btn>
@@ -160,15 +160,27 @@
         </template>
       </v-data-table>
     </v-card>
+    <dialogComponent
+      :openDialog="confirmDialogInfo.openDialog"
+      @valueChange="methodChangeOpenDialog"
+      :title="confirmDialogInfo.title"
+      :contentFilePath="confirmDialogInfo.contentFilePath"
+      :confirmMethod="confirmDialogInfo.confirmMethod"
+      width="1000"
+    />
   </div>
 </template>
 <script>
 import httpMethod from '@/utils/httpMethod';
 import constList from '@/utils/const';
+import dialogComponent from '@/views/layout/components/dialog.vue';
 import { dateTime, currencies } from '@/utils/calculation';
 
 export default {
   name: 'orderList',
+  components: {
+    dialogComponent,
+  },
   data() {
     return {
       constList,
@@ -218,6 +230,12 @@ export default {
         { label: '最近操作訂單結束時間', key: 'latestModifyTimeEndShow' },
       ],
       selectMenu: [false, false, false, false, false, false, false, false],
+      confirmDialogInfo: {
+        openDialog: false,
+        title: '',
+        contentFilePath: '',
+        confirmMethod: null,
+      },
     };
   },
   mounted() {
@@ -305,6 +323,17 @@ export default {
       if (latestModifyTimeStartShow) params.latestModifyTimeStart = new Date(latestModifyTimeStartShow).valueOf();
       if (latestModifyTimeEndShow) params.latestModifyTimeEnd = new Date(latestModifyTimeEndShow).valueOf();
       this.getOrder(params);
+    },
+    methodChangeOpenDialog(val) {
+      this.confirmDialogInfo.openDialog = val;
+    },
+    methodAddOrder() {
+      this.confirmDialogInfo = {
+        ...this.confirmDialogInfo,
+        openDialog: true,
+        title: '新增訂單',
+        contentFilePath: 'pages/orderList/addOrder.vue',
+      };
     },
   },
 };

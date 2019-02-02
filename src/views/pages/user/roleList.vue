@@ -62,6 +62,7 @@ import dialogComponent from '@/views/layout/components/dialog.vue';
 // import newRole from '@/views/pages/user/newRole.vue';
 
 export default {
+  name: 'roleList',
   components: {
     dialogComponent,
   },

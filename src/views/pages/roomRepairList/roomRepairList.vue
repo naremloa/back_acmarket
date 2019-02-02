@@ -4,7 +4,7 @@
       <v-flex sm12 md4 lg3 px-1>
         <v-btn>
           <v-icon>mdi-plus</v-icon>
-          新增訂單
+          新增修裡事項
         </v-btn>
       </v-flex>
     </v-layout>
