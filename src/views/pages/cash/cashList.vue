@@ -135,7 +135,7 @@
           <td class="text-xs-center">{{ props.item.content }}</td>
           <td class="text-xs-center">{{ currencies(props.item.income) }}</td>
           <td class="text-xs-center">{{ currencies(props.item.outcome) }}</td>
-          <td class="text-xs-center">{{ props.item.balance }}</td>
+          <td class="text-xs-center">{{ currencies(props.item.balance) }}</td>
           <td class="text-xs-center">{{ formatCashType(props.item.type) }}</td>
           <td class="text-xs-center">{{ dateTime(props.item.createTime) }}</td>
           <td class="text-xs-center">{{ props.item.createAccount }}</td>
@@ -237,7 +237,7 @@ export default {
     },
     async getRoomRepairList(params) {
       const res = await httpMethod({
-        url: '/v1/api/room/maintenance/list',
+        url: '/v1/api/cash/list',
         method: 'GET',
         params,
       });
