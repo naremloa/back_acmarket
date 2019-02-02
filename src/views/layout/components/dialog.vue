@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="localOpenDialog" width="500">
+  <v-dialog v-model="localOpenDialog" :width="this.width || 500">
     <v-card>
       <v-card-title
         class="headline grey lighten-2"
@@ -11,24 +11,26 @@
       ></div>
       <component :is="componentLoader" @closeDialog="methodCloseDialog" />
       </v-card-text>
-      <v-divider></v-divider>
-      <v-card-actions>
-        <v-spacer></v-spacer>
-        <v-btn
-          @click="localOpenDialog = false"
-        >取消</v-btn>
-        <v-btn
-          color="primary"
-          @click="methodConfirm"
-        >確定</v-btn>
-      </v-card-actions>
+      <div v-if="localConfirmMethod">
+        <v-divider></v-divider>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            @click="localOpenDialog = false"
+          >取消</v-btn>
+          <v-btn
+            color="primary"
+            @click="methodConfirm"
+          >確定</v-btn>
+        </v-card-actions>
+      </div>
     </v-card>
   </v-dialog>
 </template>
 
 <script>
 export default {
-  props: ['openDialog', 'title', 'contentFilePath', 'confirmMethod'],
+  props: ['openDialog', 'title', 'contentFilePath', 'confirmMethod', 'width'],
   data() {
     return {
       localTitle: '系統提醒',
