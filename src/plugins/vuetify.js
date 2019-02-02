@@ -17,6 +17,8 @@ import Vuetify, {
   VBtn,
   VList,
   VTooltip,
+  VPagination,
+  VDataIterator,
 } from 'vuetify/lib';
 import zhHant from 'vuetify/es5/locale/zh-Hant';
 // import 'vuetify/src/stylus/app.styl';
@@ -42,6 +44,8 @@ Vue.use(Vuetify, {
     VBtn,
     VList,
     VTooltip,
+    VPagination,
+    VDataIterator,
   },
   theme: {
     primary: '#ee44aa',
@@ -56,7 +60,7 @@ Vue.use(Vuetify, {
   iconfont: 'mdi',
   lang: {
     locales: { zhHant },
-    current: 'zh-Hant',
+    current: 'zhHant',
   },
   directives: {
     Scroll,
