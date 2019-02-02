@@ -46,7 +46,7 @@ const createOrderSchema = async ({
     price,
     totalPrice,
     totalValidPrice: 0,
-    status: 0,
+    status: 1,
     latestModifyAccount: account,
     lastestModifyTime: nowTime,
     note,
