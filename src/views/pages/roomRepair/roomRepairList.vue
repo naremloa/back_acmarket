@@ -2,9 +2,9 @@
   <div class="room-repair-list">
     <v-layout row wrap>
       <v-flex sm12 md4 lg3 px-1>
-        <v-btn>
+        <v-btn @click="methodAddRoomRepair">
           <v-icon>mdi-plus</v-icon>
-          新增修裡事項
+          新增維修事項
         </v-btn>
       </v-flex>
     </v-layout>
@@ -136,14 +136,27 @@
         </template>
       </v-data-table>
     </v-card>
+    <dialogComponent
+      :openDialog="confirmDialogInfo.openDialog"
+      @valueChange="methodChangeOpenDialog"
+      :title="confirmDialogInfo.title"
+      :contentFilePath="confirmDialogInfo.contentFilePath"
+      :confirmMethod="confirmDialogInfo.confirmMethod"
+      :otherMethod="confirmDialogInfo.otherMethod"
+      width="1000"
+    />
   </div>
 </template>
 <script>
 import httpMethod from '@/utils/httpMethod';
+import dialogComponent from '@/views/layout/components/dialog.vue';
 import { dateTime, currencies } from '@/utils/calculation';
 
 export default {
   name: 'roomRepairList',
+  components: {
+    dialogComponent,
+  },
   data() {
     return {
       search: '',
@@ -181,6 +194,13 @@ export default {
         { label: '修改結束時間', key: 'modifyTimeEndShow' },
       ],
       selectMenu: [false, false, false, false],
+      confirmDialogInfo: {
+        openDialog: false,
+        title: '',
+        contentFilePath: 'pages/roomRepair/addRoomRepair.vue',
+        confirmMethod: null,
+        otherMethod: null,
+      },
     };
   },
   mounted() {
@@ -220,7 +240,6 @@ export default {
       this.searchParams = this.getParamsOrigin();
     },
     methodProcessParams() {
-      console.log('TCL: methodProcessParams -> methodProcessParams');
       const {
         idShow,
         positionShow,
@@ -247,6 +266,18 @@ export default {
       if (modifyTimeEndShow) params.modifyTimeEnd = new Date(modifyTimeEndShow).valueOf();
 
       this.getRoomRepairList(params);
+    },
+    methodChangeOpenDialog(val) {
+      this.confirmDialogInfo.openDialog = val;
+    },
+    methodAddRoomRepair() {
+      this.confirmDialogInfo = {
+        ...this.confirmDialogInfo,
+        openDialog: true,
+        title: '新增維修事項',
+        contentFilePath: 'pages/roomRepair/addRoomRepair.vue',
+        otherMethod: this.getRoomRepairList,
+      };
     },
   },
 };

@@ -234,7 +234,7 @@ export default {
       confirmDialogInfo: {
         openDialog: false,
         title: '',
-        contentFilePath: 'pages/orderList/addOrder.vue',
+        contentFilePath: 'pages/order/addOrder.vue',
         confirmMethod: null,
         otherMethod: null,
       },
@@ -251,7 +251,7 @@ export default {
       return res ? res.value : '';
     },
     formatOrderStatus(type) {
-      const res = constList.orderStatusList.filter(item => item.id === type)[0];
+      const res = constList.cashTypeList.filter(item => item.id === type)[0];
       return res ? res.value : '';
     },
     getParamsOrigin() {
@@ -288,7 +288,6 @@ export default {
       this.searchParams = this.getParamsOrigin();
     },
     methodProcessParams() {
-      console.log('TCL: methodProcessParams -> methodProcessParams');
       const {
         roomType,
         status,
@@ -336,7 +335,7 @@ export default {
         ...this.confirmDialogInfo,
         openDialog: true,
         title: '新增訂單',
-        contentFilePath: 'pages/orderList/addOrder.vue',
+        contentFilePath: 'pages/order/addOrder.vue',
         otherMethod: this.getOrder,
       };
     },

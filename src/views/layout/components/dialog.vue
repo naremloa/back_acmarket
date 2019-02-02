@@ -77,7 +77,6 @@ export default {
   },
   computed: {
     componentLoader() {
-      console.log('TCL: componentLoader -> componentLoader');
       return () => import(`@/views/${this.contentFilePath}`);
     },
   },

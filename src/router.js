@@ -32,7 +32,7 @@ export default new Router({
         {
           path: 'orderList',
           name: 'orderList',
-          component: () => import('@/views/pages/orderList/orderList.vue'),
+          component: () => import('@/views/pages/order/orderList.vue'),
           meta: {
             title: '訂單資訊',
           },
@@ -64,7 +64,7 @@ export default new Router({
         {
           path: 'roomRepairList',
           name: 'roomRepairList',
-          component: () => import('@/views/pages/roomRepairList/roomRepairList.vue'),
+          component: () => import('@/views/pages/roomRepair/roomRepairList.vue'),
           meta: {
             title: '修理列表',
           },
@@ -72,7 +72,7 @@ export default new Router({
         {
           path: 'cashList',
           name: 'cashList',
-          component: () => import('@/views/pages/cashList/cashList.vue'),
+          component: () => import('@/views/pages/cash/cashList.vue'),
           meta: {
             title: '收支明細',
           },

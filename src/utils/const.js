@@ -29,6 +29,10 @@ const constList = {
     { id: 4, value: '已退房' },
     { id: 5, value: '已取消' },
   ],
+  cashTypeList: [
+    { id: 1, value: '現金' },
+    { id: 2, value: '銀行' },
+  ],
 };
 
 export default constList;

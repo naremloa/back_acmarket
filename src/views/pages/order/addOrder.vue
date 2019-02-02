@@ -200,8 +200,8 @@ export default {
       if (phoneShow) params.phone = phoneShow;
       if (emailShow) params.email = emailShow;
       if (nationalityShow) params.nationality = nationalityShow;
-      if (priceShow) params.price = priceShow;
-      if (totalPriceShow) params.totalPrice = totalPriceShow;
+      if (priceShow) params.price = priceShow * 100;
+      if (totalPriceShow) params.totalPrice = totalPriceShow * 100;
       if (noteShow) params.note = noteShow;
       if (checkInTimeShow) params.checkInTime = new Date(checkInTimeShow).valueOf();
       if (checkOutTimeShow) params.checkOutTime = new Date(checkOutTimeShow).valueOf();
@@ -226,7 +226,7 @@ export default {
         } else {
           alert = {
             open: true,
-            text: res.msg || '登入失敗，請重新再弒，或聯絡客服人員',
+            text: res.msg || '新增失敗，請重新再弒，或聯絡客服人員',
             color: 'error',
           };
         }
