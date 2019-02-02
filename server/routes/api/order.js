@@ -67,7 +67,7 @@ const addOrder = async (req, res) => {
       totalPrice,
       note,
     },
-    sess,
+    session: sess,
   } = req;
   const { userInfo: { account } } = sess;
   const newOrder = await createOrderSchema({
@@ -103,7 +103,7 @@ const updateOrder = async (req, res) => {
       totalPrice,
       note,
     },
-    sess,
+    session: sess,
   } = req;
   const { userInfo: { account } } = sess;
   const nowTime = new Date().getTime();

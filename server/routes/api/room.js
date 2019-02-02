@@ -50,7 +50,7 @@ const addMaintenance = async (req, res) => {
       outsourceCost,
       note,
     },
-    sess,
+    session: sess,
   } = req;
   const { userInfo: { account } } = sess;
   const newMaintenance = createMaintenanceSchema({
@@ -77,7 +77,7 @@ const updateMaintenance = async (req, res) => {
       outsourceCost,
       note,
     },
-    sess,
+    session: sess,
   } = req;
   const { userInfo: { account } } = sess;
   const nowTime = new Date().getTime();
