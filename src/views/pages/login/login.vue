@@ -107,6 +107,7 @@ export default {
           color: 'green darken-3',
         };
         this.$store.commit('global/setNotifySetting', alert);
+        this.$store.commit('global/setUserName', res.data.accountName || res.data.account);
         setCookie('loginStatus', res.data.loginStatus);
         this.$router.push('/');
       } else {

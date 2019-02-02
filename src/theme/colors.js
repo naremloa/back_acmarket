@@ -14,17 +14,17 @@ const themeColors = {
       success: colors.green.base,
     },
   },
-  lightBlue: {
+  lightOrange: {
     dark: false,
-    label: '水藍',
+    label: '淺橘',
     theme: {
-      primary: colors.lightBlue.base,
-      secondary: colors.lightBlue.lighten3,
-      accent: colors.blueGrey.lighten5,
+      primary: colors.orange.darken1,
+      secondary: colors.orange.lighten3,
+      accent: colors.orange.lighten5,
       error: colors.red.lighten1,
       warning: colors.yellow.darken3,
-      info: colors.lightBlue.darken2,
-      success: colors.green.lighten1,
+      info: colors.blue.darken1,
+      success: colors.green.darken1,
     },
   },
   deepGreen: {
@@ -38,6 +38,19 @@ const themeColors = {
       warning: colors.yellow.lighten1,
       info: colors.lightBlue.lighten3,
       success: colors.lightGreen.lighten1,
+    },
+  },
+  lightBlue: {
+    dark: false,
+    label: '水藍',
+    theme: {
+      primary: colors.lightBlue.base,
+      secondary: colors.lightBlue.lighten3,
+      accent: colors.blueGrey.lighten5,
+      error: colors.red.lighten1,
+      warning: colors.yellow.darken3,
+      info: colors.lightBlue.darken2,
+      success: colors.green.lighten1,
     },
   },
   lightGrey: {

@@ -1,3 +1,3 @@
-export const notifySetting = state => state.notifySetting;
+export const getNotifySetting = state => state.notifySetting;
 
 export const getUserName = state => state.userName;

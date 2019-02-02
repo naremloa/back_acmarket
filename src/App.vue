@@ -38,7 +38,7 @@ export default {
   },
   computed: {
     ...mapGetters({
-      notifySetting: 'global/notifySetting',
+      notifySetting: 'global/getNotifySetting',
     }),
   },
   methods: {

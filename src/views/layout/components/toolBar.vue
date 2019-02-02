@@ -4,8 +4,6 @@
     <v-toolbar-title>Application</v-toolbar-title>
     <v-spacer></v-spacer>
     <v-toolbar-items class="hidden-sm-and-down">
-      <v-btn flat>Link Two</v-btn>
-      <v-btn flat>Link Three</v-btn>
       <v-menu offset-y>
         <v-btn slot="activator" class="primary">
           Theme<v-icon>mdi-menu-down</v-icon>
@@ -24,7 +22,7 @@
       </v-menu>
       <v-menu offset-y>
         <v-btn slot="activator" class="primary">
-          Dropdown<v-icon>mdi-menu-down</v-icon>
+          <v-icon>mdi-account</v-icon>{{userName || '用戶資訊'}}<v-icon>mdi-menu-down</v-icon>
         </v-btn>
         <v-list class="secondary">
           <v-list-tile
@@ -49,6 +47,7 @@
 import httpMethod from '@/utils/httpMethod';
 import { removeCookie } from '@/utils/cookie';
 import themeColors from '@/theme/colors';
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'toolBar',
@@ -79,6 +78,9 @@ export default {
     this.selectedTheme = Object.keys(themeColors)[Object.keys(themeColors).length - 2];
   },
   computed: {
+    ...mapGetters({
+      userName: 'global/getUserName',
+    }),
     themeColorsList() {
       return Object.keys(themeColors).map(theme => ({
         label: themeColors[theme].label,
