@@ -9,7 +9,11 @@
       <div
         id="mount-component"
       ></div>
-      <component :is="componentLoader" @closeDialog="methodCloseDialog" />
+      <component
+        :is="componentLoader"
+        @closeDialog="methodCloseDialog"
+        @execOtherMethod="methodExecOtherMethod"
+      />
       </v-card-text>
       <div v-if="localConfirmMethod">
         <v-divider></v-divider>
@@ -30,13 +34,14 @@
 
 <script>
 export default {
-  props: ['openDialog', 'title', 'contentFilePath', 'confirmMethod', 'width'],
+  props: ['openDialog', 'title', 'contentFilePath', 'confirmMethod', 'width', 'otherMethod'],
   data() {
     return {
       localTitle: '系統提醒',
       localContent: '您確定要執行此步驟嗎？',
       localConfirmMethod: null,
       localOpenDialog: false,
+      localOtherMethod: null,
     };
   },
   watch: {
@@ -66,10 +71,12 @@ export default {
     confirmMethod(val) {
       this.localConfirmMethod = val;
     },
+    otherMethod(val) {
+      this.localOtherMethod = val;
+    },
   },
   computed: {
     componentLoader() {
-      console.log('TCL: componentLoader -> this.contentFilePath', this.contentFilePath);
       return () => import(`@/views/${this.contentFilePath}`);
     },
   },
@@ -79,8 +86,10 @@ export default {
       this.localOpenDialog = false;
     },
     methodCloseDialog() {
-      console.log('TCL: methodCloseDialog -> methodCloseDialog');
       this.localOpenDialog = false;
+    },
+    methodExecOtherMethod() {
+      if (this.localOtherMethod) this.localOtherMethod();
     },
   },
 };
