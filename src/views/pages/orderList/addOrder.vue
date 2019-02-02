@@ -1,6 +1,6 @@
 <template>
   <div class="add-order">
-    <v-form v-model="valid" class="px-2">
+    <v-form v-model="valid" ref="form" class="px-2" lazy-validation>
       <v-layout row wrap>
         <v-flex
           sm12
@@ -14,6 +14,8 @@
             v-model="orderParams[item.key]"
             :label="item.label"
             clearable
+            :rules="item.require ? nameRules : []"
+            :required="item.require"
           ></v-text-field>
         </v-flex>
         <v-flex sm12 md4 lg3 px-1 >
@@ -23,6 +25,8 @@
             item-text="value"
             item-value="id"
             label="訂房房型"
+            :rules="nameRules"
+            required
           ></v-select>
         </v-flex>
         <v-flex
@@ -39,6 +43,8 @@
             v-model="orderParams[item.key]"
             :label="item.label"
             clearable
+            :rules="nameRules"
+            required
           ></v-text-field>
         </v-flex>
         <v-flex
@@ -59,7 +65,7 @@
       <v-layout row wrap>
         <v-flex
           sm12
-          md3
+          md4
           lg3
           px-1
           v-for="(item, idx) in orderTimeParams"
@@ -83,6 +89,8 @@
               clearable
               prepend-icon="mdi-calendar"
               readonly
+              :rules="nameRules"
+              required
             ></v-text-field>
             <v-date-picker
               v-model="orderParams[item.key]"
@@ -109,7 +117,7 @@
         </v-layout>
         <v-layout>
         <v-flex text-xs-right>
-          <v-btn flat @click="$emit('closeDialog')">取消</v-btn>
+          <v-btn flat @click="methodCancelAddOrder">取消</v-btn>
           <v-btn flat @click="methodFormReset">重置</v-btn>
           <v-btn color="primary" @click="methodProcessParams">
             <v-icon>mdi-check</v-icon>新增訂單
@@ -131,10 +139,10 @@ export default {
       valid: false,
       orderParams: this.getParamsOrigin(),
       orderItemParams1: [
-        { label: '姓名', key: 'nameShow' },
-        { label: '電話', key: 'phoneShow' },
-        { label: '電子郵件', key: 'emailShow' },
-        { label: '國籍', key: 'nationalityShow' },
+        { label: '姓名', key: 'nameShow', require: true },
+        { label: '電話', key: 'phoneShow', require: true },
+        { label: '電子郵件', key: 'emailShow', require: false },
+        { label: '國籍', key: 'nationalityShow', require: false },
       ],
       orderTimeParams: [
         { label: '入住時間', key: 'checkInTimeShow' },
@@ -148,6 +156,9 @@ export default {
         { label: '備註', key: 'noteShow' },
       ],
       selectMenu: [false, false, false, false, false, false, false, false],
+      nameRules: [
+        v => !!v || '此欄位為必填',
+      ],
     };
   },
   methods: {
@@ -167,6 +178,7 @@ export default {
     },
     methodFormReset() {
       this.orderParams = this.getParamsOrigin();
+      this.$refs.form.resetValidation();
     },
     methodProcessParams() {
       console.log('TCL: methodProcessParams -> methodProcessParams');
@@ -196,13 +208,35 @@ export default {
       this.addOrder(params);
     },
     async addOrder(params) {
-      const res = await httpMethod({
-        url: '/v1/api/order/add',
-        method: 'POST',
-        data: params,
-      });
-      console.log(res);
-      // this.orderList = res.data;
+      console.log('TCL: addOrder -> this.$refs.form.validate()', this.$refs.form.validate());
+      if (this.$refs.form.validate()) {
+        const res = await httpMethod({
+          url: '/v1/api/order/add',
+          method: 'POST',
+          data: params,
+        });
+        console.log(res);
+        let alert = null;
+        if (!res.code) {
+          alert = {
+            open: true,
+            text: `${res.msg}`,
+            color: 'success',
+          };
+        } else {
+          alert = {
+            open: true,
+            text: res.msg || '登入失敗，請重新再弒，或聯絡客服人員',
+            color: 'error',
+          };
+        }
+        this.$store.commit('global/setNotifySetting', alert);
+        // this.orderList = res.data;
+        this.$emit('closeDialog');
+      }
+    },
+    methodCancelAddOrder() {
+      this.methodFormReset();
       this.$emit('closeDialog');
     },
   },

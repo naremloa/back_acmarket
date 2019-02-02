@@ -245,10 +245,12 @@ export default {
     dateTime,
     currencies,
     formatRoomType(type) {
-      return constList.roomTypeList.filter(item => item.id === type)[0].value;
+      const res = constList.roomTypeList.filter(item => item.id === type)[0];
+      return res ? res.value : '';
     },
     formatOrderStatus(type) {
-      return constList.orderStatusList.filter(item => item.id === type)[0].value;
+      const res = constList.orderStatusList.filter(item => item.id === type)[0];
+      return res ? res.value : '';
     },
     getParamsOrigin() {
       return {
