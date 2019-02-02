@@ -38,9 +38,11 @@ const getRouterAboutRole = async (routerGroup = null) => {
 };
 
 const getRouter = async (req, res) => {
-  const { session: { userInfo } } = req;
-  const { role: { routerGroup } } = await userFindOne({ account: userInfo.account });
-  const list = await getRouterAboutRole(routerGroup);
+  // const { session: { userInfo } } = req;
+  // const { role: { routerGroup } } = await userFindOne({ account: userInfo.account });
+  // TODO: 關閉有權路由，直接展示所有路由
+  // const list = await getRouterAboutRole(routerGroup);
+  const list = await getRouterAboutAll();
   res.send(outputSuccess(list));
 };
 

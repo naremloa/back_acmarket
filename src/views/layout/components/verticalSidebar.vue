@@ -10,6 +10,34 @@
     >
     <v-list dense>
       <div
+        v-for="item in list"
+        :key="item.dataKey" >
+        <v-list-group
+          v-model="item.active"
+          :key="item.dataKey"
+          :prepend-icon="localListInfo[item.dataKey] && localListInfo[item.dataKey].icon" >
+          no-action
+          <v-list-tile slot="activator">
+            <v-list-tile-content>
+              <v-list-tile-title>{{ item.name }}</v-list-tile-title>
+            </v-list-tile-content>
+          </v-list-tile>
+          <v-list-tile
+            v-for="subItem in item.childNode"
+            :key="subItem.dataKey"
+            @click="localListInfo[subItem.dataKey] && localListInfo[subItem.dataKey].url
+              ? $router.push(localListInfo[subItem.dataKey].url)
+              : null" >
+            <!-- <v-list-tile-action>
+              <v-icon>{{localListInfo[subItem.dataKey].icon}}</v-icon>
+            </v-list-tile-action> -->
+            <v-list-tile-content>
+              <v-list-tile-title>{{subItem.name}}</v-list-tile-title>
+            </v-list-tile-content>
+          </v-list-tile>
+        </v-list-group>
+      </div>
+      <!-- <div
         v-for="(item,idx) in verticalSidebarList"
         :key="`verticalSidebarList${idx}`"
       >
@@ -55,11 +83,13 @@
               </v-list-tile-content>
             </v-list-tile>
         </v-list-group>
-      </div>
+      </div> -->
     </v-list>
   </v-navigation-drawer>
 </template>
 <script>
+import httpMethod from '@/utils/httpMethod';
+
 export default {
   name: 'verticalSidebar',
   model: {
@@ -113,6 +143,27 @@ export default {
           url: '/cashList',
         },
       ],
+      list: [],
+      localListInfo: {
+        user: {
+          icon: 'mdi-view-dashboard',
+        },
+        manager: {
+          icon: 'mdi-wrench',
+        },
+        userList: {
+          url: '/userList',
+        },
+        orderList: {
+          url: '/orderList',
+        },
+        roomList: {
+          url: '/roomRepairList',
+        },
+        cashList: {
+          url: '/cashList',
+        },
+      },
     };
   },
   computed: {
@@ -133,6 +184,7 @@ export default {
     },
   },
   mounted() {
+    this.getRouter();
   },
   methods: {
     ts(val) {
@@ -142,6 +194,15 @@ export default {
     },
     activeClass(path) {
       return this.$route.path === path ? 'v-list__tile--active' : '';
+    },
+    async getRouter() {
+      const res = await httpMethod({
+        url: '/v1/api/router/list',
+        method: 'GET',
+      });
+      if (!res.code) {
+        this.list = res.data;
+      }
     },
   },
 };
