@@ -11,6 +11,7 @@
       ></div>
       <component
         :is="componentLoader"
+        :contentData="localContentData"
         @closeDialog="methodCloseDialog"
         @execOtherMethod="methodExecOtherMethod"
       />
@@ -34,11 +35,12 @@
 
 <script>
 export default {
-  props: ['openDialog', 'title', 'contentFilePath', 'confirmMethod', 'width', 'otherMethod'],
+  props: ['openDialog', 'title', 'contentFilePath', 'confirmMethod', 'width', 'otherMethod', 'contentData'],
   data() {
     return {
       localTitle: '系統提醒',
       localContent: '您確定要執行此步驟嗎？',
+      localContentData: null,
       localConfirmMethod: null,
       localOpenDialog: false,
       localOtherMethod: null,
@@ -71,12 +73,16 @@ export default {
     confirmMethod(val) {
       this.localConfirmMethod = val;
     },
+    contentData(val) {
+      this.localContentData = val;
+    },
     otherMethod(val) {
       this.localOtherMethod = val;
     },
   },
   computed: {
     componentLoader() {
+      console.log('TCL: componentLoader -> this.contentFilePath', this.contentFilePath);
       return () => import(`@/views/${this.contentFilePath}`);
     },
   },

@@ -142,7 +142,14 @@
           <td class="text-xs-right">{{ currencies(props.item.price) }}</td>
           <td class="text-xs-right">{{ currencies(props.item.totalPrice) }}</td>
           <td class="text-xs-right">{{ currencies(props.item.totalValidPrice) }}</td>
-          <td class="text-xs-center">{{ formatOrderStatus(props.item.status) }}</td>
+          <td class="text-xs-center">
+            <div v-if="props.item.status === 5">{{ formatOrderStatus(props.item.status) }}</div>
+            <v-btn
+              v-else
+              small
+              @click="methodupdateStatus(props.item)"
+            >{{ formatOrderStatus(props.item.status) }}</v-btn>
+          </td>
           <td class="text-xs-center">{{ props.item.latestModifyAccount }}</td>
           <td class="text-xs-center">{{ dateTime(props.item.latestModifyTime) }}</td>
           <td class="text-xs-center">{{ props.item.note }}</td>
@@ -165,6 +172,7 @@
       @valueChange="methodChangeOpenDialog"
       :title="confirmDialogInfo.title"
       :contentFilePath="confirmDialogInfo.contentFilePath"
+      :contentData="confirmDialogInfo.contentData"
       :confirmMethod="confirmDialogInfo.confirmMethod"
       :otherMethod="confirmDialogInfo.otherMethod"
       width="1000"
@@ -235,6 +243,7 @@ export default {
         openDialog: false,
         title: '',
         contentFilePath: 'pages/order/addOrder.vue',
+        contentData: null,
         confirmMethod: null,
         otherMethod: null,
       },
@@ -251,7 +260,7 @@ export default {
       return res ? res.value : '';
     },
     formatOrderStatus(type) {
-      const res = constList.cashTypeList.filter(item => item.id === type)[0];
+      const res = constList.orderStatusList.filter(item => item.id === type)[0];
       return res ? res.value : '';
     },
     getParamsOrigin() {
@@ -338,6 +347,19 @@ export default {
         contentFilePath: 'pages/order/addOrder.vue',
         otherMethod: this.getOrder,
       };
+    },
+    methodupdateStatus(rowData) {
+      this.confirmDialogInfo.contentFilePath = '';
+      setTimeout(() => {
+        this.confirmDialogInfo = {
+          ...this.confirmDialogInfo,
+          openDialog: true,
+          title: '更新狀態',
+          contentFilePath: 'pages/order/updateStatus.vue',
+          otherMethod: this.getOrder,
+          contentData: rowData,
+        };
+      });
     },
   },
 };
