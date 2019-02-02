@@ -1,21 +1,21 @@
 // import { pickBy } from 'lodash';
+import { omitDateKey, formatDateKey } from '../utils/formatQuery';
 
 const { Order } = require('../../db').Models;
 const { outputSuccess, outputError } = require('../utils/outputFormat');
 
 const getOrder = (req, res) => {
   const { query } = req;
-  const queryKey = [
-    'orderId, name, checkInStartTime', 'checkInEndTime',
-    'checkOutStartTime', 'checkOutEndTime', 'roomType',
-    'status', 'currentPage', 'pageSize',
-  ];
+  const dateCheck = ['checkOut', 'checkIn', 'create'];
+  const localQuery = omitDateKey(dateCheck, query);
+  const dateQuery = formatDateKey(dateCheck, query);
   // const checkQueryKey = (v, k) => queryKey.includes(k) && v !== undefined;
   // const localQuery = pickBy(
   //   query, checkQueryKey,
   // );
-  console.log('checkQuery', query, req.query);
-  Order.find(query, (err, docs) => {
+
+  console.log('check', localQuery, dateQuery);
+  Order.find({ ...localQuery, ...dateQuery }, (err, docs) => {
     res.send(outputSuccess(docs));
   });
 
