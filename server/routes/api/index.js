@@ -39,6 +39,7 @@ import {
 import {
   getCashList,
   addCash,
+  updateCash,
 } from './cash';
 
 const router = express.Router();
@@ -342,6 +343,25 @@ router.post(
   middlewareCheckLoginStatusSession,
   middlewareCheckAuthorization,
   addCash,
+);
+
+/**
+ * @api {post} /cash/update 修改收支明細接口
+ * @apiPermission login admin
+ * @apiName cashUpdate
+ * @apiGroup Cash
+ *
+ * @apiParam {String} certificateNumber 憑證號
+ * @apiParam {String} content 摘要
+ * @apiParam {Number} income 收入
+ * @apiParam {Number} outcome 支出
+ * @apiParam {Number} type 帳單類型
+ */
+router.post(
+  '/cash/update',
+  middlewareCheckLoginStatusSession,
+  middlewareCheckAuthorization,
+  updateCash,
 );
 
 module.exports = router;
