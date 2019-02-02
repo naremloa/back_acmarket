@@ -1,12 +1,18 @@
 import { outputSuccess, outputError } from '../utils/outputFormat';
+import { omitDateKey, formatDateKey } from '../utils/formatQuery';
 import {
   roomFind,
   roomInsert,
 } from '../models/room';
 
 const getMaintenance = async (req, res) => {
-  const result = await roomFind({});
-  return res.send(outputSuccess(result));
+  const { query } = req;
+  const dateCheck = ['create', 'modify'];
+  const localQuery = omitDateKey(dateCheck, query);
+  const dateQuery = formatDateKey(dateCheck, query);
+
+  const maintenance = await roomFind({ ...localQuery, ...dateQuery });
+  return res.send(outputSuccess(maintenance));
 };
 
 const addMaintenance = async (req, res) => {
@@ -40,7 +46,7 @@ const addMaintenance = async (req, res) => {
   };
   const result = await roomInsert(roomObj);
   if (result) return res.send(outputSuccess(true));
-  res.send(outputError('未知錯誤'));
+  return res.send(outputError('未知錯誤'));
 };
 
 // const updateMaintenance = async (req, res) => {
