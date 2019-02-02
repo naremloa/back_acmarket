@@ -1,85 +1,85 @@
 <template>
   <div class="user-list">
     <v-form v-model="valid" class="mb-2">
-        <v-layout row wrap>
-          <v-flex sm12 md4 lg3 px-1 >
-            <v-text-field
-              v-model="searchParams.accountShow"
-              label="帳號"
-              clearable
-            ></v-text-field>
-          </v-flex>
-          <v-flex sm12 md4 lg3 px-1 >
-            <v-text-field
-              v-model="searchParams.accountAliasShow"
-              label="帳號名稱"
-              clearable
-            ></v-text-field>
-          </v-flex>
-          <v-flex sm12 md4 lg3 px-1 >
-            <v-text-field
-              v-model="searchParams.modifyUserShow"
-              label="修改人"
-              clearable
-            ></v-text-field>
-          </v-flex>
-        </v-layout>
-        <v-layout row wrap>
-          <v-flex
-            sm12
-            md3
-            lg3
-            px-1
-            v-for="(item, idx) in searchTimeParams"
-            :key="`searchTimeParams${idx}`"
+      <v-layout row wrap>
+        <v-flex sm12 md4 lg3 px-1 >
+          <v-text-field
+            v-model="searchParams.accountShow"
+            label="帳號"
+            clearable
+          ></v-text-field>
+        </v-flex>
+        <v-flex sm12 md4 lg3 px-1 >
+          <v-text-field
+            v-model="searchParams.accountAliasShow"
+            label="帳號名稱"
+            clearable
+          ></v-text-field>
+        </v-flex>
+        <v-flex sm12 md4 lg3 px-1 >
+          <v-text-field
+            v-model="searchParams.modifyUserShow"
+            label="修改人"
+            clearable
+          ></v-text-field>
+        </v-flex>
+      </v-layout>
+      <v-layout row wrap>
+        <v-flex
+          sm12
+          md3
+          lg3
+          px-1
+          v-for="(item, idx) in searchTimeParams"
+          :key="`searchTimeParams${idx}`"
+        >
+          <v-menu
+            :ref="`menu${idx}`"
+            :close-on-content-click="false"
+            v-model="selectMenu[idx]"
+            :nudge-right="40"
+            :value="searchParams[item.key]"
+            lazy
+            transition="scale-transition"
+            offset-y
+            full-width
           >
-            <v-menu
-              :ref="`menu${idx}`"
-              :close-on-content-click="false"
-              v-model="selectMenu[idx]"
-              :nudge-right="40"
-              :value="searchParams[item.key]"
-              lazy
-              transition="scale-transition"
-              offset-y
-              full-width
+            <v-text-field
+              slot="activator"
+              v-model="searchParams[item.key]"
+              :label="item.label"
+              clearable
+              prepend-icon="mdi-calendar"
+              readonly
+            ></v-text-field>
+            <v-date-picker
+              v-model="searchParams[item.key]"
+              scrollable
+              no-title
+              locale="zh-Hant"
+              show-current
             >
-              <v-text-field
-                slot="activator"
-                v-model="searchParams[item.key]"
-                :label="item.label"
-                clearable
-                prepend-icon="mdi-calendar"
-                readonly
-              ></v-text-field>
-              <v-date-picker
-                v-model="searchParams[item.key]"
-                scrollable
-                no-title
-                locale="zh-Hant"
-                show-current
-              >
-                <v-spacer></v-spacer>
-                <v-btn
-                  flat
-                  color="primary"
-                  @click="$set(selectMenu,idx,false)"
-                >Cancel</v-btn>
-                <v-btn
-                  flat
-                  color="primary"
-                  @click="$refs[`menu${idx}`][0].save(searchParams[item.key])"
-                >OK</v-btn>
-              </v-date-picker>
-            </v-menu>
-          </v-flex>
-          <v-flex text-xs-right>
-            <v-btn flat @click="methodFormReset">重置</v-btn>
-            <v-btn color="primary" @click="methodProcessParams">
-              <v-icon>mdi-magnify</v-icon>搜尋
-            </v-btn>
-          </v-flex>
-        </v-layout>
+              <v-spacer></v-spacer>
+              <v-btn
+                flat
+                color="primary"
+                @click="$set(selectMenu,idx,false)"
+              >Cancel</v-btn>
+              <v-btn
+                flat
+                color="primary"
+                @click="$refs[`menu${idx}`][0].save(searchParams[item.key])"
+              >OK</v-btn>
+            </v-date-picker>
+          </v-menu>
+        </v-flex>
+        <v-flex text-xs-right>
+          <v-btn flat @click="methodFormReset">重置</v-btn>
+          <v-btn color="primary" @click="methodProcessParams">
+            <v-icon>mdi-magnify</v-icon>搜尋
+          </v-btn>
+        </v-flex>
+      </v-layout>
     </v-form>
     <v-card>
       <v-card-title>
@@ -88,7 +88,7 @@
         <v-text-field
           v-model="search"
           append-icon="mdi-magnify"
-          label="Search"
+          label="搜尋結果篩選"
           single-line
           hide-details
         ></v-text-field>
@@ -194,14 +194,6 @@ export default {
         { label: '最後登入開始時間', key: 'lastLoginTimeStartShow' },
         { label: '最後登入結束時間', key: 'lastLoginTimeEndShow' },
       ],
-      // nameRules: [
-      //   v => !!v || 'Name is required',
-      //   v => v.length <= 10 || 'Name must be less than 10 characters',
-      // ],
-      // emailRules: [
-      //   v => !!v || 'E-mail is required',
-      //   v => /.+@.+/.test(v) || 'E-mail must be valid',
-      // ],
       selectMenu: [false, false, false, false, false, false],
     };
   },

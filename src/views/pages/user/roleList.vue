@@ -12,7 +12,7 @@
         <v-text-field
           v-model="search"
           append-icon="mdi-magnify"
-          label="Search"
+          label="搜尋結果篩選"
           single-line
           hide-details
         ></v-text-field>
