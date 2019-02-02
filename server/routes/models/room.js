@@ -3,6 +3,7 @@ import { Models } from '../../db';
 const { Room } = Models;
 
 const roomFind = async (query) => {
+  console.log(query);
   const res = await Room.find(query);
   return res;
 };
