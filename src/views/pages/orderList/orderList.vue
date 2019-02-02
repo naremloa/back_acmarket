@@ -166,6 +166,7 @@
       :title="confirmDialogInfo.title"
       :contentFilePath="confirmDialogInfo.contentFilePath"
       :confirmMethod="confirmDialogInfo.confirmMethod"
+      :otherMethod="confirmDialogInfo.otherMethod"
       width="1000"
     />
   </div>
@@ -235,6 +236,7 @@ export default {
         title: '',
         contentFilePath: '',
         confirmMethod: null,
+        otherMethod: null,
       },
     };
   },
@@ -335,6 +337,7 @@ export default {
         openDialog: true,
         title: '新增訂單',
         contentFilePath: 'pages/orderList/addOrder.vue',
+        otherMethod: this.getOrder,
       };
     },
   },
