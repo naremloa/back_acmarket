@@ -1,5 +1,86 @@
 <template>
   <div class="user-list">
+    <v-form v-model="valid" class="mb-2">
+        <v-layout row wrap>
+          <v-flex sm12 md4 lg3 px-1 >
+            <v-text-field
+              v-model="searchParams.accountShow"
+              label="帳號"
+              clearable
+            ></v-text-field>
+          </v-flex>
+          <v-flex sm12 md4 lg3 px-1 >
+            <v-text-field
+              v-model="searchParams.accountAliasShow"
+              label="帳號名稱"
+              clearable
+            ></v-text-field>
+          </v-flex>
+          <v-flex sm12 md4 lg3 px-1 >
+            <v-text-field
+              v-model="searchParams.modifyUserShow"
+              label="修改人"
+              clearable
+            ></v-text-field>
+          </v-flex>
+        </v-layout>
+        <v-layout row wrap>
+          <v-flex
+            sm12
+            md3
+            lg3
+            px-1
+            v-for="(item, idx) in searchTimeParams"
+            :key="`searchTimeParams${idx}`"
+          >
+            <v-menu
+              :ref="`menu${idx}`"
+              :close-on-content-click="false"
+              v-model="selectMenu[idx]"
+              :nudge-right="40"
+              :value="searchParams[item.key]"
+              lazy
+              transition="scale-transition"
+              offset-y
+              full-width
+            >
+              <v-text-field
+                slot="activator"
+                v-model="searchParams[item.key]"
+                :label="item.label"
+                clearable
+                prepend-icon="mdi-calendar"
+                readonly
+              ></v-text-field>
+              <v-date-picker
+                v-model="searchParams[item.key]"
+                scrollable
+                no-title
+                locale="zh-Hant"
+                show-current
+              >
+                <v-spacer></v-spacer>
+                <v-btn
+                  flat
+                  color="primary"
+                  @click="$set(selectMenu,idx,false)"
+                >Cancel</v-btn>
+                <v-btn
+                  flat
+                  color="primary"
+                  @click="$refs[`menu${idx}`][0].save(searchParams[item.key])"
+                >OK</v-btn>
+              </v-date-picker>
+            </v-menu>
+          </v-flex>
+          <v-flex text-xs-right>
+            <v-btn flat @click="methodFormReset">重置</v-btn>
+            <v-btn color="primary" @click="methodProcessParams">
+              <v-icon>mdi-magnify</v-icon>搜尋
+            </v-btn>
+          </v-flex>
+        </v-layout>
+    </v-form>
     <v-card>
       <v-card-title>
         使用者列表
@@ -72,6 +153,7 @@ import { dateTime } from '@/utils/calculation';
 import confirmDialog from '@/views/layout/components/confirmDialog.vue';
 
 export default {
+  name: 'userList',
   components: {
     confirmDialog,
   },
@@ -102,6 +184,25 @@ export default {
         content: '',
         confirmMethod: null,
       },
+      valid: false,
+      searchParams: this.getParamsOrigin(),
+      searchTimeParams: [
+        { label: '註冊開始時間', key: 'registerTimeStartShow' },
+        { label: '註冊結束時間', key: 'registerTimeEndShow' },
+        { label: '修改開始時間', key: 'modifyTimeStartShow' },
+        { label: '修改結束時間', key: 'modifyTimeEndShow' },
+        { label: '最後登入開始時間', key: 'lastLoginTimeStartShow' },
+        { label: '最後登入結束時間', key: 'lastLoginTimeEndShow' },
+      ],
+      // nameRules: [
+      //   v => !!v || 'Name is required',
+      //   v => v.length <= 10 || 'Name must be less than 10 characters',
+      // ],
+      // emailRules: [
+      //   v => !!v || 'E-mail is required',
+      //   v => /.+@.+/.test(v) || 'E-mail must be valid',
+      // ],
+      selectMenu: [false, false, false, false, false, false],
     };
   },
   mounted() {
@@ -129,10 +230,24 @@ export default {
       }
       return { val: null, statusText: '錯誤！無此狀態', class: 'purple--text' };
     },
-    async getUserList() {
+    getParamsOrigin() {
+      return {
+        accountShow: null,
+        accountAliasShow: null,
+        modifyUserShow: null,
+        registerTimeStartShow: null,
+        registerTimeEndShow: null,
+        modifyTimeStartShow: null,
+        modifyTimeEndShow: null,
+        lastLoginTimeStartShow: null,
+        lastLoginTimeEndShow: null,
+      };
+    },
+    async getUserList(params) {
       const res = await httpMethod({
         url: '/v1/api/user/list',
         method: 'GET',
+        params,
       });
       if (!res.code) {
         this.userList = res.data;
@@ -182,6 +297,34 @@ export default {
         content: `您確定要審核${account}為 ${pass ? '通過' : '不通過'}`,
         confirmMethod: () => this.postUserList(params),
       };
+    },
+    methodFormReset() {
+      this.searchParams = this.getParamsOrigin();
+    },
+    methodProcessParams() {
+      console.log('TCL: methodProcessParams -> methodProcessParams');
+      const {
+        accountShow,
+        accountAliasShow,
+        modifyUserShow,
+        registerTimeStartShow,
+        registerTimeEndShow,
+        modifyTimeStartShow,
+        modifyTimeEndShow,
+        lastLoginTimeStartShow,
+        lastLoginTimeEndShow,
+      } = this.searchParams;
+      const params = {};
+      if (accountShow) params.account = accountShow;
+      if (accountAliasShow) params.accountAlias = accountAliasShow;
+      if (modifyUserShow) params.modifyUser = modifyUserShow;
+      if (registerTimeStartShow) params.registerTime = new Date(registerTimeStartShow).valueOf();
+      if (registerTimeEndShow) params.registerTime = new Date(registerTimeEndShow).valueOf();
+      if (modifyTimeStartShow) params.modifyTime = new Date(modifyTimeStartShow).valueOf();
+      if (modifyTimeEndShow) params.modifyTime = new Date(modifyTimeEndShow).valueOf();
+      if (lastLoginTimeStartShow) params.lastLoginTime = new Date(lastLoginTimeStartShow).valueOf();
+      if (lastLoginTimeEndShow) params.lastLoginTime = new Date(lastLoginTimeEndShow).valueOf();
+      this.getUserList(params);
     },
   },
 };

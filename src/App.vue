@@ -43,7 +43,7 @@ export default {
   },
   methods: {
     onResize() {
-      console.log('​onResize -> this.$vuetify.breakpoint', this.$vuetify.breakpoint);
+      // console.log('​onResize -> this.$vuetify.breakpoint', this.$vuetify.breakpoint);
     },
   },
   beforeDestroy() {
