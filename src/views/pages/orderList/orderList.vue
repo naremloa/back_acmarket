@@ -69,6 +69,7 @@
               no-title
               locale="zh-Hant"
               show-current
+              class="d-flex"
             >
               <v-spacer></v-spacer>
               <v-btn
