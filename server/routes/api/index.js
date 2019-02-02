@@ -49,7 +49,7 @@ const router = express.Router();
  *      "code": "0",
  *      "msg": "Success",
  *      "data": {
- *        "code": "<svg xmlns="http://www.w3.org/2000/svg" width="150" height="50" viewBox="0,0,150,50"><path d="M14 34 C70 10,91 44,147 16" stroke="#777" fill="none"/><path ... /></svg>"
+ *        "code": "<svg ...><path .../></svg>"
  *      }
  *  }
  */

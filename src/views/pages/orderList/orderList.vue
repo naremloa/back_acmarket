@@ -94,9 +94,13 @@ export default {
     dateTime,
     currencies,
     async getOrder() {
+      const query = {
+        name: 'Karen Trevino',
+      };
       const res = await httpMethod({
         url: '/v1/api/order/list',
         method: 'GET',
+        params: query,
       });
       console.log(res);
       this.orderList = res.data;

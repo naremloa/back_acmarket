@@ -1,22 +1,21 @@
+// import { pickBy } from 'lodash';
+
 const { Order } = require('../../db').Models;
 const { outputSuccess, outputError } = require('../utils/outputFormat');
 
 const getOrder = (req, res) => {
-  // const { body } = req;
-  // const {
-  //   orderId,
-  //   name,
-  //   checkInStartTime,
-  //   checkInEndTime,
-  //   checkOutStartTime,
-  //   checkOutEndTime,
-  //   roomType,
-  //   status,
-  //   currentPage,
-  //   pageSize,
-
-  // } = body;
-  Order.find({}, (err, docs) => {
+  const { query } = req;
+  const queryKey = [
+    'orderId, name, checkInStartTime', 'checkInEndTime',
+    'checkOutStartTime', 'checkOutEndTime', 'roomType',
+    'status', 'currentPage', 'pageSize',
+  ];
+  // const checkQueryKey = (v, k) => queryKey.includes(k) && v !== undefined;
+  // const localQuery = pickBy(
+  //   query, checkQueryKey,
+  // );
+  console.log('checkQuery', query, req.query);
+  Order.find(query, (err, docs) => {
     res.send(outputSuccess(docs));
   });
 
