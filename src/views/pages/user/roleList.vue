@@ -82,7 +82,7 @@ export default {
       confirmDialogInfo: {
         openDialog: false,
         title: '',
-        contentFilePath: '',
+        contentFilePath: 'pages/user/newRole.vue',
         confirmMethod: null,
       },
     };
