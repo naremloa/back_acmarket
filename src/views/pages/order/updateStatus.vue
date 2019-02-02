@@ -57,19 +57,21 @@ export default {
   },
   watch: {
     contentData(val) {
+      console.log('TCL: contentData -> val', val);
       const { status } = val;
       this.status = status;
     },
   },
   mounted() {
-    console.log('TCL: contentData', this.contentData);
+    // console.log('TCL: contentData', this.contentData);
+    this.status = this.contentData.status;
   },
   methods: {
     async updateStatus(newStatus) {
       console.log('TCL: updateStatus -> newStatus', newStatus);
-      const { orderId } = this.contentData;
+      const { _id } = this.contentData;
       const params = {
-        cid: orderId,
+        cid: _id,
         status: newStatus,
       };
       const res = await httpMethod({

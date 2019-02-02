@@ -74,6 +74,7 @@ export default {
       this.localConfirmMethod = val;
     },
     contentData(val) {
+			console.log('TCL: contentData -> val', val);
       this.localContentData = val;
     },
     otherMethod(val) {
