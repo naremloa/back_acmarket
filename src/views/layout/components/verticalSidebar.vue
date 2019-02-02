@@ -15,8 +15,8 @@
         <v-list-group
           v-model="item.active"
           :key="item.dataKey"
-          :prepend-icon="localListInfo[item.dataKey] && localListInfo[item.dataKey].icon" >
           no-action
+          :prepend-icon="localListInfo[item.dataKey] && localListInfo[item.dataKey].icon" >
           <v-list-tile slot="activator">
             <v-list-tile-content>
               <v-list-tile-title>{{ item.name }}</v-list-tile-title>
@@ -153,6 +153,9 @@ export default {
         },
         userList: {
           url: '/userList',
+        },
+        roleList: {
+          url: '/roleList',
         },
         orderList: {
           url: '/orderList',
