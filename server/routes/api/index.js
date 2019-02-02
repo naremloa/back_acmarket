@@ -15,6 +15,7 @@ import {
   getOrder,
   addOrder,
   updateOrder,
+  updateOrderStatus,
 } from './order';
 import {
   getRouter,
@@ -138,7 +139,7 @@ router.post(
 );
 
 /**
- * @api {post} /order/update 新增訂單接口
+ * @api {post} /order/update 更新訂單接口
  * @apiPermission login admin
  * @apiName orderUpdate
  * @apiGroup Order
@@ -159,6 +160,22 @@ router.post(
   middlewareCheckLoginStatusSession,
   middlewareCheckAuthorization,
   updateOrder,
+);
+
+/**
+ * @api {post} /order/update/statis 更新訂單狀態接口
+ * @apiPermission login admin
+ * @apiName orderUpdateStatus
+ * @apiGroup Order
+ *
+ * @apiParam {String} cid 訂單id
+ * @apiParam {Number} status 訂單狀態
+ */
+router.post(
+  '/order/update/status',
+  middlewareCheckLoginStatusSession,
+  middlewareCheckAuthorization,
+  updateOrderStatus,
 );
 
 // 獲取有權(登入用戶)路由接口
