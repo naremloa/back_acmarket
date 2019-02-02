@@ -41,6 +41,6 @@ mongoimport -d phelomi -c <collection> <file> --jsonArray
 mongoimport --db phelomi --collection orders server/db/initJson/order.json --jsonArray
 mongoimport --db phelomi --collection rooms server/db/initJson/room.json --jsonArray
 mongoimport --db phelomi --collection routers server/db/initJson/router.json --jsonArray
-mongoimport --db phelomi --collection cashs server/db/initJson/cash.json --jsonArray
+mongoimport --db phelomi --collection cashes server/db/initJson/cash.json --jsonArray
 
 mongoimport --db phelomi --collection users server/db/initJson/user.json --jsonArray

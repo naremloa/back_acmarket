@@ -36,6 +36,9 @@ import {
   addMaintenance,
   updateMaintenance,
 } from './room';
+import {
+  getCashList,
+} from './cash';
 
 const router = express.Router();
 
@@ -312,6 +315,13 @@ router.post(
   middlewareCheckLoginStatusSession,
   middlewareCheckAuthorization,
   updateMaintenance,
+);
+
+router.get(
+  '/cash/list',
+  middlewareCheckLoginStatusSession,
+  middlewareCheckAuthorization,
+  getCashList,
 );
 
 module.exports = router;
