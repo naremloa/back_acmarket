@@ -155,15 +155,29 @@
         </template>
       </v-data-table>
     </v-card>
+    <dialogComponent
+      :openDialog="confirmDialogInfo.openDialog"
+      @valueChange="methodChangeOpenDialog"
+      :title="confirmDialogInfo.title"
+      :contentFilePath="confirmDialogInfo.contentFilePath"
+      :contentData="confirmDialogInfo.contentData"
+      :confirmMethod="confirmDialogInfo.confirmMethod"
+      :otherMethod="confirmDialogInfo.otherMethod"
+      :width="confirmDialogInfo.width"
+    />
   </div>
 </template>
 <script>
 import httpMethod from '@/utils/httpMethod';
 import constList from '@/utils/const';
+import dialogComponent from '@/views/layout/components/dialog.vue';
 import { dateTime, currencies } from '@/utils/calculation';
 
 export default {
   name: 'cashList',
+  components: {
+    dialogComponent,
+  },
   data() {
     return {
       constList,
@@ -205,7 +219,7 @@ export default {
       confirmDialogInfo: {
         openDialog: false,
         title: '',
-        contentFilePath: 'pages/order/addOrder.vue',
+        contentFilePath: 'pages/cash/addCash.vue',
         confirmMethod: null,
         otherMethod: null,
       },
@@ -218,7 +232,7 @@ export default {
     dateTime,
     currencies,
     formatCashType(type) {
-      const res = constList.roomTypeList.filter(item => item.id === type)[0];
+      const res = constList.cashTypeList.filter(item => item.id === type)[0];
       return res ? res.value : '';
     },
     getParamsOrigin() {
@@ -277,8 +291,18 @@ export default {
       if (modifyTimeEndShow) params.modifyTimeEnd = new Date(modifyTimeEndShow).valueOf();
       this.getRoomRepairList(params);
     },
+    methodChangeOpenDialog(val) {
+      this.confirmDialogInfo.openDialog = val;
+    },
     methodAddCash() {
-
+      this.confirmDialogInfo = {
+        ...this.confirmDialogInfo,
+        openDialog: true,
+        title: '新增收支項目',
+        contentFilePath: 'pages/cash/addCash.vue',
+        otherMethod: this.getRoomRepairList,
+        width: 1000,
+      };
     },
   },
 };

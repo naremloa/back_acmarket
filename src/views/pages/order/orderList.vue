@@ -350,18 +350,15 @@ export default {
       };
     },
     methodupdateStatus(rowData) {
-      this.confirmDialogInfo.contentFilePath = '';
-      setTimeout(() => {
-        this.confirmDialogInfo = {
-          ...this.confirmDialogInfo,
-          openDialog: true,
-          title: '更新狀態',
-          contentFilePath: 'pages/order/updateStatus.vue',
-          otherMethod: this.getOrder,
-          contentData: rowData,
-          width: 800,
-        };
-      });
+      this.confirmDialogInfo = {
+        ...this.confirmDialogInfo,
+        openDialog: true,
+        title: '更新狀態',
+        contentFilePath: 'pages/order/updateStatus.vue',
+        otherMethod: this.getOrder,
+        contentData: rowData,
+        width: 800,
+      };
     },
   },
 };
