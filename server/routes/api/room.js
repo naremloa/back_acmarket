@@ -91,7 +91,7 @@ const updateMaintenance = async (req, res) => {
     modifyAccount: account,
   };
   await maintenanceFindByIdAndUpdate(cid, updateObj);
-  return res.send(outputSuccess({}, '老婆兒老婆兒，啊啊啊啊，幸苦咧'));
+  return res.send(outputSuccess({}, '更新成功'));
 };
 
 export {

@@ -86,7 +86,7 @@ const addOrder = async (req, res) => {
   });
   await orderInsert(newOrder);
   // TODO:
-  return res.send(outputSuccess({}, '老婆兒大人我愛你，不要氣噗噗了嘛好不好'));
+  return res.send(outputSuccess({}, '新增訂單'));
 };
 
 const updateOrder = async (req, res) => {
@@ -123,7 +123,7 @@ const updateOrder = async (req, res) => {
     lastestModifyTime: nowTime,
   };
   await orderFindByIdAndUpdate(cid, updateObj);
-  return res.send(outputSuccess({}, '老婆兒老婆兒，啊啊啊啊，幸苦咧'));
+  return res.send(outputSuccess({}, '更新成功'));
 };
 
 /**
@@ -164,7 +164,7 @@ const updateOrderStatus = async (req, res) => {
     lastestModifyTime: nowTime,
   };
   await orderFindByIdAndUpdate(cid, updateObj);
-  return res.send(outputSuccess({}, '老婆兒啊， 明天我們休息一天去玩'));
+  return res.send(outputSuccess({}, '更新成功'));
 };
 
 export {
