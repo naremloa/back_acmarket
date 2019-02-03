@@ -175,7 +175,7 @@
       :contentData="confirmDialogInfo.contentData"
       :confirmMethod="confirmDialogInfo.confirmMethod"
       :otherMethod="confirmDialogInfo.otherMethod"
-      width="1000"
+      :width="confirmDialogInfo.width"
     />
   </div>
 </template>
@@ -346,6 +346,7 @@ export default {
         title: '新增訂單',
         contentFilePath: 'pages/order/addOrder.vue',
         otherMethod: this.getOrder,
+        width: 1000,
       };
     },
     methodupdateStatus(rowData) {
@@ -358,6 +359,7 @@ export default {
           contentFilePath: 'pages/order/updateStatus.vue',
           otherMethod: this.getOrder,
           contentData: rowData,
+          width: 800,
         };
       });
     },

@@ -21,10 +21,10 @@
               <v-btn v-if="status < 3" color="error" flat  @click="updateStatus(5)">取消訂單</v-btn>
             </v-flex>
             <v-flex sm12 md8 class="text-sm-right">
-              <v-btn
+              <!-- <v-btn
                 v-if="status > 1"
                 @click="updateStatus(status - 1)"
-              >回復狀態</v-btn>
+              >回復狀態</v-btn> -->
               <v-btn
                 v-if="status < 4"
                 color="primary"
@@ -55,19 +55,15 @@ export default {
       status: 1,
     };
   },
-  watch: {
-    contentData: {
-      handler(val) {
-        console.log('TCL: val', val);
-        const { status } = val;
-        this.status = status;
-      },
-      deep: true,
-    },
-  },
+  // watch: {
+  //   contentData(val) {
+  //     console.log('TCL: contentData -> val', val);
+  //     const { status } = val;
+  //     this.status = status;
+  //   },
+  // },
   mounted() {
-    // console.log('TCL: contentData', this.contentData);
-    // this.status = this.contentData.status;
+    this.status = this.contentData.status;
   },
   methods: {
     async updateStatus(newStatus) {
