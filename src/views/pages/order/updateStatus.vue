@@ -56,15 +56,18 @@ export default {
     };
   },
   watch: {
-    contentData(val) {
-      console.log('TCL: contentData -> val', val);
-      const { status } = val;
-      this.status = status;
+    contentData: {
+      handler(val) {
+        console.log('TCL: val', val);
+        const { status } = val;
+        this.status = status;
+      },
+      deep: true,
     },
   },
   mounted() {
-    console.log('TCL: contentData', this.contentData);
-    this.status = this.contentData.status;
+    // console.log('TCL: contentData', this.contentData);
+    // this.status = this.contentData.status;
   },
   methods: {
     async updateStatus(newStatus) {
