@@ -65,7 +65,7 @@
       position: '{{random("盥洗室", "房間", "陽台", "走廊", "花圃", "大廳", "茶水間", "儲物間")}}',
       content: '{{random("水龍頭壞掉", "木板凹陷", "鐵桿生鏽", "網路有問題", "磁磚破裂", "木板突出", "磁磚掉落")}}',
       internalCost: '{{integer(100000, 500000)}}',
-      outsourcedCost: '{{integer(100000, 500000)}}',
+      outsourceCost: '{{integer(100000, 500000)}}',
       note: '{{random("已委外維修", "待處理", "已修復", "同仁修復中")}}',
       createTime: '{{moment(this.date(new Date(2014, 0, 1), new Date())).startOf("day").valueOf()}}',
       createAccount: '{{surname().toLowerCase()}}',

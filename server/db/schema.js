@@ -128,7 +128,7 @@ export const role = {
  * @param {String}  position 維修位置
  * @param {String}  content 維修內容
  * @param {Number}  internalCost 自修配件費 (單位: 分)
- * @param {Number}  outsourcedCost  委外維修費 (單位: 分)
+ * @param {Number}  outsourceCost  委外維修費 (單位: 分)
  * @param {String}  note 備註
  * @param {Number}  createTime 創建時間
  * @param {String}  createAccount 創建帳號
@@ -140,7 +140,7 @@ export const room = {
   position: String,
   content: String,
   internalCost: Number,
-  outsourcedCost: Number,
+  outsourceCost: Number,
   note: String,
   createTime: Number,
   createAccount: String,

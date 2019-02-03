@@ -25,7 +25,7 @@ const constList = {
   orderStatusList: [
     { id: 1, value: '已下訂' },
     { id: 2, value: '已付款' },
-    { id: 3, value: '以入住' },
+    { id: 3, value: '已入住' },
     { id: 4, value: '已退房' },
     { id: 5, value: '已取消' },
   ],

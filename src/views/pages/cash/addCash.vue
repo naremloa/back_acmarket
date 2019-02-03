@@ -209,7 +209,6 @@ export default {
       this.addOrder(params);
     },
     async addOrder(params) {
-      console.log('TCL: addOrder -> this.$refs.form.validate()', this.$refs.form.validate());
       if (this.$refs.form.validate()) {
         const res = await httpMethod({
           url: '/v1/api/order/add',

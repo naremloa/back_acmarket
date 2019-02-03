@@ -82,8 +82,8 @@ export default {
   },
   computed: {
     componentLoader() {
-      console.log('TCL: componentLoader -> this.contentFilePath', this.contentFilePath);
-      return () => import(`@/views/${this.contentFilePath}`);
+      const path = this.contentFilePath;
+      return () => import(`@/views/${path}`);
     },
   },
   methods: {

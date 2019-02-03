@@ -6,7 +6,7 @@
         <v-divider></v-divider>
         <v-stepper-step :complete="status >= 2" :step="2">已付款</v-stepper-step>
         <v-divider></v-divider>
-        <v-stepper-step :complete="status >= 3" :step="3">以入住</v-stepper-step>
+        <v-stepper-step :complete="status >= 3" :step="3">已入住</v-stepper-step>
         <v-divider></v-divider>
         <v-stepper-step :complete="status >= 4" :step="4">已退房</v-stepper-step>
       </v-stepper-header>
@@ -56,15 +56,18 @@ export default {
     };
   },
   watch: {
-    contentData(val) {
-      console.log('TCL: contentData -> val', val);
-      const { status } = val;
-      this.status = status;
+    contentData: {
+      handler(val) {
+        console.log('TCL: val', val);
+        const { status } = val;
+        this.status = status;
+      },
+      deep: true,
     },
   },
   mounted() {
     // console.log('TCL: contentData', this.contentData);
-    this.status = this.contentData.status;
+    // this.status = this.contentData.status;
   },
   methods: {
     async updateStatus(newStatus) {
