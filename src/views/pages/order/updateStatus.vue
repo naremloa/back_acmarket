@@ -6,7 +6,7 @@
         <v-divider></v-divider>
         <v-stepper-step :complete="status >= 2" :step="2">已付款</v-stepper-step>
         <v-divider></v-divider>
-        <v-stepper-step :complete="status >= 3" :step="3">以入住</v-stepper-step>
+        <v-stepper-step :complete="status >= 3" :step="3">已入住</v-stepper-step>
         <v-divider></v-divider>
         <v-stepper-step :complete="status >= 4" :step="4">已退房</v-stepper-step>
       </v-stepper-header>
@@ -63,7 +63,7 @@ export default {
     },
   },
   mounted() {
-    // console.log('TCL: contentData', this.contentData);
+    console.log('TCL: contentData', this.contentData);
     this.status = this.contentData.status;
   },
   methods: {
