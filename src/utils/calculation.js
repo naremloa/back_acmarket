@@ -2,7 +2,7 @@ function invalidValue(v) {
   return v === null || v === undefined;
 }
 
-export function dateTime(v) {
+export function dateTime(v, getDate = false) {
   if (v) {
     const date = new Date(Number(v));
     const Y = date.getFullYear();
@@ -11,6 +11,7 @@ export function dateTime(v) {
     const h = date.getHours().toString().padStart(2, '0');
     const m = date.getMinutes().toString().padStart(2, '0');
     const s = date.getSeconds().toString().padStart(2, '0');
+    if (getDate) return `${Y}-${M}-${D}`;
     return `${Y}-${M}-${D} ${h}:${m}:${s}`;
   }
   return '--';

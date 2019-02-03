@@ -12,6 +12,7 @@
       <component
         :is="componentLoader"
         :contentData="localContentData"
+        :openDialog="localOpenDialog"
         @closeDialog="methodCloseDialog"
         @execOtherMethod="methodExecOtherMethod"
       />

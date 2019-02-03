@@ -147,10 +147,15 @@
             <v-btn
               v-else
               small
-              @click="methodupdateStatus(props.item)"
+              @click="methodUpdateStatus(props.item)"
             >{{ formatOrderStatus(props.item.status) }}</v-btn>
           </td>
           <td class="text-xs-center">{{ props.item.latestModifyAccount }}</td>
+          <td class="text-xs-center">
+            <v-btn small @click="methodUpdateOrder(props.item)">
+              <v-icon>mdi-square-edit-outline</v-icon>修改訂單
+            </v-btn>
+          </td>
           <td class="text-xs-center">{{ dateTime(props.item.latestModifyTime) }}</td>
           <td class="text-xs-center">{{ props.item.note }}</td>
         </template>
@@ -212,6 +217,7 @@ export default {
         { text: '應收總價', value: 'totalPrice', sortable: false },
         { text: '實收總價', value: 'totalValidPrice', sortable: false },
         { text: '訂單狀態', value: 'status', sortable: false },
+        { text: '操作', value: '', sortable: false },
         { text: '最近操作訂單帳號', value: 'latestModifyAccount', sortable: false },
         { text: '最近操作訂單時間', value: 'latestModifyTime', sortable: false },
         { text: '備註', value: 'note', sortable: false },
@@ -349,7 +355,7 @@ export default {
         width: 1000,
       };
     },
-    methodupdateStatus(rowData) {
+    methodUpdateStatus(rowData) {
       this.confirmDialogInfo = {
         ...this.confirmDialogInfo,
         openDialog: true,
@@ -358,6 +364,17 @@ export default {
         otherMethod: this.getOrder,
         contentData: rowData,
         width: 800,
+      };
+    },
+    methodUpdateOrder(rowData) {
+      this.confirmDialogInfo = {
+        ...this.confirmDialogInfo,
+        openDialog: true,
+        title: '更新訂單資訊',
+        contentFilePath: 'pages/order/updateOrder.vue',
+        otherMethod: this.getOrder,
+        contentData: rowData,
+        width: 1000,
       };
     },
   },

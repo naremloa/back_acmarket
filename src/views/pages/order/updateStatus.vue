@@ -30,6 +30,7 @@
                 color="primary"
                 @click="updateStatus(status + 1)"
               >更新狀態</v-btn>
+              <div v-else>已完成此項訂單</div>
             </v-flex>
           </v-layout>
         </v-stepper-content>
@@ -48,21 +49,23 @@ import constList from '@/utils/const';
 
 export default {
   name: 'updateStatus',
-  props: ['contentData'],
+  props: ['contentData', 'openDialog'],
   data() {
     return {
       constList,
       status: 1,
     };
   },
-  // watch: {
-  //   contentData(val) {
-  //     console.log('TCL: contentData -> val', val);
-  //     const { status } = val;
-  //     this.status = status;
-  //   },
-  // },
+  watch: {
+    openDialog(val) {
+      if (val) {
+        const { status } = this.contentData;
+        this.status = status;
+      }
+    },
+  },
   mounted() {
+    console.log('TCL: mounted -> this.status', this.status);
     this.status = this.contentData.status;
   },
   methods: {

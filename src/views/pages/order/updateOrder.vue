@@ -1,5 +1,5 @@
 <template>
-  <div class="add-order">
+  <div class="update-order">
     <v-form v-model="valid" ref="form" class="px-2" lazy-validation>
       <v-layout row wrap>
         <v-flex
@@ -117,10 +117,10 @@
         </v-layout>
         <v-layout>
         <v-flex text-xs-right>
-          <v-btn flat @click="methodCancelAddOrder">取消</v-btn>
+          <v-btn flat @click="methodCancelupdateOrder">取消</v-btn>
           <v-btn flat @click="methodFormReset">重置</v-btn>
           <v-btn color="primary" @click="methodProcessParams">
-            <v-icon>mdi-check</v-icon>新增訂單
+            <v-icon>mdi-check</v-icon>更新訂單資訊
           </v-btn>
         </v-flex>
       </v-layout>
@@ -130,10 +130,11 @@
 <script>
 import httpMethod from '@/utils/httpMethod';
 import constList from '@/utils/const';
+import { dateTime } from '@/utils/calculation';
 
 export default {
-  name: 'addOrder',
-  props: ['openDialog'],
+  name: 'updateOrder',
+  props: ['contentData', 'openDialog'],
   data() {
     return {
       constList,
@@ -162,12 +163,19 @@ export default {
       ],
     };
   },
-  openDialog(val) {
-    if (val) this.orderParam = this.getParamsOrigin();
+  watch: {
+    openDialog(val) {
+      if (val) this.formatProps(this.contentData);
+    },
+  },
+  mounted() {
+    this.formatProps(this.contentData);
   },
   methods: {
+    dateTime,
     getParamsOrigin() {
       return {
+        cid: null,
         roomType: null,
         nameShow: null,
         phoneShow: null,
@@ -180,13 +188,39 @@ export default {
         noteShow: null,
       };
     },
+    formatProps(rowData) {
+      const {
+        _id,
+        roomType,
+        name,
+        phone,
+        email,
+        nationality,
+        price,
+        totalPrice,
+        note,
+        checkInTime,
+        checkOutTime,
+      } = rowData;
+      this.orderParams.cid = _id;
+      this.orderParams.roomType = roomType;
+      this.orderParams.nameShow = name;
+      this.orderParams.phoneShow = phone;
+      this.orderParams.emailShow = email;
+      this.orderParams.nationalityShow = nationality;
+      this.orderParams.priceShow = price / 100;
+      this.orderParams.totalPriceShow = totalPrice / 100;
+      this.orderParams.noteShow = note;
+      this.orderParams.checkInTimeShow = dateTime(checkInTime, true);
+      this.orderParams.checkOutTimeShow = dateTime(checkOutTime, true);
+    },
     methodFormReset() {
       this.orderParams = this.getParamsOrigin();
       this.$refs.form.resetValidation();
     },
     methodProcessParams() {
-      console.log('TCL: methodProcessParams -> methodProcessParams');
       const {
+        cid,
         roomType,
         nameShow,
         phoneShow,
@@ -199,6 +233,7 @@ export default {
         noteShow,
       } = this.orderParams;
       const params = {};
+      if (cid) params.cid = cid;
       if (roomType) params.roomType = roomType;
       if (nameShow) params.name = nameShow;
       if (phoneShow) params.phone = phoneShow;
@@ -209,13 +244,12 @@ export default {
       if (noteShow) params.note = noteShow;
       if (checkInTimeShow) params.checkInTime = new Date(checkInTimeShow).valueOf();
       if (checkOutTimeShow) params.checkOutTime = new Date(checkOutTimeShow).valueOf();
-      this.addOrder(params);
+      this.updateOrder(params);
     },
-    async addOrder(params) {
-      console.log('TCL: addOrder -> this.$refs.form.validate()', this.$refs.form.validate());
+    async updateOrder(params) {
       if (this.$refs.form.validate()) {
         const res = await httpMethod({
-          url: '/v1/api/order/add',
+          url: '/v1/api/order/update',
           method: 'POST',
           data: params,
         });
@@ -240,7 +274,7 @@ export default {
         this.$emit('execOtherMethod');
       }
     },
-    methodCancelAddOrder() {
+    methodCancelupdateOrder() {
       this.methodFormReset();
       this.$emit('closeDialog');
     },

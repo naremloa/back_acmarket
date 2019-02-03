@@ -1,5 +1,7 @@
+import { getCookie } from '@/utils/cookie';
+
 export default {
-  userName: null,
+  userName: getCookie('userName') ? getCookie('userName') : '',
   notifySetting: {
     open: false,
     timeout: 6000,
