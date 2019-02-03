@@ -64,7 +64,7 @@ export const addCash = async (req, res) => {
   });
 
   await cashInsert(newMaintenance);
-  return res.send(outputSuccess({}, '老婆兒加油啊啊啊啊啊'));
+  return res.send(outputSuccess({}, '新增成功'));
 };
 
 export const updateCash = async (req, res) => {
@@ -91,5 +91,5 @@ export const updateCash = async (req, res) => {
     modifyAccount: account,
   };
   await cashFindByIdAndUpdate(cid, updateObj);
-  return res.send(outputSuccess({}, '老婆兒老婆兒，啊啊啊啊，幸苦咧'));
+  return res.send(outputSuccess({}, '更新成功'));
 };
