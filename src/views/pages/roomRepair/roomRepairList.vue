@@ -116,7 +116,7 @@
           <td class="text-xs-center">{{ props.item.position }}</td>
           <td class="text-xs-center">{{ props.item.content }}</td>
           <td class="text-xs-center">{{ currencies(props.item.internalCost) }}</td>
-          <td class="text-xs-center">{{ currencies(props.item.outsourcedCost) }}</td>
+          <td class="text-xs-center">{{ currencies(props.item.outsourceCost) }}</td>
           <td class="text-xs-center">{{ props.item.note }}</td>
           <td class="text-xs-center">{{ dateTime(props.item.createTime) }}</td>
           <td class="text-xs-center">{{ props.item.createAccount }}</td>
@@ -169,7 +169,7 @@ export default {
         { text: '維修位置', value: 'position', sortable: false },
         { text: '維修內容', value: 'content', sortable: false },
         { text: '自修配件費', value: 'internalCost', sortable: false },
-        { text: '委外維修費', value: 'outsourcedCost', sortable: false },
+        { text: '委外維修費', value: 'outsourceCost', sortable: false },
         { text: '備註', value: 'note', sortable: false },
         { text: '創建時間', value: 'createTime', sortable: false },
         { text: '創建帳號', value: 'createAccount', sortable: false },

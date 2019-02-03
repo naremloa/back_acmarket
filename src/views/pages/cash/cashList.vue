@@ -173,7 +173,7 @@ export default {
         rowsPerPage: 20,
       },
       headers: [
-        { text: '訂單號', value: 'id', sortable: false },
+        { text: '訂單號', value: 'cashId', sortable: false },
         { text: '憑證號', value: 'certificateNumber', sortable: false },
         { text: '摘要', value: 'content', sortable: false },
         { text: '收入金額', value: 'income', sortable: false },
@@ -189,7 +189,7 @@ export default {
       valid: false,
       searchParams: this.getParamsOrigin(),
       searchItemParams: [
-        { label: '訂單號', key: 'idShow' },
+        { label: '訂單號', key: 'cashIdShow' },
         { label: '憑證號', key: 'certificateNumberShow' },
         { label: '摘要', key: 'contentShow' },
         { label: '創建用戶', key: 'createAccountShow' },
@@ -224,7 +224,7 @@ export default {
     getParamsOrigin() {
       return {
         type: null,
-        idShow: null,
+        cashIdShow: null,
         certificateNumberShow: null,
         contentShow: null,
         createAccountShow: null,
@@ -254,7 +254,7 @@ export default {
     methodProcessParams() {
       const {
         type,
-        idShow,
+        cashIdShow,
         certificateNumberShow,
         contentShow,
         createAccountShow,
@@ -266,7 +266,7 @@ export default {
       } = this.searchParams;
       const params = {};
       if (type) params.type = type;
-      if (idShow) params.id = idShow;
+      if (cashIdShow) params.id = cashIdShow;
       if (certificateNumberShow) params.certificateNumber = certificateNumberShow;
       if (contentShow) params.content = contentShow;
       if (createAccountShow) params.createAccount = createAccountShow;

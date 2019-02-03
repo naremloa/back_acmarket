@@ -1,6 +1,6 @@
 <template>
   <div class="update-status">
-    <v-stepper v-model="status">
+    <v-stepper>
       <v-stepper-header>
         <v-stepper-step :complete="status >= 1" :step="1">已下訂</v-stepper-step>
         <v-divider></v-divider>
