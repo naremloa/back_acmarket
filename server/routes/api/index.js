@@ -275,7 +275,7 @@ router.post(
   middlewareCheckAuthorization,
   updateUserRole,
 );
-
+// TODO: user list沒給role要一個一個打API嗎？要顯示role嗎
 router.get(
   '/user/role/list',
   middlewareCheckLoginStatusSession,

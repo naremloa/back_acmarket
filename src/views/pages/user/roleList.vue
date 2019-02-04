@@ -1,7 +1,7 @@
 <template>
-  <div class="room-repair-list">
+  <div class="role-list">
     <v-layout row wrap justify-end>
-        <v-btn slot="activator" @click="methodNewRole">
+        <v-btn slot="activator" @click="methodAddRole">
           <v-icon>mdi-plus</v-icon>新增角色
         </v-btn>
     </v-layout>
@@ -19,7 +19,7 @@
       </v-card-title>
       <v-data-table
         :headers="headers"
-        :items="roomRepairList"
+        :items="roleList"
         :search="search"
         prev-icon="mdi-menu-left"
         next-icon="mdi-menu-right"
@@ -52,6 +52,7 @@
       :title="confirmDialogInfo.title"
       :contentFilePath="confirmDialogInfo.contentFilePath"
       :confirmMethod="confirmDialogInfo.confirmMethod"
+      :otherMethod="confirmDialogInfo.otherMethod"
     />
   </div>
 </template>
@@ -59,7 +60,6 @@
 import httpMethod from '@/utils/httpMethod';
 import { dateTime, currencies } from '@/utils/calculation';
 import dialogComponent from '@/views/layout/components/dialog.vue';
-// import newRole from '@/views/pages/user/newRole.vue';
 
 export default {
   name: 'roleList',
@@ -78,42 +78,43 @@ export default {
         { text: '角色ID', value: 'id', sortable: false },
         { text: '角色名稱', value: 'value', sortable: false },
       ],
-      roomRepairList: [],
+      roleList: [],
       confirmDialogInfo: {
         openDialog: false,
         title: '',
-        contentFilePath: 'pages/user/newRole.vue',
+        contentFilePath: 'pages/user/addRole.vue',
         confirmMethod: null,
       },
     };
   },
   mounted() {
-    this.getRoomRepairList();
+    this.getRoleList();
   },
   methods: {
     dateTime,
     currencies,
-    async getRoomRepairList() {
+    async getRoleList() {
       const res = await httpMethod({
         url: '/v1/api/user/role/list',
         method: 'GET',
       });
       if (!res.code) {
-        this.roomRepairList = res.data;
-        console.log('​getroomRepairList -> res.data', res.data);
+        this.roleList = res.data;
+        console.log('​getRoleList -> res.data', res.data);
       } else {
-        this.roomRepairList = [];
+        this.roleList = [];
       }
     },
     methodChangeOpenDialog(val) {
       this.confirmDialogInfo.openDialog = val;
     },
-    methodNewRole() {
+    methodAddRole() {
       this.confirmDialogInfo = {
         ...this.confirmDialogInfo,
         openDialog: true,
         title: '新增角色',
-        contentFilePath: 'pages/user/newRole.vue',
+        contentFilePath: 'pages/user/addRole.vue',
+        otherMethod: this.getRoleList,
       };
     },
   },

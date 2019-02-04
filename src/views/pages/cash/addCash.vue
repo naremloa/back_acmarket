@@ -144,7 +144,7 @@ export default {
         }
         this.$store.commit('global/setNotifySetting', alert);
         // this.orderList = res.data;
-        this.$emit('closeDialog');
+        this.methodCancelAddCash()
         this.$emit('execOtherMethod');
       }
     },

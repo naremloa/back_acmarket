@@ -117,7 +117,7 @@
         </v-layout>
         <v-layout>
         <v-flex text-xs-right>
-          <v-btn flat @click="methodCancelupdateOrder">取消</v-btn>
+          <v-btn flat @click="methodCancelUpdateOrder">取消</v-btn>
           <v-btn flat @click="methodFormReset">重置</v-btn>
           <v-btn color="primary" @click="methodProcessParams">
             <v-icon>mdi-check</v-icon>更新訂單資訊
@@ -270,11 +270,11 @@ export default {
         }
         this.$store.commit('global/setNotifySetting', alert);
         // this.orderList = res.data;
-        this.$emit('closeDialog');
+        this.methodCancelUpdateOrder();
         this.$emit('execOtherMethod');
       }
     },
-    methodCancelupdateOrder() {
+    methodCancelUpdateOrder() {
       this.methodFormReset();
       this.$emit('closeDialog');
     },

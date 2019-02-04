@@ -1,12 +1,10 @@
 <template>
   <div class="cash-list">
-    <v-layout row wrap>
-      <v-flex sm12 md4 lg3 px-1>
-        <v-btn @click="methodAddCash">
-          <v-icon>mdi-plus</v-icon>
-          新增收支
-        </v-btn>
-      </v-flex>
+    <v-layout row wrap justify-end>
+      <v-btn @click="methodAddCash">
+        <v-icon>mdi-plus</v-icon>
+        新增收支
+      </v-btn>
     </v-layout>
     <v-expansion-panel class="mb-2">
       <v-expansion-panel-content class="accent">
