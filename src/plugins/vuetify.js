@@ -1,5 +1,4 @@
 import Vue from 'vue';
-// import Vuetify from 'vuetify/lib';
 import Vuetify, {
   VApp,
   VNavigationDrawer,
@@ -27,7 +26,7 @@ import Vuetify, {
   VExpansionPanel,
 } from 'vuetify/lib';
 import zhHant from 'vuetify/es5/locale/zh-Hant';
-// import 'vuetify/src/stylus/app.styl';
+import 'vuetify/src/stylus/app.styl';
 import { Scroll } from 'vuetify/lib/directives';
 
 
