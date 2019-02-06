@@ -19,11 +19,13 @@ const outputUserInfo = (userInfo) => {
     ({
       _id, account, accountAlias, status, modifyUser,
       registerTime, modifyTime, lastLoginTime,
+      role,
     }) => ({
       accountId: _id,
       account,
       accountAlias,
       status,
+      role,
       modifyUser,
       registerTime,
       modifyTime,

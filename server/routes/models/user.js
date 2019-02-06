@@ -6,12 +6,12 @@ const { User } = Models;
 const { ObjectId } = mongoose.Types;
 
 const userFindById = async (id) => {
-  const res = User.findById(ObjectId(id));
+  const res = await User.findById(ObjectId(id));
   return res;
 };
 
 const userFind = async (query) => {
-  const res = User.find(query);
+  const res = await User.find(query).populate('role');
   return res;
 };
 
