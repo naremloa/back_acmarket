@@ -1,11 +1,11 @@
 <template>
-  <div class="add-cash">
+  <div class="update-cash">
     <v-form v-model="valid" ref="form" class="px-2" lazy-validation>
       <v-layout row wrap>
         <v-flex sm12>
-          <v-btn-toggle v-model="selectedType">
-            <v-btn flat large class="px-4">收入</v-btn>
-            <v-btn flat large class="px-4">支出</v-btn>
+          <v-btn-toggle v-model="selectedType" mandatory>
+            <v-btn flat large class="px-4" @click="methodClearNumber">收入</v-btn>
+            <v-btn flat large class="px-4" @click="methodClearNumber">支出</v-btn>
           </v-btn-toggle>
         </v-flex>
         <v-flex
@@ -54,10 +54,10 @@
       </v-layout>
         <v-layout>
         <v-flex text-xs-right>
-          <v-btn flat @click="methodCancelAddCash">取消</v-btn>
+          <v-btn flat @click="methodCancelUpdateCash">取消</v-btn>
           <v-btn flat @click="methodFormReset">重置</v-btn>
           <v-btn color="primary" @click="methodProcessParams">
-            <v-icon>mdi-check</v-icon>新增訂單
+            <v-icon>mdi-check</v-icon>修改收支明細
           </v-btn>
         </v-flex>
       </v-layout>
@@ -67,9 +67,11 @@
 <script>
 import httpMethod from '@/utils/httpMethod';
 import constList from '@/utils/const';
+import { dateTime } from '@/utils/calculation';
 
 export default {
-  name: 'addCash',
+  name: 'updateCash',
+  props: ['contentData', 'openDialog'],
   data() {
     return {
       constList,
@@ -89,15 +91,42 @@ export default {
       ],
     };
   },
+  watch: {
+    openDialog(val) {
+      if (val) this.formatProps(this.contentData);
+    },
+  },
+  mounted() {
+    this.formatProps(this.contentData);
+  },
   methods: {
+    dateTime,
     getParamsOrigin() {
       return {
-        type: null,
-        certificateNumberShow: null,
+        cid: null,
+        certificateNumber: null,
         contentShow: null,
         incomeShow: null,
         outcomeShow: null,
+        type: null,
       };
+    },
+    formatProps(rowData) {
+      const {
+        _id,
+        certificateNumber,
+        content,
+        income,
+        outcome,
+        type,
+      } = rowData;
+      this.cashParams.cid = _id;
+      this.cashParams.certificateNumberShow = certificateNumber;
+      this.cashParams.contentShow = content;
+      this.cashParams.incomeShow = income ? income / 100 : 0;
+      this.cashParams.outcomeShow = outcome ? outcome / 100 : 0;
+      this.cashParams.type = type;
+      this.selectedType = income ? 0 : 1;
     },
     methodFormReset() {
       this.cashParams = this.getParamsOrigin();
@@ -105,27 +134,41 @@ export default {
     },
     methodProcessParams() {
       const {
-        type,
+        cid,
         certificateNumberShow,
         contentShow,
         incomeShow,
         outcomeShow,
+        type,
       } = this.cashParams;
+      if ((this.selectedType === 0 && !incomeShow)
+          || (this.selectedType === 1 && !outcomeShow)) {
+        const alert = {
+          open: true,
+          text: '金額不得為0',
+          color: 'error',
+        };
+        this.$store.commit('global/setNotifySetting', alert);
+        return;
+      }
       const params = {};
-      if (type) params.type = type;
+      if (cid) params.cid = cid;
       if (certificateNumberShow) params.certificateNumber = certificateNumberShow;
       if (contentShow) params.content = contentShow;
-      params.income = incomeShow ? incomeShow * 100 : 0;
-      params.outcome = outcomeShow ? outcomeShow * 100 : 0;
-      this.addCash(params);
+      params.income = this.selectedType === 0 ? incomeShow * 100 : 0;
+      params.outcome = this.selectedType === 1 ? outcomeShow * 100 : 0;
+      if (type) params.type = type;
+
+      this.updateOrder(params);
     },
-    async addCash(params) {
+    async updateOrder(params) {
       if (this.$refs.form.validate()) {
         const res = await httpMethod({
-          url: '/v1/api/cash/add',
+          url: '/v1/api/cash/update',
           method: 'POST',
           data: params,
         });
+        console.log(res);
         let alert = null;
         if (!res.code) {
           alert = {
@@ -136,19 +179,24 @@ export default {
         } else {
           alert = {
             open: true,
-            text: res.msg || '新增失敗，請重新再弒，或聯絡客服人員',
+            text: res.msg || '修改失敗，請重新再弒，或聯絡客服人員',
             color: 'error',
           };
         }
         this.$store.commit('global/setNotifySetting', alert);
         // this.orderList = res.data;
-        this.methodCancelAddCash();
+        this.methodCancelUpdateCash();
         this.$emit('execOtherMethod');
       }
     },
-    methodCancelAddCash() {
+    methodCancelUpdateCash() {
       this.methodFormReset();
       this.$emit('closeDialog');
+    },
+    methodClearNumber() {
+      // this.cashParams.incomeShow = 0;
+      // this.cashParams.outcomeShow = 0;
+      this.$refs.form.resetValidation();
     },
   },
 };
