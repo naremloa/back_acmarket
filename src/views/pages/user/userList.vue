@@ -108,7 +108,6 @@
         <template slot="items" slot-scope="props">
           <td class="text-xs-center">{{ props.item.account }}</td>
           <td class="text-xs-center">{{ props.item.accountAlias }}</td>
-          <!-- <td class="text-xs-center">{{ props.item.role }}</td> -->
           <!-- <td class="text-xs-center">{{ props.item.level }}</td> -->
           <td
             class="text-xs-center"
@@ -119,6 +118,10 @@
               <v-btn color="error" @click="methodVerifyStatus(props.item, false)">不通過</v-btn>
               <v-btn color="success" @click="methodVerifyStatus(props.item, true)">通過</v-btn>
             </div>
+          </td>
+          <td class="text-xs-center">{{formatRole(props.item.role && props.item.role.id)}}</td>
+          <td class="text-xs-center">
+            <v-btn color="primary" @click="methodUpdateUserRole(props.item)">修改</v-btn>
           </td>
           <!-- <td class="text-xs-center">{{ props.item.softDelete }}</td> -->
           <td class="text-xs-center">{{ props.item.modifyUser }}</td>
@@ -141,10 +144,20 @@
     </v-card>
     <confirmDialog
       :openDialog="confirmDialogInfo.openDialog"
-      @valueChange="methodChangeOpenDialog"
+      @valueChange="methodChangeOpenConfirmDialog"
       :title="confirmDialogInfo.title"
       :content="confirmDialogInfo.content"
       :confirmMethod="confirmDialogInfo.confirmMethod"
+    />
+    <dialogComponent
+      :openDialog="dialogInfo.openDialog"
+      @valueChange="methodChangeOpenDialog"
+      :title="dialogInfo.title"
+      :contentFilePath="dialogInfo.contentFilePath"
+      :contentData="dialogInfo.contentData"
+      :confirmMethod="dialogInfo.confirmMethod"
+      :otherMethod="dialogInfo.otherMethod"
+      :width="dialogInfo.width"
     />
   </div>
 </template>
@@ -152,11 +165,13 @@
 import httpMethod from '@/utils/httpMethod';
 import { dateTime } from '@/utils/calculation';
 import confirmDialog from '@/views/layout/components/confirmDialog.vue';
+import dialogComponent from '@/views/layout/components/dialog.vue';
 
 export default {
   name: 'userList',
   components: {
     confirmDialog,
+    dialogComponent,
   },
   data() {
     return {
@@ -168,10 +183,11 @@ export default {
       headers: [
         { text: '帳號', value: 'account', sortable: false },
         { text: '帳號名稱', value: 'accountAlias', sortable: false },
-        // { text: '角色', value: 'role', sortable: false },
         // { text: '權限', value: 'level', sortable: false },
         { text: '帳號狀態', value: 'status', sortable: false },
         { text: '操作', value: '', sortable: false },
+        { text: '角色', value: 'role', sortable: false },
+        { text: '修改角色', value: '', sortable: false },
         // { text: '已刪除', value: 'softDelete', sortable: false },
         { text: '修改人', value: 'modifyUser', sortable: false },
         { text: '修改時間', value: 'modifyTime', sortable: false },
@@ -196,17 +212,20 @@ export default {
         { label: '最後登入結束時間', key: 'lastLoginTimeEndShow' },
       ],
       selectMenu: [false, false, false, false, false, false],
+      dialogInfo: {
+        openDialog: false,
+        title: '',
+        contentFilePath: 'pages/user/updateUserRole.vue',
+        contentData: null,
+        confirmMethod: null,
+        otherMethod: null,
+      },
+      roleList: [],
     };
   },
   mounted() {
     this.getUserList();
-    setTimeout(async () => {
-      const res = await httpMethod({
-        url: '/v1/api/user/role/list',
-        method: 'GET',
-      });
-      console.log('TCL: mounted -> res', res);
-    });
+    this.getRoleList();
   },
   methods: {
     dateTime,
@@ -222,6 +241,29 @@ export default {
         return res[0];
       }
       return { val: null, statusText: '錯誤！無此狀態', class: 'purple--text' };
+    },
+    formatRole(val) {
+      const res = this.roleList.filter(item => item.id === val);
+      if (res.length) {
+        return res[0].value;
+      }
+      return '遊客';
+    },
+    async getRoleList() {
+      const res = await httpMethod({
+        url: '/v1/api/user/role/list',
+        method: 'GET',
+      });
+      if (!res.code) {
+        this.roleList = res.data;
+      } else {
+        const alert = {
+          open: true,
+          text: res.msg || '取得帳號列表錯誤',
+          color: 'error',
+        };
+        this.$store.commit('global/setNotifySetting', alert);
+      }
     },
     getParamsOrigin() {
       return {
@@ -273,8 +315,11 @@ export default {
       }
       this.getUserList();
     },
-    methodChangeOpenDialog(val) {
+    methodChangeOpenConfirmDialog(val) {
       this.confirmDialogInfo.openDialog = val;
+    },
+    methodChangeOpenDialog(val) {
+      this.dialogInfo.openDialog = val;
     },
     methodVerifyStatus(rowData, pass) {
       const { account, accountId } = rowData;
@@ -318,6 +363,18 @@ export default {
       if (lastLoginTimeStartShow) params.lastLoginTime = new Date(lastLoginTimeStartShow).valueOf();
       if (lastLoginTimeEndShow) params.lastLoginTime = new Date(lastLoginTimeEndShow).valueOf();
       this.getUserList(params);
+    },
+    async methodUpdateUserRole(rowData) {
+      console.log('TCL: methodUpdateUserRole -> rowData', rowData);
+      this.dialogInfo = {
+        ...this.dialogInfo,
+        openDialog: true,
+        title: '變更使用者角色',
+        contentFilePath: 'pages/user/updateUserRole.vue',
+        otherMethod: this.getUserList,
+        contentData: rowData,
+        width: 500,
+      };
     },
   },
 };
