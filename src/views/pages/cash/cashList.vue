@@ -118,7 +118,7 @@
       </v-card-title>
       <v-data-table
         :headers="headers"
-        :items="roomRepairList"
+        :items="cashList"
         :search="search"
         prev-icon="mdi-menu-left"
         next-icon="mdi-menu-right"
@@ -137,6 +137,11 @@
           <td class="text-xs-center">{{ formatCashType(props.item.type) }}</td>
           <td class="text-xs-center">{{ dateTime(props.item.createTime) }}</td>
           <td class="text-xs-center">{{ props.item.createAccount }}</td>
+          <td class="text-xs-center">
+            <v-btn small @click="methodUpdateCash(props.item)">
+              <v-icon>mdi-square-edit-outline</v-icon>修改明細
+            </v-btn>
+          </td>
           <td class="text-xs-center">{{ dateTime(props.item.modifyTime) }}</td>
           <td class="text-xs-center">{{ props.item.modifyAccount }}</td>
         </template>
@@ -194,10 +199,11 @@ export default {
         { text: '帳單類型', value: 'type', sortable: false },
         { text: '創建日期', value: 'createTime', sortable: false },
         { text: '創建用戶', value: 'createAccount', sortable: false },
+        { text: '修改操作', value: '', sortable: false },
         { text: '修改日期', value: 'modifyTime', sortable: false },
         { text: '修改帳號', value: 'modifyAccount', sortable: false },
       ],
-      roomRepairList: [],
+      cashList: [],
       valid: false,
       searchParams: this.getParamsOrigin(),
       searchItemParams: [
@@ -224,7 +230,7 @@ export default {
     };
   },
   mounted() {
-    this.getRoomRepairList();
+    this.getCashList();
   },
   methods: {
     dateTime,
@@ -247,17 +253,17 @@ export default {
         modifyTimeEndShow: null,
       };
     },
-    async getRoomRepairList(params) {
+    async getCashList(params) {
       const res = await httpMethod({
         url: '/v1/api/cash/list',
         method: 'GET',
         params,
       });
       if (!res.code) {
-        this.roomRepairList = res.data;
-        console.log('​getroomRepairList -> res.data', res.data);
+        this.cashList = res.data;
+        console.log('​getCashList -> res.data', res.data);
       } else {
-        this.roomRepairList = [];
+        this.cashList = [];
       }
     },
     methodFormReset() {
@@ -287,7 +293,7 @@ export default {
       if (createTimeEndShow) params.createTimeEnd = new Date(createTimeEndShow).valueOf();
       if (modifyTimeStartShow) params.modifyTimeStart = new Date(modifyTimeStartShow).valueOf();
       if (modifyTimeEndShow) params.modifyTimeEnd = new Date(modifyTimeEndShow).valueOf();
-      this.getRoomRepairList(params);
+      this.getCashList(params);
     },
     methodChangeOpenDialog(val) {
       this.confirmDialogInfo.openDialog = val;
@@ -298,7 +304,18 @@ export default {
         openDialog: true,
         title: '新增收支項目',
         contentFilePath: 'pages/cash/addCash.vue',
-        otherMethod: this.getRoomRepairList,
+        otherMethod: this.getCashList,
+        width: 1000,
+      };
+    },
+    methodUpdateCash(rowData) {
+      this.confirmDialogInfo = {
+        ...this.confirmDialogInfo,
+        openDialog: true,
+        title: '修改收支明細',
+        contentFilePath: 'pages/cash/updateCash.vue',
+        otherMethod: this.getCashList,
+        contentData: rowData,
         width: 1000,
       };
     },

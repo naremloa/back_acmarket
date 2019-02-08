@@ -110,7 +110,7 @@
         :pagination.sync="pagination"
       >
         <template slot="items" slot-scope="props">
-          <td class="text-xs-center">{{ props.item.id }}</td>
+          <td class="text-xs-center">{{ formatRoom(props.item.id) }}</td>
           <td class="text-xs-center">{{ props.item.position }}</td>
           <td class="text-xs-center">{{ props.item.content }}</td>
           <td class="text-xs-center">{{ currencies(props.item.internalCost) }}</td>
@@ -118,6 +118,11 @@
           <td class="text-xs-center">{{ props.item.note }}</td>
           <td class="text-xs-center">{{ dateTime(props.item.createTime) }}</td>
           <td class="text-xs-center">{{ props.item.createAccount }}</td>
+          <td class="text-xs-center">
+            <v-btn small @click="methodUpdateRoomRepair(props.item)">
+              <v-icon>mdi-square-edit-outline</v-icon>修改維修明細
+            </v-btn>
+          </td>
           <td class="text-xs-center">{{ dateTime(props.item.modifyTime) }}</td>
           <td class="text-xs-center">{{ props.item.modifyAccount }}</td>
         </template>
@@ -139,6 +144,7 @@
       @valueChange="methodChangeOpenDialog"
       :title="confirmDialogInfo.title"
       :contentFilePath="confirmDialogInfo.contentFilePath"
+      :contentData="confirmDialogInfo.contentData"
       :confirmMethod="confirmDialogInfo.confirmMethod"
       :otherMethod="confirmDialogInfo.otherMethod"
       width="1000"
@@ -149,6 +155,7 @@
 import httpMethod from '@/utils/httpMethod';
 import dialogComponent from '@/views/layout/components/dialog.vue';
 import { dateTime, currencies } from '@/utils/calculation';
+import constList from '@/utils/const';
 
 export default {
   name: 'roomRepairList',
@@ -157,6 +164,7 @@ export default {
   },
   data() {
     return {
+      constList,
       search: '',
       rowsPerPageItems: [20, 30, 50, 80, 100],
       pagination: {
@@ -171,6 +179,7 @@ export default {
         { text: '備註', value: 'note', sortable: false },
         { text: '創建時間', value: 'createTime', sortable: false },
         { text: '創建帳號', value: 'createAccount', sortable: false },
+        { text: '操作', value: '', sortable: false },
         { text: '修改時間', value: 'modifyTime', sortable: false },
         { text: '修改帳號', value: 'modifyAccount', sortable: false },
       ],
@@ -207,6 +216,10 @@ export default {
   methods: {
     dateTime,
     currencies,
+    formatRoom(val) {
+      const res = this.constList.roomTypeList.filter(item => item.id === val)[0];
+      return res ? res.value : '';
+    },
     async getRoomRepairList(params) {
       const res = await httpMethod({
         url: '/v1/api/room/maintenance/list',
@@ -275,6 +288,17 @@ export default {
         title: '新增維修事項',
         contentFilePath: 'pages/roomRepair/addRoomRepair.vue',
         otherMethod: this.getRoomRepairList,
+      };
+    },
+    methodUpdateRoomRepair(rowData) {
+      this.confirmDialogInfo = {
+        ...this.confirmDialogInfo,
+        openDialog: true,
+        title: '更新維修事項',
+        contentFilePath: 'pages/roomRepair/updateRoomRepair.vue',
+        otherMethod: this.getRoomRepairList,
+        contentData: rowData,
+        width: 1000,
       };
     },
   },
