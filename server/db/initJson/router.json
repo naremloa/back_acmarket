@@ -15,7 +15,7 @@
         "childNode": []
       },
       {
-        "id": 1013,
+        "id": 1014,
         "dataKey": "roleList",
         "name": "角色列表",
         "apiRoot": [
@@ -56,6 +56,23 @@
         "name": "收支明細",
         "apiRoot": "/cash",
         "rootId": 1002,
+        "childNode": []
+      }
+    ]
+  },
+  {
+    "id": 1003,
+    "dataKey": "front",
+    "name": "前台設置",
+    "apiRoot": "",
+    "rootId": 0,
+    "childNode": [
+      {
+        "id": 1015,
+        "dataKey": "articleList",
+        "name": "文章列表",
+        "apiRoot": "/article",
+        "rootId": 1003,
         "childNode": []
       }
     ]
