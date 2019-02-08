@@ -6,6 +6,7 @@
           <v-select
             v-model="repairParams.roomId"
             :items="constList.roomTypeList"
+            disabled
             item-text="value"
             item-value="id"
             label="房型"
@@ -123,7 +124,6 @@ export default {
       };
     },
     formatProps(rowData) {
-			console.log('TCL: formatProps -> rowData', rowData);
       const {
         _id,
         id,
@@ -148,7 +148,6 @@ export default {
     methodProcessParams() {
       const {
         cid,
-        roomId,
         positionShow,
         contentShow,
         internalCostShow,
@@ -157,7 +156,6 @@ export default {
       } = this.repairParams;
       const params = {};
       if (cid) params.cid = cid;
-      if (roomId) params.roomId = roomId;
       if (positionShow) params.position = positionShow;
       if (contentShow) params.content = contentShow;
       if (internalCostShow) params.internalCost = internalCostShow * 100;
@@ -166,7 +164,6 @@ export default {
       this.updateRoomRepair(params);
     },
     async updateRoomRepair(params) {
-      console.log('TCL: updateRoomRepair -> this.$refs.form.validate()', this.$refs.form.validate());
       if (this.$refs.form.validate()) {
         const res = await httpMethod({
           url: '/v1/api/room/maintenance/update',
