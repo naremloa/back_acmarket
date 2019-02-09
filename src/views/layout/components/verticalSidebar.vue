@@ -28,62 +28,12 @@
             @click="localListInfo[subItem.dataKey] && localListInfo[subItem.dataKey].url
               ? $router.push(localListInfo[subItem.dataKey].url)
               : null" >
-            <!-- <v-list-tile-action>
-              <v-icon>{{localListInfo[subItem.dataKey].icon}}</v-icon>
-            </v-list-tile-action> -->
             <v-list-tile-content>
               <v-list-tile-title>{{subItem.name}}</v-list-tile-title>
             </v-list-tile-content>
           </v-list-tile>
         </v-list-group>
       </div>
-      <!-- <div
-        v-for="(item,idx) in verticalSidebarList"
-        :key="`verticalSidebarList${idx}`"
-      >
-        <v-tooltip
-          v-if="item.url"
-          right
-          :disabled="localDrawer">
-          <v-list-tile
-            :class="activeClass(item.url)"
-            @click="$router.push(item.url)"
-            slot="activator" >
-            <v-list-tile-action>
-              <v-icon>{{item.icon}}</v-icon>
-            </v-list-tile-action>
-            <v-list-tile-content>
-              <v-list-tile-title>{{item.title}}</v-list-tile-title>
-            </v-list-tile-content>
-          </v-list-tile>
-          <span>{{item.title}}</span>
-        </v-tooltip>
-        <v-list-group
-          v-else
-          v-model="item.active"
-          :key="item.title"
-          :prepend-icon="item.icon"
-          no-action
-        >
-            <v-list-tile slot="activator">
-              <v-list-tile-content>
-                <v-list-tile-title>{{ item.title }}</v-list-tile-title>
-              </v-list-tile-content>
-            </v-list-tile>
-            <v-list-tile
-            v-for="subItem in item.items"
-            :key="subItem.title"
-              @click="subItem.url ? $router.push(subItem.url): null"
-            >
-              <v-list-tile-action>
-                <v-icon>{{ subItem.icon }}</v-icon>
-              </v-list-tile-action>
-              <v-list-tile-content>
-                <v-list-tile-title>{{ subItem.title }}</v-list-tile-title>
-              </v-list-tile-content>
-            </v-list-tile>
-        </v-list-group>
-      </div> -->
     </v-list>
   </v-navigation-drawer>
 </template>
@@ -100,71 +50,43 @@ export default {
   data() {
     return {
       localDrawer: this.drawer,
-      verticalSidebarList: [
-        {
-          icon: 'mdi-view-dashboard',
-          title: 'Dashboard',
-          url: '/dashboard',
-        },
-        {
-          icon: 'mdi-file-document-outline',
-          title: '訂單資訊',
-          url: '/orderList',
-        },
-        {
-          icon: 'mdi-account-box',
-          title: '使用者管理',
-          items: [
-            {
-              title: '使用者列表',
-              url: '/userList',
-              icon: 'mdi-book-open-variant',
-            },
-            {
-              title: '使用者角色列表',
-              url: '/roleList',
-              icon: 'mdi-briefcase',
-            },
-            {
-              title: '路由列表',
-              url: '/routerList',
-              icon: 'mdi-camera-control',
-            },
-          ],
-        },
-        {
-          icon: 'mdi-wrench',
-          title: '修理列表',
-          url: '/roomRepairList',
-        },
-        {
-          icon: 'mdi-cash',
-          title: '收支列表',
-          url: '/cashList',
-        },
-      ],
       list: [],
       localListInfo: {
+        // 帳號管理
         user: {
           icon: 'mdi-view-dashboard',
         },
+        // 日常管理
         manager: {
           icon: 'mdi-wrench',
         },
+        // 前台設置
+        front: {
+          icon: 'mdi-wrench',
+        },
+        // 帳號列表
         userList: {
           url: '/userList',
         },
+        // 角色列表
         roleList: {
           url: '/roleList',
         },
+        // 訂單列表
         orderList: {
           url: '/orderList',
         },
+        // 房間列表
         roomList: {
           url: '/roomRepairList',
         },
+        // 收支列表
         cashList: {
           url: '/cashList',
+        },
+        // 文章列表
+        articleList: {
+          url: '/articleList',
         },
       },
     };

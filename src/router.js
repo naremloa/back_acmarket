@@ -77,6 +77,14 @@ export default new Router({
             title: '收支明細',
           },
         },
+        {
+          path: 'articleList',
+          name: 'articleList',
+          component: () => import('@/views/pages/article/articleList.vue'),
+          meta: {
+            title: '文章列表',
+          },
+        },
       ],
     },
   ],
