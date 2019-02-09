@@ -16,20 +16,18 @@
           v-model="item.active"
           :key="item.dataKey"
           no-action
-          :prepend-icon="localListInfo[item.dataKey] && localListInfo[item.dataKey].icon" >
+          :prepend-icon="item.icon" >
           <v-list-tile slot="activator">
             <v-list-tile-content>
-              <v-list-tile-title>{{ item.name }}</v-list-tile-title>
+              <v-list-tile-title>{{ item.title }}</v-list-tile-title>
             </v-list-tile-content>
           </v-list-tile>
           <v-list-tile
-            v-for="subItem in item.childNode"
+            v-for="subItem in item.children"
             :key="subItem.dataKey"
-            @click="localListInfo[subItem.dataKey] && localListInfo[subItem.dataKey].url
-              ? $router.push(localListInfo[subItem.dataKey].url)
-              : null" >
+            @click="$router.push(subItem.path)" >
             <v-list-tile-content>
-              <v-list-tile-title>{{subItem.name}}</v-list-tile-title>
+              <v-list-tile-title>{{subItem.title}}</v-list-tile-title>
             </v-list-tile-content>
           </v-list-tile>
         </v-list-group>
@@ -51,44 +49,6 @@ export default {
     return {
       localDrawer: this.drawer,
       list: [],
-      localListInfo: {
-        // 帳號管理
-        user: {
-          icon: 'mdi-view-dashboard',
-        },
-        // 日常管理
-        manager: {
-          icon: 'mdi-wrench',
-        },
-        // 前台設置
-        front: {
-          icon: 'mdi-wrench',
-        },
-        // 帳號列表
-        userList: {
-          url: '/userList',
-        },
-        // 角色列表
-        roleList: {
-          url: '/roleList',
-        },
-        // 訂單列表
-        orderList: {
-          url: '/orderList',
-        },
-        // 房間列表
-        roomList: {
-          url: '/roomRepairList',
-        },
-        // 收支列表
-        cashList: {
-          url: '/cashList',
-        },
-        // 文章列表
-        articleList: {
-          url: '/articleList',
-        },
-      },
     };
   },
   computed: {
@@ -109,7 +69,7 @@ export default {
     },
   },
   mounted() {
-    this.getRouter();
+    this.getRouterTree();
   },
   methods: {
     ts(val) {
@@ -122,11 +82,44 @@ export default {
     },
     async getRouter() {
       const res = await httpMethod({
-        url: '/v1/api/router/list',
+        url: '/v1/api/global/router/list',
         method: 'GET',
       });
       if (!res.code) {
-        this.list = res.data;
+        return res.data;
+      }
+      return false;
+    },
+    createRouterTree(rootNode, rootPath, tree, backRouterList) {
+      rootNode.forEach((node) => {
+        if (backRouterList.has(node.name)) {
+          const { meta: { title, icon }, name: dataKey } = node;
+          console.log('check', rootPath, node);
+          tree.push({
+            title, icon, dataKey, path: `${rootPath}${node.path}`, children: [],
+          });
+          if (node.children && node.children.length) {
+            this.createRouterTree(
+              node.children,
+              `${rootPath}${node.path}/`,
+              tree[tree.length - 1].children,
+              backRouterList,
+            );
+          }
+        }
+      });
+    },
+    async getRouterTree() {
+      const blackList = ['login', 'dashboard'];
+      const frontRouter = this.$router.options.routes.filter(i => !blackList.includes(i.name));
+      const backRouterList = new Map((await this.getRouter()).map(i => [i.dataKey, i]));
+      const tree = [];
+      if (backRouterList) {
+        console.log('back', backRouterList);
+        console.log('front', frontRouter);
+        this.createRouterTree(frontRouter, '', tree, backRouterList);
+        console.log('end', tree);
+        this.list = tree;
       }
     },
   },

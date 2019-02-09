@@ -18,6 +18,8 @@ import {
 } from '../utils/session';
 import {
   getRouterAboutRole,
+  getRouterAboutAll,
+  expandRouter,
 } from './router';
 import {
   createRoleSchema,
@@ -91,7 +93,7 @@ const registerAccount = async (req, res) => {
       if (!guestRole) await roleInsert(createRoleSchema({ id: 0, name: '遊客' }));
       // 建立super角色(id: 1000)
       if (!superRole) {
-        const routerGroup = (await getRouterAboutRole()).map(i => i.id);
+        const routerGroup = expandRouter((await getRouterAboutAll())).map(i => i.id);
         superRole = await roleInsert(createRoleSchema({ id: 1000, name: 'super', routerGroup }));
       }
       // 給足初始帳號權限和跳過審核

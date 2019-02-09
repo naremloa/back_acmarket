@@ -14,7 +14,7 @@ export default new Router({
     },
     {
       path: '/',
-      name: '',
+      name: 'dashboard',
       component: Layout,
       redirect: 'dashboard',
       meta: {
@@ -29,16 +29,20 @@ export default new Router({
             title: '首页',
           },
         },
+      ],
+    },
+    {
+      path: '/user',
+      name: 'user',
+      component: Layout,
+      redirect: 'list',
+      meta: {
+        title: '帳號管理',
+        icon: 'mdi-view-dashboard',
+      },
+      children: [
         {
-          path: 'orderList',
-          name: 'orderList',
-          component: () => import('@/views/pages/order/orderList.vue'),
-          meta: {
-            title: '訂單資訊',
-          },
-        },
-        {
-          path: 'userList',
+          path: 'list',
           name: 'userList',
           component: () => import('@/views/pages/user/userList.vue'),
           meta: {
@@ -46,7 +50,7 @@ export default new Router({
           },
         },
         {
-          path: 'roleList',
+          path: 'role/list',
           name: 'roleList',
           component: () => import('@/views/pages/user/roleList.vue'),
           meta: {
@@ -54,15 +58,35 @@ export default new Router({
           },
         },
         {
-          path: 'routerList',
+          path: 'router/list',
           name: 'routerList',
           component: () => import('@/views/pages/user/routerList.vue'),
           meta: {
             title: '路由列表',
           },
         },
+      ],
+    },
+    {
+      path: '/manager',
+      name: 'manager',
+      component: Layout,
+      redirect: 'order/list',
+      meta: {
+        title: '日常管理',
+        icon: 'mdi-wrench',
+      },
+      children: [
         {
-          path: 'roomRepairList',
+          path: 'order/list',
+          name: 'orderList',
+          component: () => import('@/views/pages/order/orderList.vue'),
+          meta: {
+            title: '訂單資訊',
+          },
+        },
+        {
+          path: 'roomRepair/list',
           name: 'roomRepairList',
           component: () => import('@/views/pages/roomRepair/roomRepairList.vue'),
           meta: {
@@ -70,15 +94,27 @@ export default new Router({
           },
         },
         {
-          path: 'cashList',
+          path: 'cash/list',
           name: 'cashList',
           component: () => import('@/views/pages/cash/cashList.vue'),
           meta: {
             title: '收支明細',
           },
         },
+      ],
+    },
+    {
+      path: '/front',
+      name: 'front',
+      component: Layout,
+      redirect: 'dashboard',
+      meta: {
+        title: '前台設置',
+        icon: 'mdi-wrench',
+      },
+      children: [
         {
-          path: 'articleList',
+          path: 'article/list',
           name: 'articleList',
           component: () => import('@/views/pages/article/articleList.vue'),
           meta: {

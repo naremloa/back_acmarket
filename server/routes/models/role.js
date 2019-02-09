@@ -1,6 +1,9 @@
+import mongoose from 'mongoose';
 import { Models } from '../../db';
 
 const { Role } = Models;
+
+const { ObjectId } = mongoose.Types;
 
 const roleInsert = async (roleObj) => {
   const res = await Role.create(roleObj);
@@ -9,6 +12,16 @@ const roleInsert = async (roleObj) => {
 
 const roleFindAll = async (options = null) => {
   const res = await Role.find({}, options);
+  return res;
+};
+
+const roleFindById = async (id) => {
+  const res = await Role.findById(ObjectId(id));
+  return res;
+};
+
+const roleFindByIdAndUpdate = async (id, update) => {
+  const res = await Role.findByIdAndUpdate(ObjectId(id), update);
   return res;
 };
 
@@ -33,4 +46,6 @@ export {
   idFindOne,
   roleFindAll,
   roleCount,
+  roleFindById,
+  roleFindByIdAndUpdate,
 };

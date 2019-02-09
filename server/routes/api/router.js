@@ -30,19 +30,28 @@ const getRouterAboutAll = async () => {
 const getRouterAboutRole = async (routerGroup = null) => {
   const routerExpandAll = expandRouter(await getRouterAboutAll());
   const routerAboutRole = [];
-  if (!routerGroup) return routerExpandAll;
+  const pushedNodeId = [];
+  if (!routerGroup) return routerAboutRole;
   routerExpandAll.forEach((router) => {
-    if (routerGroup.includes(router.id)) routerAboutRole.push(router);
+    if (!pushedNodeId.includes(router.id) && routerGroup.includes(router.id)) {
+      routerAboutRole.push(router);
+      if (!routerGroup.includes(router.rootId) && router.rootId !== 0) {
+        routerAboutRole.push(routerExpandAll.find(i => (i.id === router.rootId)));
+        pushedNodeId.push(router.rootId);
+      }
+      pushedNodeId.push(router.id);
+    }
   });
   return routerAboutRole;
 };
 
 const getRouter = async (req, res) => {
-  // const { session: { userInfo } } = req;
-  // const { role: { routerGroup } } = await userFindOne({ account: userInfo.account });
-  // TODO: 關閉有權路由，直接展示所有路由
-  // const list = await getRouterAboutRole(routerGroup);
-  const list = await getRouterAboutAll();
+  const { session: { userInfo } } = req;
+  const { role: { routerGroup } } = await userFindOne({ account: userInfo.account });
+  const list = await getRouterAboutRole(routerGroup);
+
+
+  // const list = await getRouterAboutAll();
   res.send(outputSuccess(list));
 };
 
@@ -83,6 +92,7 @@ export {
   expandRouter,
   routerFind,
   getRouterAboutRole,
+  getRouterAboutAll,
   getRouter,
   getRouterRoleList,
   getRouterAll,
