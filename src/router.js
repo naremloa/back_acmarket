@@ -121,6 +121,15 @@ export default new Router({
             title: '文章列表',
           },
         },
+        {
+          path: 'article/add',
+          name: 'articleAdd',
+          component: () => import('@/views/pages/article/articleAdd.vue'),
+          meta: {
+            title: '新增文章',
+            parentName: 'articleList',
+          },
+        },
       ],
     },
   ],

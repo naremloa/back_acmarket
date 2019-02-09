@@ -11,7 +11,7 @@ router.beforeEach((to, from, next) => {
       next({ path: '/' });
     } else if (whiteList.includes(to.name)) {
       next();
-    } else if (!routerMap.has(to.name)) {
+    } else if (!routerMap.has(to.name) && !routerMap.has(to.meta && to.meta.parentName)) {
       next({ path: '/' });
     } else {
       next();
