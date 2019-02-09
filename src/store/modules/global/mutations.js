@@ -5,3 +5,7 @@ export const setNotifySetting = (state, data) => {
 export const setUserName = (state, data) => {
   state.userName = data;
 };
+
+export const setRouterList = (state, data) => {
+  state.routerList = data;
+};

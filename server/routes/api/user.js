@@ -84,9 +84,9 @@ const updateUserStatus = async (req, res) => {
 };
 
 const updateUserRole = async (req, res) => {
-  const { body: { role, id }, session: sess } = req;
+  const { body: { role, cid }, session: sess } = req;
   const { userInfo: { account } } = sess;
-  const targetUserInfo = await userFindById(id);
+  const targetUserInfo = await userFindById(cid);
   const queryRole = await idFindOne(role);
   if (queryRole === null) return res.send(outputError('無此權限'));
   if (targetUserInfo === null) return res.send(outputError('無此用戶'));

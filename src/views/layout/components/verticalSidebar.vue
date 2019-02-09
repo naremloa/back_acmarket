@@ -94,7 +94,6 @@ export default {
       rootNode.forEach((node) => {
         if (backRouterList.has(node.name)) {
           const { meta: { title, icon }, name: dataKey } = node;
-          console.log('check', rootPath, node);
           tree.push({
             title, icon, dataKey, path: `${rootPath}${node.path}`, children: [],
           });
@@ -115,11 +114,9 @@ export default {
       const backRouterList = new Map((await this.getRouter()).map(i => [i.dataKey, i]));
       const tree = [];
       if (backRouterList) {
-        console.log('back', backRouterList);
-        console.log('front', frontRouter);
         this.createRouterTree(frontRouter, '', tree, backRouterList);
-        console.log('end', tree);
         this.list = tree;
+        this.$store.commit('global/setRouterList', backRouterList);
       }
     },
   },

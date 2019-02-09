@@ -8,4 +8,5 @@ export default {
     text: '',
     color: 'light-blue darken-3',
   },
+  routerList: new Map(),
 };

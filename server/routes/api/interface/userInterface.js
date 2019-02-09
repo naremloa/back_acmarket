@@ -60,11 +60,11 @@ export const post = [
  * @apiGroup User
  *
  * @apiParam {Number} role 角色id
- * @apiParam {String} id 帳號objectId
+ * @apiParam {String} cid 帳號objectId
  * @apiParamExample {json} Request-example:
  * {
  *    "role": "1000",
- *    "id": "5c49e2ac363210458eb621dc"
+ *    "cid": "5c49e2ac363210458eb621dc"
  * }
  */
   ['/user/udpate/role',

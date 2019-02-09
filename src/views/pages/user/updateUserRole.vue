@@ -92,11 +92,11 @@ export default {
     },
     methodProcessParams() {
       const {
-        accountId,
+        id,
         role,
       } = this.userRoleParams;
       const params = {};
-      if (accountId) params.accountId = accountId;
+      if (id) params.cid = id;
       if (role) params.role = role;
       this.updateUserRole(params);
     },

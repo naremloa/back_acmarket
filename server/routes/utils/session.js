@@ -44,12 +44,8 @@ export const updateUserInfo = (sess, val) => {
 };
 
 export const middlewareCheckAuthorization = (req, res, next) => {
-  const { session: { userInfo: { roleApiRoot = [] } }, path } = req;
-  const pathHead = path.match(/^\/[a-zA-Z]+/)[0];
-  next();
-  // if (roleApiRoot.length && roleApiRoot.includes(pathHead)) {
-  //   next();
-  // } else {
-  //   res.status(401).send(outputError('無此權限'));
-  // }
+  const { session: { userInfo: { roleApiRoot = ['/global'] } }, path } = req;
+  const localRoleApiRoot = new Set([...roleApiRoot, '/global']);
+  if ([...localRoleApiRoot].find(i => (new RegExp(`^${i}`)).test(path))) next();
+  else res.status(401).send(outputError('無此權限'));
 };
