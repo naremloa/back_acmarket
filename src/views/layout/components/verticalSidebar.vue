@@ -16,74 +16,22 @@
           v-model="item.active"
           :key="item.dataKey"
           no-action
-          :prepend-icon="localListInfo[item.dataKey] && localListInfo[item.dataKey].icon" >
+          :prepend-icon="item.icon" >
           <v-list-tile slot="activator">
             <v-list-tile-content>
-              <v-list-tile-title>{{ item.name }}</v-list-tile-title>
+              <v-list-tile-title>{{ item.title }}</v-list-tile-title>
             </v-list-tile-content>
           </v-list-tile>
           <v-list-tile
-            v-for="subItem in item.childNode"
+            v-for="subItem in item.children"
             :key="subItem.dataKey"
-            @click="localListInfo[subItem.dataKey] && localListInfo[subItem.dataKey].url
-              ? $router.push(localListInfo[subItem.dataKey].url)
-              : null" >
-            <!-- <v-list-tile-action>
-              <v-icon>{{localListInfo[subItem.dataKey].icon}}</v-icon>
-            </v-list-tile-action> -->
+            @click="$router.push(subItem.path)" >
             <v-list-tile-content>
-              <v-list-tile-title>{{subItem.name}}</v-list-tile-title>
+              <v-list-tile-title>{{subItem.title}}</v-list-tile-title>
             </v-list-tile-content>
           </v-list-tile>
         </v-list-group>
       </div>
-      <!-- <div
-        v-for="(item,idx) in verticalSidebarList"
-        :key="`verticalSidebarList${idx}`"
-      >
-        <v-tooltip
-          v-if="item.url"
-          right
-          :disabled="localDrawer">
-          <v-list-tile
-            :class="activeClass(item.url)"
-            @click="$router.push(item.url)"
-            slot="activator" >
-            <v-list-tile-action>
-              <v-icon>{{item.icon}}</v-icon>
-            </v-list-tile-action>
-            <v-list-tile-content>
-              <v-list-tile-title>{{item.title}}</v-list-tile-title>
-            </v-list-tile-content>
-          </v-list-tile>
-          <span>{{item.title}}</span>
-        </v-tooltip>
-        <v-list-group
-          v-else
-          v-model="item.active"
-          :key="item.title"
-          :prepend-icon="item.icon"
-          no-action
-        >
-            <v-list-tile slot="activator">
-              <v-list-tile-content>
-                <v-list-tile-title>{{ item.title }}</v-list-tile-title>
-              </v-list-tile-content>
-            </v-list-tile>
-            <v-list-tile
-            v-for="subItem in item.items"
-            :key="subItem.title"
-              @click="subItem.url ? $router.push(subItem.url): null"
-            >
-              <v-list-tile-action>
-                <v-icon>{{ subItem.icon }}</v-icon>
-              </v-list-tile-action>
-              <v-list-tile-content>
-                <v-list-tile-title>{{ subItem.title }}</v-list-tile-title>
-              </v-list-tile-content>
-            </v-list-tile>
-        </v-list-group>
-      </div> -->
     </v-list>
   </v-navigation-drawer>
 </template>
@@ -100,73 +48,7 @@ export default {
   data() {
     return {
       localDrawer: this.drawer,
-      verticalSidebarList: [
-        {
-          icon: 'mdi-view-dashboard',
-          title: 'Dashboard',
-          url: '/dashboard',
-        },
-        {
-          icon: 'mdi-file-document-outline',
-          title: '訂單資訊',
-          url: '/orderList',
-        },
-        {
-          icon: 'mdi-account-box',
-          title: '使用者管理',
-          items: [
-            {
-              title: '使用者列表',
-              url: '/userList',
-              icon: 'mdi-book-open-variant',
-            },
-            {
-              title: '使用者角色列表',
-              url: '/roleList',
-              icon: 'mdi-briefcase',
-            },
-            {
-              title: '路由列表',
-              url: '/routerList',
-              icon: 'mdi-camera-control',
-            },
-          ],
-        },
-        {
-          icon: 'mdi-wrench',
-          title: '修理列表',
-          url: '/roomRepairList',
-        },
-        {
-          icon: 'mdi-cash',
-          title: '收支列表',
-          url: '/cashList',
-        },
-      ],
       list: [],
-      localListInfo: {
-        user: {
-          icon: 'mdi-view-dashboard',
-        },
-        manager: {
-          icon: 'mdi-wrench',
-        },
-        userList: {
-          url: '/userList',
-        },
-        roleList: {
-          url: '/roleList',
-        },
-        orderList: {
-          url: '/orderList',
-        },
-        roomList: {
-          url: '/roomRepairList',
-        },
-        cashList: {
-          url: '/cashList',
-        },
-      },
     };
   },
   computed: {
@@ -187,7 +69,7 @@ export default {
     },
   },
   mounted() {
-    this.getRouter();
+    this.getRouterTree();
   },
   methods: {
     ts(val) {
@@ -200,11 +82,41 @@ export default {
     },
     async getRouter() {
       const res = await httpMethod({
-        url: '/v1/api/router/list',
+        url: '/v1/api/global/router/list',
         method: 'GET',
       });
       if (!res.code) {
-        this.list = res.data;
+        return res.data;
+      }
+      return false;
+    },
+    createRouterTree(rootNode, rootPath, tree, backRouterList) {
+      rootNode.forEach((node) => {
+        if (backRouterList.has(node.name)) {
+          const { meta: { title, icon }, name: dataKey } = node;
+          tree.push({
+            title, icon, dataKey, path: `${rootPath}${node.path}`, children: [],
+          });
+          if (node.children && node.children.length) {
+            this.createRouterTree(
+              node.children,
+              `${rootPath}${node.path}/`,
+              tree[tree.length - 1].children,
+              backRouterList,
+            );
+          }
+        }
+      });
+    },
+    async getRouterTree() {
+      const blackList = ['login', 'dashboard'];
+      const frontRouter = this.$router.options.routes.filter(i => !blackList.includes(i.name));
+      const backRouterList = new Map((await this.getRouter()).map(i => [i.dataKey, i]));
+      const tree = [];
+      if (backRouterList) {
+        this.createRouterTree(frontRouter, '', tree, backRouterList);
+        this.list = tree;
+        this.$store.commit('global/setRouterList', backRouterList);
       }
     },
   },

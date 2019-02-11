@@ -147,3 +147,18 @@ export const room = {
   modifyTime: Number,
   modifyAccount: String,
 };
+
+/**
+ * articleSchema
+ * @param
+ */
+export const article = {
+  title: String,
+  content: String,
+  img: String,
+  status: Number,
+  createTime: Number,
+  createAccount: String,
+  modifyTime: Number,
+  modifyAccount: String,
+};

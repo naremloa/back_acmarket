@@ -7,6 +7,7 @@ import {
   router,
   role,
   room,
+  article,
 } from './schema';
 
 const mongoose = require('mongoose');
@@ -49,6 +50,8 @@ const roleSchema = initSchema(role);
 
 const roomSchema = initSchema(room);
 
+const articleSchema = initSchema(article);
+
 // model
 const Models = {
   User: Model('User', loginSchema),
@@ -57,6 +60,7 @@ const Models = {
   Router: Model('Router', routerSchema),
   Role: Model('Role', roleSchema),
   Room: Model('Room', roomSchema),
+  Article: Model('Article', articleSchema),
 };
 
 export {

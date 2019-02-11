@@ -3,6 +3,8 @@ import {
   roleFindAll,
   roleCount,
   roleInsert,
+  roleFindById,
+  roleFindByIdAndUpdate,
 } from '../models/role';
 
 // 排除遊客和super
@@ -28,7 +30,9 @@ const createRoleSchema = ({
 const addRole = async (req, res) => {
   const { body: { name, routerGroup } } = req;
   const newId = await roleCount() - 1;
-  if (!routerGroup || routerGroup.length === undefined) {
+  if (!routerGroup
+      || routerGroup.length === undefined
+      || routerGroup.length === 0) {
     return res.send(outputError('新增參數有誤'));
   }
 
@@ -38,8 +42,21 @@ const addRole = async (req, res) => {
   return res.send(outputError('資料庫異常'));
 };
 
+const updateRole = async (req, res) => {
+  const { body: { cid, routerGroup } } = req;
+  const targetRole = await roleFindById(cid);
+  if (!targetRole) return res.send(outputError('更新角色異常'));
+
+  const updateObj = {
+    routerGroup,
+  };
+  await roleFindByIdAndUpdate(cid, updateObj);
+  return res.send(outputSuccess({}, '更新成功'));
+};
+
 export {
   createRoleSchema,
   getRoleList,
   addRole,
+  updateRole,
 };

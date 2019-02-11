@@ -70,7 +70,7 @@ export default {
     currencies,
     async getRoomRepairList() {
       const res = await httpMethod({
-        url: '/v1/api/router/list',
+        url: '/v1/api/global/router/list',
         method: 'GET',
       });
       if (!res.code) {
