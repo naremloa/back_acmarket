@@ -35,7 +35,8 @@
                     v-model="code"
                     :rules="nameRules('code')"
                     label="驗證碼"
-                    required />
+                    required
+                    @keyup.enter="handleLogin" />
                 </v-flex>
                 <v-flex xs12 sm4 >
                   <div v-html="codeSvg" @click="getCode"></div>
@@ -92,6 +93,7 @@ export default {
     prependIconCallback() {},
     async handleLogin() {
       if (!this.checkPageType('login')) return;
+      if (!this.valid) return;
       const { account, password, code } = this;
       const params = { account, password, code };
       const res = await httpMethod({

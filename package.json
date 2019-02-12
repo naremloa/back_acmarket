@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev:front": "vue-cli-service serve --open --host starrysky.family --port 8080",
+    "dev:front": "vue-cli-service serve --open --port 8080",
     "build:front": "vue-cli-service build",
     "lint": "vue-cli-service lint",
     "dev:back": "nodemon --exec babel-node --config-file ./server/babel.config.js server/index.js",
