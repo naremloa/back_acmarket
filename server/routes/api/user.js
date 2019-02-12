@@ -35,7 +35,8 @@ const outputUserInfo = (userInfo) => {
 };
 
 const getUser = async (req, res) => {
-  const list = await userFind({});
+  const { query: { account } } = req;
+  const list = await userFind({ account });
   res.send(outputSuccess(outputUserInfo(list)));
 };
 

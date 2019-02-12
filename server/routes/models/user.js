@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import { Models } from '../../db';
+import { omitValueValid } from '../utils/formatQuery';
 
 const { User } = Models;
 
@@ -11,7 +12,8 @@ const userFindById = async (id) => {
 };
 
 const userFind = async (query) => {
-  const res = await User.find(query).populate('role');
+  const localQuery = omitValueValid(query);
+  const res = await User.find(localQuery).populate('role');
   return res;
 };
 

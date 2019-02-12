@@ -1,4 +1,4 @@
-import { has, omit } from 'lodash';
+import { has, omit, omitBy } from 'lodash';
 
 export const omitDateKey = (dateKeyArr, data) => {
   const localDateKeyArr = dateKeyArr.map(i => [`${i}TimeStart`, `${i}TimeEnd`]);
@@ -26,4 +26,4 @@ export const formatDateKey = (dateKeyArr, data) => {
   return formatObj;
 };
 
-export const fakeFunc = () => ({});
+export const omitValueValid = obj => omitBy(obj, val => val === undefined);

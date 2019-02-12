@@ -125,7 +125,7 @@ const login = async (req, res) => {
       status: queryAccountStatus,
     } = user;
     // 對比信息
-    const same = bcrypt.compare(password, queryPassword);
+    const same = await bcrypt.compare(password, queryPassword);
     if (!same) res.send(outputError('帳號或密碼錯誤'));
     else if (sess.code !== code) res.send(outputError('驗證碼錯誤'));
     else if (queryAccountStatus === 0) res.send(outputError('帳號未審核通過'));

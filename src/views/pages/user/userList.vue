@@ -9,71 +9,6 @@
             clearable
           ></v-text-field>
         </v-flex>
-        <v-flex sm12 md4 lg3 px-1 >
-          <v-text-field
-            v-model="searchParams.accountAliasShow"
-            label="帳號名稱"
-            clearable
-          ></v-text-field>
-        </v-flex>
-        <v-flex sm12 md4 lg3 px-1 >
-          <v-text-field
-            v-model="searchParams.modifyUserShow"
-            label="修改人"
-            clearable
-          ></v-text-field>
-        </v-flex>
-      </v-layout>
-      <v-layout row wrap>
-        <v-flex
-          sm12
-          md3
-          lg3
-          px-1
-          v-for="(item, idx) in searchTimeParams"
-          :key="`searchTimeParams${idx}`"
-        >
-          <v-menu
-            :ref="`menu${idx}`"
-            :close-on-content-click="false"
-            v-model="selectMenu[idx]"
-            :nudge-right="40"
-            :value="searchParams[item.key]"
-            lazy
-            transition="scale-transition"
-            offset-y
-            full-width
-          >
-            <v-text-field
-              slot="activator"
-              v-model="searchParams[item.key]"
-              :label="item.label"
-              clearable
-              prepend-icon="mdi-calendar"
-              readonly
-            ></v-text-field>
-            <v-date-picker
-              v-model="searchParams[item.key]"
-              scrollable
-              no-title
-              locale="zh-Hant"
-              show-current
-              class="d-flex"
-            >
-              <v-spacer></v-spacer>
-              <v-btn
-                flat
-                color="primary"
-                @click="$set(selectMenu,idx,false)"
-              >Cancel</v-btn>
-              <v-btn
-                flat
-                color="primary"
-                @click="$refs[`menu${idx}`][0].save(searchParams[item.key])"
-              >OK</v-btn>
-            </v-date-picker>
-          </v-menu>
-        </v-flex>
         <v-flex text-xs-right>
           <v-btn flat @click="methodFormReset">重置</v-btn>
           <v-btn color="primary" @click="methodProcessParams">
@@ -84,7 +19,7 @@
     </v-form>
     <v-card>
       <v-card-title>
-        使用者列表
+        帳號
         <v-spacer></v-spacer>
         <v-text-field
           v-model="search"
