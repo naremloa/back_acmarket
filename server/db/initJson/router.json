@@ -49,7 +49,7 @@
       },
       {
         "id": 1012,
-        "dataKey": "roomList",
+        "dataKey": "roomRepairList",
         "name": "房間列表",
         "apiRoot": [
           "/room"
