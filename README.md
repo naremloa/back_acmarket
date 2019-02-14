@@ -42,6 +42,7 @@ mongoimport --db phelomi --collection orders server/db/initJson/order.json --jso
 mongoimport --db phelomi --collection rooms server/db/initJson/room.json --jsonArray
 mongoimport --db phelomi --collection routers server/db/initJson/router.json --jsonArray
 mongoimport --db phelomi --collection cashes server/db/initJson/cash.json --jsonArray
+mongoimport --db phelomi --collection locations server/db/initJson/location.json --jsonArray
 
 *注：user和role有包含objectId的參數，不適合直接import，取而代之，直接通過後台的功能手動生成。
 *TODO: 導出資料庫，方便假資料遷移*

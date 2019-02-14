@@ -162,3 +162,9 @@ export const article = {
   modifyTime: Number,
   modifyAccount: String,
 };
+
+export const location = {
+  status: Number,
+  address: String,
+  distance: [{ name: String, time: Number }],
+};
