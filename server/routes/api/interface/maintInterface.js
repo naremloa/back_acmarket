@@ -3,23 +3,23 @@ import {
   middlewareCheckAuthorization,
 } from '../../utils/session';
 import {
-  getMaintenance,
-  addMaintenance,
-  updateMaintenance,
-} from '../room';
+  getMaint,
+  addMaint,
+  updateMaint,
+} from '../maint';
 
 export const get = [
-  ['/room/maintenance/list',
+  ['/maint/list',
     middlewareCheckLoginStatusSession, middlewareCheckAuthorization,
-    getMaintenance],
+    getMaint],
 ];
 
 export const post = [
-  ['/room/maintenance/add',
+  ['/maint/add',
     middlewareCheckLoginStatusSession, middlewareCheckAuthorization,
-    addMaintenance],
+    addMaint],
 
-  ['/room/maintenance/update',
+  ['/maint/update',
     middlewareCheckLoginStatusSession, middlewareCheckAuthorization,
-    updateMaintenance],
+    updateMaint],
 ];

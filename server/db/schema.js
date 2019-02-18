@@ -123,7 +123,7 @@ export const role = {
 };
 
 /**
- * roomSchema
+ * maintSchema
  * @param {Number}  id  房間id (範圍 1-20)
  * @param {String}  position 維修位置
  * @param {String}  content 維修內容
@@ -135,7 +135,7 @@ export const role = {
  * @param {Number}  modifyTime 修改時間
  * @param {String}  modifyAccount 修改帳號
  */
-export const room = {
+export const maint = {
   id: Number,
   position: String,
   content: String,
@@ -167,4 +167,35 @@ export const location = {
   status: Number,
   address: String,
   distance: [{ name: String, time: Number }],
+};
+
+/**
+ * occSchema
+ * @param {Number}    date 房間佔用日期(YMMDD)
+ * @param {ObjectId}  orderCid 訂單cid
+ * @param {Number}    roomType 房型類型(非房間)
+ */
+export const occ = {
+  date: Number,
+  orderCid: { type: 'ObjectId' },
+  roomType: Number,
+};
+
+/**
+ * roomSchema
+ */
+export const room = {
+  name: String,
+  content: {
+    intro: String,
+    regulation: String,
+    refund: String,
+  },
+  roomList: [
+    {
+      id: Number,
+      name: String,
+      picList: [{ pic: String, sort: Number }],
+    },
+  ],
 };

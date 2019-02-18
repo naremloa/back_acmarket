@@ -1,23 +1,23 @@
 import { outputSuccess, outputError } from '../utils/outputFormat';
 import { omitDateKey, formatDateKey } from '../utils/formatQuery';
 import {
-  roomFind,
-  roomInsert,
-  maintenanceFindByIdAndUpdate,
-} from '../models/room';
+  maintFind,
+  maintInsert,
+  maintFindByIdAndUpdate,
+} from '../models/maint';
 
-const getMaintenance = async (req, res) => {
+const getMaint = async (req, res) => {
   const { query } = req;
   const dateCheck = ['create', 'modify'];
   const localQuery = omitDateKey(dateCheck, query);
   const dateQuery = formatDateKey(dateCheck, query);
 
-  const maintenance = await roomFind({ ...localQuery, ...dateQuery });
-  return res.send(outputSuccess(maintenance));
+  const maint = await maintFind({ ...localQuery, ...dateQuery });
+  return res.send(outputSuccess(maint));
 };
 
-const createMaintenanceSchema = async ({
-  roomId,
+const createMaintSchema = async ({
+  maintId,
   position,
   content,
   internalCost,
@@ -27,7 +27,7 @@ const createMaintenanceSchema = async ({
 }) => {
   const nowTime = new Date().getTime();
   return {
-    id: roomId,
+    id: maintId,
     position,
     content,
     internalCost,
@@ -40,10 +40,10 @@ const createMaintenanceSchema = async ({
   };
 };
 
-const addMaintenance = async (req, res) => {
+const addMaint = async (req, res) => {
   const {
     body: {
-      roomId,
+      maintId,
       position,
       content,
       internalCost,
@@ -53,8 +53,8 @@ const addMaintenance = async (req, res) => {
     session: sess,
   } = req;
   const { userInfo: { account } } = sess;
-  const newMaintenance = await createMaintenanceSchema({
-    roomId,
+  const newMaint = await createMaintSchema({
+    maintId,
     position,
     content,
     internalCost,
@@ -63,11 +63,11 @@ const addMaintenance = async (req, res) => {
     account,
   });
 
-  await roomInsert(newMaintenance);
-  return res.send(outputSuccess({}, '無敵破壞光線～～biu biu biu'));
+  await maintInsert(newMaint);
+  return res.send(outputSuccess({}, '新增成功'));
 };
 
-const updateMaintenance = async (req, res) => {
+const updateMaint = async (req, res) => {
   const {
     body: {
       cid,
@@ -90,12 +90,12 @@ const updateMaintenance = async (req, res) => {
     modifyTime: nowTime,
     modifyAccount: account,
   };
-  await maintenanceFindByIdAndUpdate(cid, updateObj);
+  await maintFindByIdAndUpdate(cid, updateObj);
   return res.send(outputSuccess({}, '更新成功'));
 };
 
 export {
-  getMaintenance,
-  addMaintenance,
-  updateMaintenance,
+  getMaint,
+  addMaint,
+  updateMaint,
 };

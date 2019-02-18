@@ -57,7 +57,7 @@
     }
   }
 ]
-// roomSchema
+// maintSchema
 [
   {
     'repeat(50)': {
