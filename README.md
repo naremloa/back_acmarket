@@ -32,7 +32,7 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 到網址：https://next.json-generator.com/
 貼上 server/initJson/jsonGenerator.js
 
-### 導入資料到資料庫中國年
+### 導入資料到資料庫中
 ```
 mongoimport -d phelomi -c <collection> <file> --jsonArray
 ```
@@ -51,4 +51,8 @@ mongoimport --db phelomi --collection users server/db/initJson/user.json --jsonA
 
 
 導出指令
-mongoexport --db phelomi --collection users --out user.json
+mongoexport --db phelomi --collection users --out user.json --jsonArray
+
+### 備份與還原資料庫
+mongodump --db phelomi
+mongorestore --db phelomi server/db/exportJson/dump/phelomi/
