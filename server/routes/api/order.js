@@ -26,7 +26,7 @@ const createOrderSchema = async ({
   nationality,
   checkInTime,
   checkOutTime,
-  roomType,
+  roomCid,
   price,
   totalPrice,
   account,
@@ -43,7 +43,7 @@ const createOrderSchema = async ({
     checkInTime,
     checkOutTime,
     createTime: nowTime,
-    roomType,
+    roomCid,
     price,
     totalPrice,
     totalValidPrice: 0,
@@ -63,7 +63,7 @@ const addOrder = async (req, res) => {
       nationality,
       checkInTime,
       checkOutTime,
-      roomType,
+      roomCid,
       price,
       totalPrice,
       note,
@@ -71,6 +71,9 @@ const addOrder = async (req, res) => {
     session: sess,
   } = req;
   const { userInfo: { account } } = sess;
+
+  // 查詢occ表，查看訂單是否有效
+
   const newOrder = await createOrderSchema({
     name,
     phone,
@@ -78,7 +81,7 @@ const addOrder = async (req, res) => {
     nationality,
     checkInTime,
     checkOutTime,
-    roomType,
+    roomCid,
     price,
     totalPrice,
     account,
@@ -99,7 +102,7 @@ const updateOrder = async (req, res) => {
       nationality,
       checkInTime,
       checkOutTime,
-      roomType,
+      roomCid,
       price,
       totalPrice,
       note,
@@ -115,7 +118,7 @@ const updateOrder = async (req, res) => {
     nationality,
     checkInTime,
     checkOutTime,
-    roomType,
+    roomCid,
     price,
     totalPrice,
     note,

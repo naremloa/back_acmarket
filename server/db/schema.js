@@ -28,22 +28,22 @@ export const login = {
 
 /**
  * orderSchema
- * @param {Number}  orderId  訂單編號(key)
- * @param {String}  name  姓名
- * @param {String}  phone  電話
- * @param {String}  email  電子郵件
- * @param {String}  nationality  國籍
- * @param {Number}  checkInTime  入住時間
- * @param {Number}  checkOutTime  退房時間
- * @param {Number}  createTime  訂房時間
- * @param {Number}  roomType  訂房房型
- * @param {Number}  price  房間單價(單位: 分)
- * @param {Number}  totalPrice  應收總價(單位: 分)
- * @param {Number}  totalValidPrice  實收總價(單位: 分)
- * @param {Number}  status  訂單狀態
- * @param {String}  latestModifyAccount  最近操作訂單帳號
- * @param {Number}  latestModifyTime  最近操作訂單時間
- * @param {String}  note  備註
+ * @param {Number}   orderId  訂單編號(key)
+ * @param {String}   name  姓名
+ * @param {String}   phone  電話
+ * @param {String}   email  電子郵件
+ * @param {String}   nationality  國籍
+ * @param {Number}   checkInTime  入住時間
+ * @param {Number}   checkOutTime  退房時間
+ * @param {Number}   createTime  訂房時間
+ * @param {ObjectId} roomCid  訂房房型
+ * @param {Number}   price  房間單價(單位: 分)
+ * @param {Number}   totalPrice  應收總價(單位: 分)
+ * @param {Number}   totalValidPrice  實收總價(單位: 分)
+ * @param {Number}   status  訂單狀態
+ * @param {String}   latestModifyAccount  最近操作訂單帳號
+ * @param {Number}   latestModifyTime  最近操作訂單時間
+ * @param {String}   note  備註
  */
 export const order = {
   orderId: Number,
@@ -54,7 +54,7 @@ export const order = {
   checkInTime: Number,
   checkOutTime: Number,
   createTime: Number,
-  roomType: Number,
+  roomCid: { type: 'ObjectId' },
   price: Number,
   totalPrice: Number,
   totalValidPrice: Number,
@@ -173,12 +173,12 @@ export const location = {
  * occSchema
  * @param {Number}    date 房間佔用日期(YMMDD)
  * @param {ObjectId}  orderCid 訂單cid
- * @param {Number}    roomType 房型類型(非房間)
+ * @param {Number}    roomCid 房型類型(非房間)
  */
 export const occ = {
   date: Number,
   orderCid: { type: 'ObjectId' },
-  roomType: { type: 'ObjectId' },
+  roomCid: { type: 'ObjectId' },
 };
 
 /**

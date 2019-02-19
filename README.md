@@ -48,3 +48,7 @@ mongoimport --db phelomi --collection locations server/db/initJson/location.json
 *TODO: 導出資料庫，方便假資料遷移*
 
 mongoimport --db phelomi --collection users server/db/initJson/user.json --jsonArray
+
+
+導出指令
+mongoexport --db phelomi --collection users --out user.json
