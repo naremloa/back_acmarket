@@ -178,7 +178,7 @@ export const location = {
 export const occ = {
   date: Number,
   orderCid: { type: 'ObjectId' },
-  roomType: Number,
+  roomType: { type: 'ObjectId' },
 };
 
 /**

@@ -27,3 +27,14 @@ export const formatDateKey = (dateKeyArr, data) => {
 };
 
 export const omitValueValid = obj => omitBy(obj, val => val === undefined);
+
+export const dateTime = (v) => {
+  if (v) {
+    const date = new Date(Number(v));
+    const Y = date.getFullYear();
+    const M = (date.getMonth() + 1).toString().padStart(2, '0');
+    const D = date.getDate().toString().padStart(2, '0');
+    return Number(`${Y}${M}${D}`);
+  }
+  return false;
+};
