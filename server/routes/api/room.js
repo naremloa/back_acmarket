@@ -32,6 +32,19 @@ const getRoomAboutAll = async (req, res) => {
   return roomAll;
 };
 
+const getRoomAllMaxLengthAndPriceInfo = async (req, res) => {
+  const roomAll = await getRoomAboutAll();
+  const result = roomAll
+    .reduce((acc, cur) => ({
+      ...acc,
+      [cur._id.toString()]: {
+        max: cur.roomList.length,
+        price: cur.price,
+      },
+    }), {});
+  return result;
+};
+
 const getRoomAll = async (req, res) => {
   const roomAll = await getRoomAboutAll();
   const result = [];
@@ -116,4 +129,5 @@ export {
   updateSubRoom,
   updateRoom,
   getRoomDetail,
+  getRoomAllMaxLengthAndPriceInfo,
 };

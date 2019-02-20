@@ -1,5 +1,11 @@
-// import { pickBy } from 'lodash';
-import { omitDateKey, formatDateKey } from '../utils/formatQuery';
+import { values, keys } from 'lodash';
+import mongoose from 'mongoose';
+import {
+  omitDateKey,
+  formatDateKey,
+  dateTime,
+  getDateRangeArr,
+} from '../utils/formatQuery';
 import {
   orderFind,
   orderCount,
@@ -7,7 +13,16 @@ import {
   orderFindByIdAndUpdate,
   orderFindById,
 } from '../models/order';
+import {
+  getOccByDateAndRoomCidObj,
+  addOcc,
+} from './occ';
+import {
+  getRoomAllMaxLengthAndPriceInfo,
+} from './room';
 import { outputSuccess, outputError } from '../utils/outputFormat';
+
+const { ObjectId } = mongoose.Types;
 
 const getOrder = async (req, res) => {
   const { query } = req;
@@ -26,14 +41,19 @@ const createOrderSchema = async ({
   nationality,
   checkInTime,
   checkOutTime,
-  roomCid,
-  price,
+  roomCidArr,
+  roomInfo,
   totalPrice,
   account,
   note,
 }) => {
   const nowTime = new Date().getTime();
   const count = await orderCount();
+  const localRoomInfo = roomCidArr.map(i => ({
+    roomCid: ObjectId(i),
+    subRoomId: 0,
+    price: roomInfo[i].price,
+  }));
   return {
     orderId: count + 1,
     name,
@@ -43,8 +63,7 @@ const createOrderSchema = async ({
     checkInTime,
     checkOutTime,
     createTime: nowTime,
-    roomCid,
-    price,
+    roomInfo: localRoomInfo,
     totalPrice,
     totalValidPrice: 0,
     status: 1,
@@ -63,31 +82,60 @@ const addOrder = async (req, res) => {
       nationality,
       checkInTime,
       checkOutTime,
-      roomCid,
-      price,
-      totalPrice,
+      roomCidArr,
       note,
     },
     session: sess,
   } = req;
   const { userInfo: { account } } = sess;
 
-  // 查詢occ表，查看訂單是否有效
+  // 處理房型房間信息
+  const roomMaxInfo = await getRoomAllMaxLengthAndPriceInfo();
+  /**
+   * {
+   *    5c5ed89dd6b4f80dbe3c1281: {
+   *      qty: 2,
+   *      max: 5,
+   *      price: 2000,
+   *    }
+   * }
+   */
+  const roomInfo = roomCidArr
+    .reduce((acc, cur) => (acc[cur] !== undefined
+      ? { ...acc, [cur]: { ...acc[cur], qty: acc[cur].qty + 1 } }
+      : { ...acc, [cur]: { qty: 1, ...roomMaxInfo[cur] } }));
+  const totalPrice = (new Set(roomCidArr)).reduce((acc, cur) => {
+    if ((acc === false) || cur.qty > cur.max) return false;
+    return acc + Number(cur.price);
+  }, 0);
+  if (totalPrice === false) return res.send(outputError('新增訂單異常，訂房數量超過最大房間數'));
 
-  const newOrder = await createOrderSchema({
+  // 查詢occ表，查看訂單是否有效
+  const validStatus = await getOccByDateAndRoomCidObj({
+    startDate: dateTime(checkInTime),
+    endDate: dateTime(checkOutTime),
+    roomInfo,
+  });
+  if (!validStatus) return res.send(outputError('新增訂單異常，occ查詢不過'));
+
+  const newOrderObj = await createOrderSchema({
     name,
     phone,
     email,
     nationality,
     checkInTime,
     checkOutTime,
-    roomCid,
-    price,
+    roomCidArr,
+    roomInfo,
     totalPrice,
     account,
     note,
   });
-  await orderInsert(newOrder);
+  const newOrder = await orderInsert(newOrderObj);
+  console.log('newOrder', newOrder);
+  // TODO: 新增訂單同時，塞進occ表中佔位
+  const dateArr = getDateRangeArr(checkInTime, checkOutTime);
+  await addOcc({ dateArr, orderCid: newOrder._id, roomCidArr });
   // TODO:
   return res.send(outputSuccess({}, '新增訂單'));
 };

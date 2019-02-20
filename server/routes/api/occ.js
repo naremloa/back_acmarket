@@ -1,13 +1,17 @@
-import { values } from 'lodash';
+import mongoose from 'mongoose';
+import { values, keys } from 'lodash';
 import { outputSuccess, outputError } from '../utils/outputFormat';
 import { dateTime } from '../utils/formatQuery';
 import {
   occFind,
+  occInsertMany,
 } from '../models/occ';
 import {
   roomFind,
   roomFindById,
 } from '../models/room';
+
+const { ObjectId } = mongoose.Types;
 
 const getOccList = async (req, res) => {
   const { startTime, endTime } = req;
@@ -33,30 +37,68 @@ const getOccList = async (req, res) => {
   return res.send(outputSuccess(result, '查詢成功'));
 };
 
-const getOccByDateAndRoomCid = async ({ startDate, endDate, roomCid }) => {
+/**
+ * roomCidObj
+ * {
+ *    5c5ed89dd6b4f80dbe3c1281: {
+ *      qty: 2,
+ *      max: 5,
+ *      price: 2000,
+ *    }
+ *    ...
+ * }
+ */
+const getOccByDateAndRoomCidObj = async ({ startDate, endDate, roomCidObj }) => {
+  if (!startDate || !endDate) return false;
+  const roomCidArr = keys(roomCidObj);
+  if (!roomCidArr.length) return false;
   const query = {
     date: { $get: startDate, $lt: endDate },
-    roomCid,
+    roomCid: { $in: roomCidArr },
   };
-  const room = await roomFindById(roomCid);
-  if (!room) return false;
-  const maxRoomLength = room.roomList.length;
   const occ = await occFind(query);
-  if (occ && occ.length) {
+  if (!occ) return false;
+  if (occ.length) {
     const occInfo = occ
-      .reduce((acc, cur) => (acc[cur.date] === undefined
-        ? { ...acc, [cur.date]: 0 }
-        : { ...acc, [cur.date]: acc[cur.date] + 1 }));
-    if (values(occInfo).find(v => v >= maxRoomLength) !== undefined) return false;
+      .reduce((acc, cur) => {
+        const key = cur.roomCid.toString();
+        if (acc[key] !== undefined) {
+          const lastNum = Number.isNaN(Number(acc[key][cur.date])) ? 0 : Number(acc[key][cur.date]);
+          return {
+            ...acc,
+            [key]: {
+              ...acc[key],
+              [cur.date]: lastNum + 1,
+            },
+          };
+        }
+        return { ...acc, [key]: { [cur.date]: 1 } };
+      }, {});
+
+    let status = true;
+    roomCidArr.forEach((i) => {
+      if (!status) return;
+      const occArr = values(occInfo[i]);
+      const occNum = roomCidObj[i].max - roomCidObj[i].qty;
+      if (occArr.find(v => v > occNum) !== undefined) {
+        status = false;
+      }
+    });
+    if (!status) return false;
   }
   return true;
 };
 
-const addOcc = async ({ date, orderCid, rommCid }) => {
-
+const addOcc = async ({ dateArr, orderCid, roomCidArr }) => {
+  const arr = dateArr
+    .map(date => roomCidArr.map(roomCid => ({ date, orderCid, roomCid })))
+    .reduce((acc, cur) => [...acc, ...cur], []);
+  const result = await occInsertMany(arr);
+  return true;
 };
 
 export {
   getOccList,
-  getOccByDateAndRoomCid,
+  getOccByDateAndRoomCidObj,
+  addOcc,
 };

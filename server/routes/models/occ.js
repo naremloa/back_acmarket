@@ -7,6 +7,12 @@ const occFind = async (query) => {
   return res;
 };
 
+const occInsertMany = async (arr) => {
+  const res = await Occ.insertMany(arr);
+  return res;
+};
+
 export {
   occFind,
+  occInsertMany,
 };

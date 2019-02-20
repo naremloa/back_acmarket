@@ -36,8 +36,10 @@ export const login = {
  * @param {Number}   checkInTime  入住時間
  * @param {Number}   checkOutTime  退房時間
  * @param {Number}   createTime  訂房時間
- * @param {ObjectId} roomCid  訂房房型
- * @param {Number}   price  房間單價(單位: 分)
+ * @param {Array<Object>}   roomInfo 訂房信息
+ *    @param roomCid   房型cid
+ *    @param subRoomId 房間id
+ *    @param price     房型單價
  * @param {Number}   totalPrice  應收總價(單位: 分)
  * @param {Number}   totalValidPrice  實收總價(單位: 分)
  * @param {Number}   status  訂單狀態
@@ -54,8 +56,11 @@ export const order = {
   checkInTime: Number,
   checkOutTime: Number,
   createTime: Number,
-  roomCid: { type: 'ObjectId' },
-  price: Number,
+  roomInfo: [{
+    roomCid: { type: 'ObjectId' },
+    subRoomId: Number,
+    price: Number,
+  }],
   totalPrice: Number,
   totalValidPrice: Number,
   status: Number,
@@ -191,6 +196,7 @@ export const room = {
     regulation: String,
     refund: String,
   },
+  price: Number,
   roomList: [
     {
       id: Number,
