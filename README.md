@@ -59,3 +59,4 @@ mongorestore --db phelomi server/db/exportJson/dump/phelomi/
 
 ### 新建資料庫操作
 mongoimport --db phelomi --collection routers server/db/initJson/router.json --jsonArray
+mongoimport --db phelomi --collection rooms server/db/initJson/room.json --jsonArray

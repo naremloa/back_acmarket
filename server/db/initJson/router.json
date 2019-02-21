@@ -50,19 +50,19 @@
       {
         "id": 1012,
         "dataKey": "roomRepairList",
-        "name": "房間列表",
+        "name": "維修列表",
         "apiRoot": [
-          "/room"
+          "/maint"
         ],
         "rootId": 1002,
         "childNode": []
       },
       {
-        "id": 1013,
-        "dataKey": "cashList",
-        "name": "收支明細",
+        "id": 1016,
+        "dataKey": "room",
+        "name": "房型設定",
         "apiRoot": [
-          "/cash"
+          "/room"
         ],
         "rootId": 1002,
         "childNode": []

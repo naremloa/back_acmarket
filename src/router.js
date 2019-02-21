@@ -90,7 +90,7 @@ export default new Router({
           name: 'roomRepairList',
           component: () => import('@/views/pages/roomRepair/roomRepairList.vue'),
           meta: {
-            title: '修理列表',
+            title: '維修列表',
           },
         },
         {

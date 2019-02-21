@@ -1,0 +1,32 @@
+[
+  {
+    "name": "兩人房型",
+    "content": {
+      "intro": "我是A介紹",
+      "regulation": "我是A須知",
+      "refund": "我是A退房"
+    },
+    "price": 1000,
+    "roomList": []
+  },
+  {
+    "name": "三人房型",
+    "content": {
+      "intro": "我是B介紹",
+      "regulation": "我是B須知",
+      "refund": "我是B退房"
+    },
+    "price": 2000,
+    "roomList": []
+  },
+  {
+    "name": "四人房型",
+    "content": {
+      "intro": "我是C介紹",
+      "regulation": "我是C須知",
+      "refund": "我是C退房"
+    },
+    "price": 3000,
+    "roomList": []
+  }
+]
