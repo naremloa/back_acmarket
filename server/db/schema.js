@@ -13,6 +13,7 @@
  * @param {Number}  lastLoginTime  最後登入時間
  */
 export const login = {
+  id: { type: Number, index: true },
   account: String,
   accountAlias: String,
   password: String,
@@ -54,13 +55,21 @@ export const order = {
   email: String,
   nationality: String,
   checkInTime: Number,
-  checkOutTime: Number,
-  createTime: Number,
+  // checkOutTime: Number,
+  // createTime: Number,
   roomInfo: [{
-    roomCid: { type: 'ObjectId' },
-    subRoomId: Number,
-    price: Number,
+    roomCid: {
+      date: Array,
+      qty: Number,
+    },
   }],
+  // roomInfo: [{
+  //   checkInTime: Number,
+  //   checkOutTime: Number,
+  //   roomCid: { type: 'ObjectId' },
+  //   subRoomId: Number,
+  //   price: Number,
+  // }],
   totalPrice: Number,
   totalValidPrice: Number,
   status: Number,
