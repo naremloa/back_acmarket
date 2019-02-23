@@ -1,4 +1,4 @@
-import { values, keys } from 'lodash';
+import { values, keys, forOwn } from 'lodash';
 import mongoose from 'mongoose';
 import {
   omitDateKey,
@@ -16,6 +16,7 @@ import {
 import {
   getOccByDateAndRoomCidObj,
   addOcc,
+  getRoomCidOccByDate,
 } from './occ';
 import {
   getRoomAllMaxLengthAndPriceInfo,
@@ -39,20 +40,19 @@ const createOrderSchema = async ({
   phone,
   email,
   nationality,
-  checkInTime,
-  checkOutTime,
-  roomCidArr,
-  roomInfo,
   totalPrice,
   account,
   note,
+  roomInfoDate,
+  roomAllInfo,
 }) => {
   const nowTime = new Date().getTime();
   const count = await orderCount();
-  const localRoomInfo = roomCidArr.map(i => ({
-    roomCid: ObjectId(i),
-    subRoomId: 0,
-    price: roomInfo[i].price,
+  const localRoomInfo = [];
+  forOwn(roomInfoDate, (dateArr, roomCid) => localRoomInfo.push({
+    roomCid: ObjectId(roomCid),
+    price: roomAllInfo[roomCid].price,
+    num: dateArr.length,
   }));
   return {
     orderId: count + 1,
@@ -60,8 +60,6 @@ const createOrderSchema = async ({
     phone,
     email,
     nationality,
-    checkInTime,
-    checkOutTime,
     createTime: nowTime,
     roomInfo: localRoomInfo,
     totalPrice,
@@ -80,9 +78,15 @@ const addOrder = async (req, res) => {
       phone,
       email,
       nationality,
-      checkInTime,
-      checkOutTime,
-      roomCidArr,
+      /**
+       * roomInfo
+       * [
+       *    { date: 20190217, roomCid: '5c5ed89dd6b4f80dbe3c1281' },
+       *    { date: 20190217, roomCid: '5c5ed89dd6b4f80dbe3c1281' },
+       *    ...
+       * ]
+       */
+      roomInfo,
       note,
     },
     session: sess,
@@ -90,52 +94,94 @@ const addOrder = async (req, res) => {
   const { userInfo: { account } } = sess;
 
   // 處理房型房間信息
-  const roomMaxInfo = await getRoomAllMaxLengthAndPriceInfo();
   /**
+   * roomAllInfo
    * {
    *    5c5ed89dd6b4f80dbe3c1281: {
-   *      qty: 2,
    *      max: 5,
    *      price: 2000,
+   *    },
+   *    ...
+   * }
+   */
+  const roomAllInfo = await getRoomAllMaxLengthAndPriceInfo();
+  const roomAllCid = keys(roomAllInfo);
+  if (roomInfo.find(i => !(roomAllCid.includes(i.roomCid)))) {
+    return res.send(outputError('訂單中存在未知房型，生成訂單失敗'));
+  }
+  /**
+   * 需要查詢的時間點
+   * roomInfoDate
+   * {
+   *    5c5ed89dd6b4f80dbe3c1281: [20190217, 20190218],
+   *    ...
+   * }
+   */
+  const roomInfoDate = roomInfo.reduce((acc, { date, roomCid }) => ({
+    ...acc, [roomCid]: [...(new Set([...(acc[roomCid] || []), date]))],
+  }), {});
+
+  /**
+   * roomInfoCount
+   * {
+   *    5c5ed89dd6b4f80dbe3c1281: {
+   *      20190217: 2,
+   *      20190218: 1,
    *    }
    * }
    */
-  const roomInfo = roomCidArr
-    .reduce((acc, cur) => (acc[cur] !== undefined
-      ? { ...acc, [cur]: { ...acc[cur], qty: acc[cur].qty + 1 } }
-      : { ...acc, [cur]: { qty: 1, ...roomMaxInfo[cur] } }));
-  const totalPrice = (new Set(roomCidArr)).reduce((acc, cur) => {
-    if ((acc === false) || cur.qty > cur.max) return false;
-    return acc + Number(cur.price);
-  }, 0);
-  if (totalPrice === false) return res.send(outputError('新增訂單異常，訂房數量超過最大房間數'));
+  const roomInfoCount = roomInfo.reduce((acc, { date, roomCid }) => {
+    if (acc[roomCid] === undefined) acc[roomCid] = {};
+    if (acc[roomCid][date] === undefined) acc[roomCid][date] = 0;
+    acc[roomCid][date] += 1;
+    return acc;
+  }, {});
 
-  // 查詢occ表，查看訂單是否有效
-  const validStatus = await getOccByDateAndRoomCidObj({
-    startDate: dateTime(checkInTime),
-    endDate: dateTime(checkOutTime),
-    roomInfo,
+  const roomAllInDateInfo = await getRoomCidOccByDate(roomInfoDate);
+
+  // 借totalPrice判斷，若為false則房間訂單不合法，若為數字，則房間訂單成立，並同時給出應計總價
+  let totalPrice = true;
+  // 遍歷所有訂單房型
+  forOwn(roomInfoCount, (valueRoomCid) => {
+    if (totalPrice === false) return;
+    // 單一房型下最大房間數量
+    const { max, price } = roomAllInfo[valueRoomCid];
+    // 遍歷當前訂單房型下的入住時間
+    forOwn(roomInfoCount[valueRoomCid], (valueDate) => {
+      if (totalPrice === false) return;
+      // 房間預定數量
+      const num = roomInfoCount[valueRoomCid][valueDate];
+
+      // 當前房型無佔用, 或當前房型有佔用, 但佔用時間與遍歷時間不一樣, 即 佔用數為 0
+      const occNum = roomAllInDateInfo[valueRoomCid] === undefined
+        || roomAllInDateInfo[valueRoomCid][valueDate] === undefined
+        ? 0 : roomAllInDateInfo[valueRoomCid][valueDate];
+      if (occNum + num <= max) {
+        totalPrice = false;
+        return;
+      }
+      totalPrice += (price * num);
+    });
   });
-  if (!validStatus) return res.send(outputError('新增訂單異常，occ查詢不過'));
+  if (totalPrice === false) return res.send(outputError('新增訂單異常，occ查詢不過'));
 
   const newOrderObj = await createOrderSchema({
     name,
     phone,
     email,
     nationality,
-    checkInTime,
-    checkOutTime,
-    roomCidArr,
     roomInfo,
     totalPrice,
     account,
     note,
+    roomInfoDate,
+    roomAllInfo,
   });
   const newOrder = await orderInsert(newOrderObj);
   console.log('newOrder', newOrder);
   // TODO: 新增訂單同時，塞進occ表中佔位
-  const dateArr = getDateRangeArr(checkInTime, checkOutTime);
-  await addOcc({ dateArr, orderCid: newOrder._id, roomCidArr });
+
+  await addOcc(roomInfo, newOrder._id);
   // TODO:
   return res.send(outputSuccess({}, '新增訂單'));
 };

@@ -89,11 +89,26 @@ const getOccByDateAndRoomCidObj = async ({ startDate, endDate, roomCidObj }) => 
   return true;
 };
 
-const addOcc = async ({ dateArr, orderCid, roomCidArr }) => {
-  const arr = dateArr
-    .map(date => roomCidArr.map(roomCid => ({ date, orderCid, roomCid })))
-    .reduce((acc, cur) => [...acc, ...cur], []);
-  const result = await occInsertMany(arr);
+const getRoomCidOccByDate = async (dateArr) => {
+  const query = { date: { $in: dateArr } };
+  const occ = await occFind(query);
+  const result = occ.reduce((acc, { date, roomCid }) => {
+    const localRoomCid = roomCid.toString();
+    if (acc[localRoomCid] === undefined) acc[localRoomCid] = {};
+    if (acc[localRoomCid][date] === undefined) acc[localRoomCid][date] = 0;
+    acc[localRoomCid][date] += 1;
+    return acc;
+  });
+  return result;
+};
+
+const addOcc = async (roomInfo, orderCid) => {
+  const localRoomInfo = roomInfo.map(({ date, roomCid }) => ({
+    date,
+    roomCid: ObjectId(roomCid),
+    orderCid,
+  }));
+  const result = await occInsertMany(localRoomInfo);
   return true;
 };
 
@@ -101,4 +116,5 @@ export {
   getOccList,
   getOccByDateAndRoomCidObj,
   addOcc,
+  getRoomCidOccByDate,
 };

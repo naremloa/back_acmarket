@@ -7,13 +7,14 @@ import * as maint from './interface/maintInterface';
 import * as cash from './interface/cashInterface';
 import * as global from './interface/globalInterface';
 import * as front from './interface/frontInterface';
+import * as room from './interface/roomInterface';
 
 const exRouter = express.Router();
 
 const getKey = 'get';
 const postKey = 'post';
 const registerInterface = [
-  login, order, router, user, maint, cash, global, front,
+  login, order, router, user, maint, cash, global, front, room,
 ];
 
 registerInterface.forEach((rInterface) => {

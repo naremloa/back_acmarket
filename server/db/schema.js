@@ -38,9 +38,9 @@ export const login = {
  * @param {Number}   checkOutTime  退房時間
  * @param {Number}   createTime  訂房時間
  * @param {Array<Object>}   roomInfo 訂房信息
- *    @param roomCid   房型cid
- *    @param subRoomId 房間id
- *    @param price     房型單價
+ *    @param {ObjectId} roomCid  房型cid
+ *    @param {Number}   price  房型單價
+ *    @param {Number}   num  入住天數
  * @param {Number}   totalPrice  應收總價(單位: 分)
  * @param {Number}   totalValidPrice  實收總價(單位: 分)
  * @param {Number}   status  訂單狀態
@@ -54,22 +54,14 @@ export const order = {
   phone: String,
   email: String,
   nationality: String,
-  checkInTime: Number,
-  // checkOutTime: Number,
-  // createTime: Number,
-  roomInfo: [{
-    roomCid: {
-      date: Array,
-      qty: Number,
+  createTime: Number,
+  roomInfo: [
+    {
+      roomCid: { type: 'ObjectId' },
+      price: Number,
+      num: Number,
     },
-  }],
-  // roomInfo: [{
-  //   checkInTime: Number,
-  //   checkOutTime: Number,
-  //   roomCid: { type: 'ObjectId' },
-  //   subRoomId: Number,
-  //   price: Number,
-  // }],
+  ],
   totalPrice: Number,
   totalValidPrice: Number,
   status: Number,
@@ -187,12 +179,14 @@ export const location = {
  * occSchema
  * @param {Number}    date 房間佔用日期(YMMDD)
  * @param {ObjectId}  orderCid 訂單cid
- * @param {Number}    roomCid 房型類型(非房間)
+ * @param {ObjectId}  roomCid 房型cid(非房間)
+ * @param {Number}    subRoomId 房間id
  */
 export const occ = {
   date: Number,
   orderCid: { type: 'ObjectId' },
   roomCid: { type: 'ObjectId' },
+  subRoomId: Number,
 };
 
 /**

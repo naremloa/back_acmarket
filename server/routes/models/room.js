@@ -6,12 +6,12 @@ const { Room } = Models;
 const { ObjectId } = mongoose.Types;
 
 const roomFind = async (query) => {
-  const res = await Room.find(query);
+  const res = await Room.find(query).lean();
   return res;
 };
 
 const roomFindById = async (cid) => {
-  const res = await Room.findById(ObjectId(cid));
+  const res = await Room.findById(ObjectId(cid)).lean();
   return res;
 };
 

@@ -27,12 +27,20 @@ const createSubRoomSchema = ({
   picList,
 });
 
-const getRoomAboutAll = async (req, res) => {
+const getRoomAboutAll = async () => {
   const roomAll = await roomFind({});
   return roomAll;
 };
 
-const getRoomAllMaxLengthAndPriceInfo = async (req, res) => {
+/**
+ * {
+ *    5c5ed89dd6b4f80dbe3c1281: {
+ *      max: 5,
+ *      price: 2000,
+ *    }
+ * }
+ */
+const getRoomAllMaxLengthAndPriceInfo = async () => {
   const roomAll = await getRoomAboutAll();
   const result = roomAll
     .reduce((acc, cur) => ({
@@ -60,9 +68,17 @@ const getRoomAll = async (req, res) => {
   return res.send(outputSuccess(result));
 };
 
+const getRoomOption = async (req, res) => {
+  const roomAll = await getRoomAboutAll();
+  const result = roomAll.map(({ _id, name }) => ({ cid: _id, name }));
+  return res.send(outputSuccess(result));
+};
+
 const addSubRoom = async (req, res) => {
   const {
-    cid, name, picList = [],
+    body: {
+      cid, name, picList = [],
+    },
   } = req;
   const room = await roomFindById(cid);
   if (!room) return res.send(outputError('不存在該房型'));
@@ -130,4 +146,5 @@ export {
   updateRoom,
   getRoomDetail,
   getRoomAllMaxLengthAndPriceInfo,
+  getRoomOption,
 };
