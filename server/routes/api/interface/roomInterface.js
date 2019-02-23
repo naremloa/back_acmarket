@@ -70,9 +70,11 @@ export const get = [
    * @apiSuccessExample {json} Success-Response:
    * [
    *    {
-   *      "type":
-   *      "typeName":
-   *      ""
+   *      "type": "5c5ed89dd6b4f80dbe3c1281",
+   *      "typeName": “兩人房型”,
+   *      "id": 1,
+   *      "name": "太平洋",
+   *      "picList": [],
    *    }
    * ]
    */
