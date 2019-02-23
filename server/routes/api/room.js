@@ -8,9 +8,9 @@ import {
 
 const createRoomSchema = ({
   name,
-  intro,
-  regulation,
-  refund,
+  intro = '',
+  regulation = '',
+  refund = '',
 }, update = false) => {
   const mainPart = { name, content: { intro, regulation, refund } };
   if (update) return mainPart;
