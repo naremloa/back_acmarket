@@ -101,6 +101,14 @@ export default new Router({
             title: '收支明細',
           },
         },
+        {
+          path: 'room/list',
+          name: 'room',
+          component: () => import('@/views/pages/room/roomList.vue'),
+          meta: {
+            title: '房型設定',
+          },
+        },
       ],
     },
     {
