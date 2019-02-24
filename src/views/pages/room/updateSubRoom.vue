@@ -102,6 +102,7 @@ export default {
     },
   },
   mounted() {
+    console.log('TCL: mounted -> this.contentData', this.contentData);
     this.formatProps(this.contentData);
   },
   methods: {
