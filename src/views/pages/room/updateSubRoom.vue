@@ -101,6 +101,9 @@ export default {
       if (val) this.formatProps(this.contentData);
     },
   },
+  mounted() {
+    this.formatProps(this.contentData);
+  },
   methods: {
     getParamsOrigin() {
       return {
