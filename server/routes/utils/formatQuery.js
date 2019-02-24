@@ -51,8 +51,10 @@ export const dateTime = (time) => {
 
 export const getDateRangeArr = (startTime, endTime) => {
   if (startTime && endTime) {
+    const localStartTime = Number(startTime);
+    const localEndTime = Number(endTime);
     const arr = [];
-    for (let i = startTime; i <= endTime; i += 86400000) {
+    for (let i = localStartTime; i <= localEndTime; i += 86400000) {
       arr.push(dateTime(i));
     }
     return arr;

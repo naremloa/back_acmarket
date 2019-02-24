@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import { values, keys } from 'lodash';
 import { outputSuccess, outputError } from '../utils/outputFormat';
-import { dateTime } from '../utils/formatQuery';
+import { dateTime, getDateRangeArr } from '../utils/formatQuery';
 import {
   occFind,
   occInsertMany,
@@ -22,6 +22,7 @@ const getOccList = async (req, res) => {
   const roomInfo = (await roomFind({}))
     .map(i => ({ _id: i._id, name: i.name, length: i.roomList.length }))
     .reduce((acc, cur) => ({ ...acc, [cur._id.toString()]: cur.length }), {});
+  const roomInfoKey = keys(roomInfo);
   const occ = await occFind(query);
   const occInfo = occ.reduce((acc, cur) => {
     const { date, roomCid } = cur;
@@ -30,8 +31,16 @@ const getOccList = async (req, res) => {
     const num = acc[date][cid] !== undefined ? acc[date][cid] + 1 : 0;
     return { ...acc, [date]: { [cid]: num } };
   }, {});
+  const completeOccInfo = getDateRangeArr(startTime, endTime).reduce((acc, cur) => ({
+    ...acc,
+    [cur]: roomInfoKey.reduce((roomAcc, roomCur) => ({
+      ...roomAcc,
+      [roomCur]: (occInfo[cur] === undefined || occInfo[cur][roomCur] === undefined)
+        ? 0 : occInfo[cur][roomCur],
+    }), {}),
+  }), {});
   const result = {
-    occ: occInfo,
+    occ: completeOccInfo,
     info: roomInfo,
   };
   return res.send(outputSuccess(result, '查詢成功'));
