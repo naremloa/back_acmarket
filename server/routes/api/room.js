@@ -94,7 +94,9 @@ const addSubRoom = async (req, res) => {
 
 const updateSubRoom = async (req, res) => {
   const {
-    cid, id, name, picList = [],
+    body: {
+      cid, id, name, picList = [],
+    },
   } = req;
   const room = await roomFindById(cid);
   if (!room) return res.send(outputError('不存在該房型'));
@@ -112,9 +114,12 @@ const updateSubRoom = async (req, res) => {
 
 const updateRoom = async (req, res) => {
   const {
-    cid, name, intro, regulation, refund,
+    body: {
+      cid, name, intro, regulation, refund,
+    },
   } = req;
   const room = await roomFindById(cid);
+  console.log('check', cid, room);
   if (!room) return res.send(outputError('不存在該房型'));
   const updatePart = createRoomSchema({
     name, intro, regulation, refund,
@@ -125,7 +130,11 @@ const updateRoom = async (req, res) => {
 };
 
 const getRoomDetail = async (req, res) => {
-  const { cid, id } = req;
+  const {
+    body: {
+      cid, id,
+    },
+  } = req;
   const room = await roomFindById(cid);
   if (!room) return res.send(outputError('不存在該房型'));
   const subRoom = room.roomList.find(i => i.id === Number(id));
