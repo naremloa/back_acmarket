@@ -58,14 +58,18 @@ const getRoomAll = async (req, res) => {
   const roomAll = await getRoomAboutAll();
   const result = [];
   roomAll.forEach((i) => {
-    const { _id, name, roomList } = i;
+    const {
+      _id, name, price, roomList,
+    } = i;
     // const formatRoomList = roomList.map(rI => ({
     //   type: _id,
     //   typeName: name,
     //   ...rI,
     // }));
     // result.push(...formatRoomList);
-    result.push({ roomCid: _id, roomName: name, subRoomList: roomList });
+    result.push({
+      roomCid: _id, roomName: name, subRoomList: roomList, price,
+    });
   });
   return res.send(outputSuccess(result));
 };
