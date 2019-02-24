@@ -37,7 +37,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use((req, res, next) => {
-  console.log('Time', Date.now());
+  console.log('interface', req.originalUrl, Date.now());
   next();
 });
 
