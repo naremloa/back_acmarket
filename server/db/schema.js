@@ -34,8 +34,6 @@ export const login = {
  * @param {String}   phone  電話
  * @param {String}   email  電子郵件
  * @param {String}   nationality  國籍
- * @param {Number}   checkInTime  入住時間
- * @param {Number}   checkOutTime  退房時間
  * @param {Number}   createTime  訂房時間
  * @param {Array<Object>}   roomInfo 訂房信息
  *    @param {ObjectId} roomCid  房型cid
