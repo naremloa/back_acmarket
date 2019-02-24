@@ -125,17 +125,17 @@ export default {
     methodProcessParams() {
       const {
         nameShow,
-        picList1,
-        picList2,
-        picList3,
+        // picList1,
+        // picList2,
+        // picList3,
       } = this.subRoomParams;
       const params = {};
       params.cid = this.contentData.cid;
       params.name = nameShow;
-      params.picList = [];
-      if (picList1) params.picList.push(picList1);
-      if (picList2) params.picList.push(picList2);
-      if (picList3) params.picList.push(picList3);
+      // params.picList = [];
+      // if (picList1) params.picList.push(picList1);
+      // if (picList2) params.picList.push(picList2);
+      // if (picList3) params.picList.push(picList3);
       this.addSubRoom(params);
     },
     async addSubRoom(params) {

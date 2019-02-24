@@ -312,7 +312,7 @@ export default {
         url: '/v1/api/room/subRoom/add',
         method: 'POST',
         data: {
-          cid: '5c6e4b5f44e77ca854b533dd',
+          cid: '5c728b7b44e77ca854b57cd7',
           name: '太平洋房',
         },
       });
