@@ -20,8 +20,12 @@ const getOccList = async (req, res) => {
   if (!startDate || !endDate) return res.send(outputError('查詢條件有誤'));
   const query = { date: { $gte: startDate, $lt: endDate } };
   const roomInfo = (await roomFind({}))
-    .map(i => ({ _id: i._id, name: i.name, length: i.roomList.length }))
-    .reduce((acc, cur) => ({ ...acc, [cur._id.toString()]: cur.length }), {});
+    .map(i => ({
+      _id: i._id, name: i.name, price: i.price, length: i.roomList.length,
+    }))
+    .reduce((acc, {
+      _id, name, price, length,
+    }) => ({ ...acc, [_id.toString()]: { name, price, length } }), {});
   const roomInfoKey = keys(roomInfo);
   const occ = await occFind(query);
   const occInfo = occ.reduce((acc, cur) => {

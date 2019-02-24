@@ -26,9 +26,9 @@ export const get = [
    *      "20190228": { A: 3, B: 1, C: 2 },
    *    },
    *    "info": {
-   *      "A": 5,
-   *      "B": 3,
-   *      "C": 4,
+   *      "A": { "length": 3, "name": "太平洋", "price": 3000 },
+   *      "B": { "length": 3, "name": "太平洋", "price": 3000 },
+   *      "C": { "length": 3, "name": "太平洋", "price": 3000 },
    *    }
    * }
    */
