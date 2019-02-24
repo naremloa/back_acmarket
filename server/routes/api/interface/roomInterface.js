@@ -31,6 +31,7 @@ export const post = [
    *
    * @apiParam {String} cid 房型cid
    * @apiParam {String} name 房型名稱
+   * @apiParam {Number} price 房型單價
    */
   ['/room/update', middlewareCheckLoginStatusSession, updateRoom],
 

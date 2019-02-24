@@ -11,8 +11,9 @@ const createRoomSchema = ({
   intro = '',
   regulation = '',
   refund = '',
+  price = 0,
 }, update = false) => {
-  const mainPart = { name, content: { intro, regulation, refund } };
+  const mainPart = { name, content: { intro, regulation, refund }, price };
   if (update) return mainPart;
   return { ...mainPart, roomList: [] };
 };
@@ -116,14 +117,13 @@ const updateSubRoom = async (req, res) => {
 const updateRoom = async (req, res) => {
   const {
     body: {
-      cid, name, intro, regulation, refund,
+      cid, name, intro, regulation, refund, price = 0,
     },
   } = req;
   const room = await roomFindById(cid);
-  console.log('check', cid, room);
   if (!room) return res.send(outputError('不存在該房型'));
   const updatePart = createRoomSchema({
-    name, intro, regulation, refund,
+    name, intro, regulation, refund, price,
   }, true);
   const updateObj = { ...room, ...updatePart };
   const result = await roomFindByIdAndUpdate(cid, updateObj);
