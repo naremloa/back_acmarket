@@ -73,6 +73,7 @@ export default {
       };
     },
     formatProps(rowData) {
+      console.log('TCL: formatProps -> rowData', rowData);
       const {
         name,
         intro,

@@ -1,95 +1,11 @@
 <template>
   <div class="room-list">
-    <!-- <v-layout row wrap justify-end>
-      <v-btn @click="methodAddSubRoomRepair">
-        <v-icon>mdi-plus</v-icon>
-        新增房型
-      </v-btn> -->
-      <!-- <v-btn @click="methodAddSubRoom">
+    <v-layout row wrap justify-end>
+      <v-btn @click="methodAddSubRoom">
         <v-icon>mdi-plus</v-icon>
         新增房間
       </v-btn>
-    </v-layout> -->
-    <!-- <v-expansion-panel class="mb-2">
-      <v-expansion-panel-content class="accent">
-        <div slot="header" class="subheading">搜尋選項</div>
-        <v-form v-model="valid" class="px-2">
-          <v-layout row wrap>
-            <v-flex
-              sm12
-              md4
-              lg3
-              px-1
-              v-for="(item, idx) in searchItemParams"
-              :key="`searchItemParams${idx}`"
-            >
-              <v-text-field
-                v-model="searchParams[item.key]"
-                :label="item.label"
-                clearable
-              ></v-text-field>
-            </v-flex>
-          </v-layout>
-          <v-layout row wrap>
-            <v-flex
-              sm12
-              md3
-              lg3
-              px-1
-              v-for="(item, idx) in searchTimeParams"
-              :key="`searchTimeParams${idx}`"
-            >
-              <v-menu
-                :ref="`menu${idx}`"
-                :close-on-content-click="false"
-                v-model="selectMenu[idx]"
-                :nudge-right="40"
-                :value="searchParams[item.key]"
-                lazy
-                transition="scale-transition"
-                offset-y
-                full-width
-              >
-                <v-text-field
-                  slot="activator"
-                  v-model="searchParams[item.key]"
-                  :label="item.label"
-                  clearable
-                  prepend-icon="mdi-calendar"
-                  readonly
-                ></v-text-field>
-                <v-date-picker
-                  v-model="searchParams[item.key]"
-                  scrollable
-                  no-title
-                  locale="zh-Hant"
-                  show-current
-                  class="d-flex"
-                >
-                  <v-spacer></v-spacer>
-                  <v-btn
-                    flat
-                    color="primary"
-                    @click="$set(selectMenu,idx,false)"
-                  >Cancel</v-btn>
-                  <v-btn
-                    flat
-                    color="primary"
-                    @click="$refs[`menu${idx}`][0].save(searchParams[item.key])"
-                  >OK</v-btn>
-                </v-date-picker>
-              </v-menu>
-            </v-flex>
-            <v-flex text-xs-right>
-              <v-btn flat @click="methodFormReset">重置</v-btn>
-              <v-btn color="primary" @click="methodProcessParams">
-                <v-icon>mdi-magnify</v-icon>搜尋
-              </v-btn>
-            </v-flex>
-          </v-layout>
-        </v-form>
-      </v-expansion-panel-content>
-    </v-expansion-panel> -->
+    </v-layout>
     <v-card>
       <v-card-title>
         房型設定
@@ -112,26 +28,23 @@
         rows-per-page-text="每頁顯示筆數"
         :rows-per-page-items="rowsPerPageItems"
         :pagination.sync="pagination"
+        :expand="true"
+        item-key="name"
       >
         <template slot="items" slot-scope="props">
-          <!-- <td class="text-xs-center">{{ formatRoom(props.item.id) }}</td> -->
-          <td class="text-xs-center">{{ props.item.name }}</td>
-          <!-- <td class="text-xs-center">{{ props.item.content }}</td>
-          <td class="text-xs-center">{{ currencies(props.item.internalCost) }}</td>
-          <td class="text-xs-center">{{ currencies(props.item.outsourceCost) }}</td>
-          <td class="text-xs-center">{{ props.item.note }}</td>
-          <td class="text-xs-center">{{ dateTime(props.item.createTime) }}</td>
-          <td class="text-xs-center">{{ props.item.createAccount }}</td> -->
-          <td class="text-xs-center">
-            <v-btn small @click="methodUpdateRoomType(props.item)">
-              <v-icon>mdi-square-edit-outline</v-icon>修改房型
-            </v-btn>
-            <v-btn small @click="methodAddSubRoom(props.item)">
-              <v-icon>mdi-square-edit-outline</v-icon>新增房間
-            </v-btn>
-          </td>
-          <!-- <td class="text-xs-center">{{ dateTime(props.item.modifyTime) }}</td>
-          <td class="text-xs-center">{{ props.item.modifyAccount }}</td> -->
+          <tr @click="props.expanded = !props.expanded">
+            <td class="text-xs-center">{{ props.item.name }}</td>
+            <td class="text-xs-center">
+              <v-btn small @click="methodUpdateRoomType(props.item)">
+                <v-icon>mdi-square-edit-outline</v-icon>修改房型
+              </v-btn>
+            </td>
+          </tr>
+        </template>
+        <template slot="expand" slot-scope="props">
+          <v-card flat>
+            <v-card-text>aaa{{props}}</v-card-text>
+          </v-card>
         </template>
         <v-alert slot="no-results" :value="true" color="warning" icon="mdi-alert">
           找不到有關於 "{{ search }}" 的資料
@@ -211,7 +124,7 @@ export default {
       confirmDialogInfo: {
         openDialog: false,
         title: '',
-        contentFilePath: 'pages/room/addRoomType.vue',
+        contentFilePath: 'pages/room/addSubRoom.vue',
         confirmMethod: null,
         otherMethod: null,
       },
@@ -229,7 +142,7 @@ export default {
     // },
     async getRoomTypeList(params) {
       const res = await httpMethod({
-        url: '/v1/api/room/options',
+        url: '/v1/api/room/list',
         method: 'GET',
         params,
       });
