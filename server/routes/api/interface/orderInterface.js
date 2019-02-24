@@ -19,24 +19,28 @@ export const get = [
 export const post = [
   /**
  * @api {post} /order/add 新增訂單接口
- * @apiPermission login admin
+ * @apiPermission login admi
  * @apiName orderAdd
  * @apiGroup Order
  *
- * @apiParam {String} name 訂房姓名
- * @apiParam {String} phone 訂房電話
- * @apiParam {String} nationality 訂房人國籍
- * @apiParam {Number} checkInTime 入住時間
- * @apiParam {Number} checkOutTime 退房時間
- * @apiParam {Number} roomType 訂房房型
- * @apiParam {Number} price 房型單價
- * @apiParam {Number} totalPrice 總價
- * @apiParam {String} note 備註
+ * @apiParam {String} name 訂單姓名
+ * @apiParam {String} phone 訂單電話
+ * @apiParam {String} email 訂房電子郵件
+ * @apiParam {String} nationality 訂單國籍
+ * @apiParam {String} note 訂單備註
+ * @apiParam {Array}  roomInfo 訂房房間信息
+ * roomInfo example:
+ * [
+ *    { date: 20190217, roomCid: '5c5ed89dd6b4f80dbe3c1281' },
+ *    { date: 20190217, roomCid: '5c5ed89dd6b4f80dbe3c1281' },
+ *    ...
+ * ]
  */
   ['/order/add',
     middlewareCheckLoginStatusSession, middlewareCheckAuthorization,
     addOrder],
 
+  // ⚠️ 暫時不能用
   /**
  * @api {post} /order/update 更新訂單接口
  * @apiPermission login admin
