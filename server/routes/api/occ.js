@@ -14,7 +14,7 @@ import {
 const { ObjectId } = mongoose.Types;
 
 const getOccList = async (req, res) => {
-  const { body: { startTime, endTime } } = req;
+  const { query: { startTime, endTime } } = req;
   const startDate = dateTime(startTime);
   const endDate = dateTime(endTime);
   if (!startDate || !endDate) return res.send(outputError('查詢條件有誤'));

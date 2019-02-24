@@ -41,9 +41,9 @@ const timeToDate = (v, number = false) => {
   };
 };
 
-export const dateTime = (v) => {
-  if (v) {
-    const { Y, M, D } = timeToDate(v);
+export const dateTime = (time) => {
+  if (time) {
+    const { Y, M, D } = timeToDate(time);
     return Number(`${Y}${M}${D}`);
   }
   return false;
