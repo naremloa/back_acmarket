@@ -45,9 +45,9 @@ export default {
       roomTypeInfoParams: this.getParamsOrigin(),
       roomTypeParamsList: [
         { label: '房型名稱', key: 'name', require: true },
-        { label: '房型介紹', key: 'intro', require: true },
-        { label: '住房須知', key: 'regulation', require: true },
-        { label: '退訂政策', key: 'refund', require: true },
+        { label: '房型介紹', key: 'intro', require: false },
+        { label: '住房須知', key: 'regulation', require: false },
+        { label: '退訂政策', key: 'refund', require: false },
       ],
       nameRules: [
         v => !!v || '此欄位為必填',
@@ -106,6 +106,8 @@ export default {
             text: `${res.msg}`,
             color: 'success',
           };
+          this.methodCancelUpdateRoomTypeInfo();
+          this.$emit('execOtherMethod');
         } else {
           alert = {
             open: true,
@@ -114,8 +116,6 @@ export default {
           };
         }
         this.$store.commit('global/setNotifySetting', alert);
-        this.methodCancelUpdateRoomTypeInfo();
-        this.$emit('execOtherMethod');
       }
     },
     methodCancelUpdateRoomTypeInfo() {

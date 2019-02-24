@@ -88,17 +88,10 @@ export default {
       subRoomParams: this.getParamsOrigin(),
       subRoomItemParams: [
         { label: '房間名稱', key: 'nameShow', require: true },
-        { label: '照片列表1', key: 'picList1', require: true },
-        { label: '照片列表2', key: 'picList2', require: false },
-        { label: '照片列表3', key: 'picList3', require: false },
+        // { label: '照片列表1', key: 'picList1', require: false },
+        // { label: '照片列表2', key: 'picList2', require: false },
+        // { label: '照片列表3', key: 'picList3', require: false },
       ],
-      // numberParams: [
-      //   { label: '自修配件費', key: 'internalCostShow' },
-      //   { label: '委外維修費', key: 'outsourceCostShow' },
-      // ],
-      // repairItemParams2: [
-      //   { label: '備註', key: 'noteShow' },
-      // ],
       nameRules: [
         v => !!v || '此欄位為必填',
       ],
@@ -113,9 +106,9 @@ export default {
     getParamsOrigin() {
       return {
         nameShow: null,
-        picList1: null,
-        picList2: null,
-        picList3: null,
+        // picList1: null,
+        // picList2: null,
+        // picList3: null,
       };
     },
     methodFormReset() {
@@ -153,6 +146,8 @@ export default {
             text: `${res.msg}`,
             color: 'success',
           };
+          this.methodCancelAddSubRoom();
+          this.$emit('execOtherMethod');
         } else {
           alert = {
             open: true,
@@ -161,9 +156,6 @@ export default {
           };
         }
         this.$store.commit('global/setNotifySetting', alert);
-        // this.SubRoomList = res.data;
-        this.methodCancelAddSubRoom();
-        this.$emit('execOtherMethod');
       }
     },
     methodCancelAddSubRoom() {

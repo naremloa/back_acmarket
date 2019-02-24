@@ -154,7 +154,7 @@
       :contentData="confirmDialogInfo.contentData"
       :confirmMethod="confirmDialogInfo.confirmMethod"
       :otherMethod="confirmDialogInfo.otherMethod"
-      width="1000"
+      :width="confirmDialogInfo.width"
     />
   </div>
 </template>
@@ -318,16 +318,8 @@ export default {
         contentFilePath: 'pages/room/addSubRoom.vue',
         otherMethod: this.getRoomTypeList,
         contentData: rowData,
-        width: 1000,
+        width: 500,
       };
-      // const res = await httpMethod({
-      //   url: '/v1/api/room/subRoom/add',
-      //   method: 'POST',
-      //   data: {
-      //     cid: '5c6e4b5f44e77ca854b533dd',
-      //     name: '太平洋房',
-      //   },
-      // });
     },
   },
 };
