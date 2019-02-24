@@ -1,11 +1,11 @@
 <template>
   <div class="room-list">
-    <v-layout row wrap justify-end>
+    <!-- <v-layout row wrap justify-end>
       <v-btn @click="methodAddSubRoom">
         <v-icon>mdi-plus</v-icon>
         新增房間
       </v-btn>
-    </v-layout>
+    </v-layout> -->
     <v-card>
       <v-card-title>
         房型設定
@@ -29,22 +29,47 @@
         :rows-per-page-items="rowsPerPageItems"
         :pagination.sync="pagination"
         :expand="true"
-        item-key="name"
+        item-key="roomName"
       >
         <template slot="items" slot-scope="props">
           <tr @click="props.expanded = !props.expanded">
-            <td class="text-xs-center">{{ props.item.name }}</td>
+            <td class="text-xs-center">{{ props.item.roomName }}</td>
             <td class="text-xs-center">
-              <v-btn small @click="methodUpdateRoomType(props.item)">
+              <v-btn
+                small
+                @click="props.expanded = !props.expanded, methodUpdateRoomType(props.item)"
+              >
                 <v-icon>mdi-square-edit-outline</v-icon>修改房型
+              </v-btn>
+              <v-btn
+                small
+                @click="props.expanded = !props.expanded, methodAddSubRoom(props.item)"
+              >
+                <v-icon>mdi-plus</v-icon>新增房間
               </v-btn>
             </td>
           </tr>
         </template>
         <template slot="expand" slot-scope="props">
-          <v-card flat>
-            <v-card-text>aaa{{props}}</v-card-text>
-          </v-card>
+          <div class="room-list__subroom-list pa-2 pl-5 accent">
+            <v-data-table
+              v-if="props.item.subRoomList.length>0"
+              :headers="subRoomHeader"
+              :items="props.item.subRoomList"
+              class="elevation-1 primary"
+              :hide-actions="true"
+            >
+              <template slot="items" slot-scope="props">
+                <td>{{ props.item.name }}</td>
+                <td>
+                  <v-btn small @click="methodUpdateSubRoom(props.item)">
+                    <v-icon>mdi-square-edit-outline</v-icon>修改房間
+                  </v-btn>
+                </td>
+              </template>
+            </v-data-table>
+            <div v-else>尚未新增房間</div>
+          </div>
         </template>
         <v-alert slot="no-results" :value="true" color="warning" icon="mdi-alert">
           找不到有關於 "{{ search }}" 的資料
@@ -103,6 +128,10 @@ export default {
         // { text: '修改時間', value: 'modifyTime', sortable: false },
         // { text: '修改帳號', value: 'modifyAccount', sortable: false },
       ],
+      subRoomHeader: [
+        { text: '房間名稱', value: 'name', sortable: false },
+        { text: '操作', value: '', sortable: false },
+      ],
       roomTypeList: [],
       // valid: false,
       // searchParams: this.getParamsOrigin(),
@@ -147,7 +176,14 @@ export default {
         params,
       });
       if (!res.code) {
-        this.roomTypeList = res.data;
+        // this.roomTypeList = res.data;
+        this.roomTypeList = res.data.map(item => ({
+          ...item,
+          subRoomList: item.subRoomList.map(subItem => ({
+            ...subItem,
+            roomTypeCid: item.roomCid,
+          })),
+        }));
         console.log('​getroomTypeList -> res.data', res.data);
       } else {
         this.roomTypeList = [];
@@ -221,14 +257,25 @@ export default {
         width: 1000,
       };
     },
-
     async methodAddSubRoom(rowData) {
       console.log('TCL: methodAddSubRoom -> rowData', rowData);
       this.confirmDialogInfo = {
         ...this.confirmDialogInfo,
         openDialog: true,
-        title: rowData.name ? `新增 ${rowData.name} 的房間` : '新增房間',
+        title: rowData.roomName ? `新增 ${rowData.roomName} 的房間` : '新增房間',
         contentFilePath: 'pages/room/addSubRoom.vue',
+        otherMethod: this.getRoomTypeList,
+        contentData: rowData,
+        width: 500,
+      };
+    },
+    methodUpdateSubRoom(rowData) {
+      console.log('TCL: methodUpdateSubRoom -> rowData', rowData);
+      this.confirmDialogInfo = {
+        ...this.confirmDialogInfo,
+        openDialog: true,
+        title: '修改房間',
+        contentFilePath: 'pages/room/updateSubRoom.vue',
         otherMethod: this.getRoomTypeList,
         contentData: rowData,
         width: 500,

@@ -75,12 +75,12 @@ export default {
     formatProps(rowData) {
       console.log('TCL: formatProps -> rowData', rowData);
       const {
-        name,
+        roomName,
         intro,
         regulation,
         refund,
       } = rowData;
-      this.roomTypeInfoParams.name = name;
+      this.roomTypeInfoParams.name = roomName;
       this.roomTypeInfoParams.intro = intro;
       this.roomTypeInfoParams.regulation = regulation;
       this.roomTypeInfoParams.refund = refund;
@@ -90,7 +90,8 @@ export default {
       this.$refs.form.resetValidation();
     },
     methodProcessParams() {
-      this.updateRoomTypeInfo({ ...this.contentData, ...this.roomTypeInfoParams });
+      const { roomCid: cid } = this.contentData;
+      this.updateRoomTypeInfo({ cid, ...this.roomTypeInfoParams });
     },
     async updateRoomTypeInfo(params) {
       if (this.$refs.form.validate()) {

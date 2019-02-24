@@ -1,5 +1,5 @@
 <template>
-  <div class="add-sub-room">
+  <div class="update-sub-room">
     <v-form v-model="valid" ref="form" class="px-2" lazy-validation>
       <v-layout row wrap>
         <!-- <v-flex sm12 md4 lg3 px-1 >
@@ -63,10 +63,10 @@
       </v-layout>
       <v-layout>
         <v-flex text-xs-right>
-          <v-btn flat @click="methodCancelAddSubRoom">取消</v-btn>
+          <v-btn flat @click="methodCancelUpdateSubRoom">取消</v-btn>
           <v-btn flat @click="methodFormReset">重置</v-btn>
           <v-btn color="primary" @click="methodProcessParams">
-            <v-icon>mdi-check</v-icon>新增房間
+            <v-icon>mdi-check</v-icon>修改房間
           </v-btn>
         </v-flex>
       </v-layout>
@@ -78,8 +78,8 @@ import httpMethod from '@/utils/httpMethod';
 import constList from '@/utils/const';
 
 export default {
-  name: 'addSubRoom',
-  props: ['contentData'],
+  name: 'updateSubRoom',
+  props: ['contentData', 'openDialog'],
   data() {
     return {
       constList,
@@ -96,11 +96,11 @@ export default {
       ],
     };
   },
-  // watch: {
-  //   openDialog(val) {
-  //     if (val) this.formatProps(this.contentData);
-  //   },
-  // },
+  watch: {
+    openDialog(val) {
+      if (val) this.formatProps(this.contentData);
+    },
+  },
   methods: {
     getParamsOrigin() {
       return {
@@ -109,6 +109,13 @@ export default {
         // picList2: null,
         // picList3: null,
       };
+    },
+    formatProps(rowData) {
+      console.log('TCL: formatProps -> rowData', rowData);
+      const {
+        name,
+      } = rowData;
+      this.subRoomParams.nameShow = name;
     },
     methodFormReset() {
       this.subRoomParams = this.getParamsOrigin();
@@ -122,18 +129,19 @@ export default {
         // picList3,
       } = this.subRoomParams;
       const params = {};
-      params.cid = this.contentData.roomCid;
+      params.cid = this.contentData.roomTypeCid;
+      params.id = this.contentData.id;
       params.name = nameShow;
       // params.picList = [];
       // if (picList1) params.picList.push(picList1);
       // if (picList2) params.picList.push(picList2);
       // if (picList3) params.picList.push(picList3);
-      this.addSubRoom(params);
+      this.updateSubRoom(params);
     },
-    async addSubRoom(params) {
+    async updateSubRoom(params) {
       if (this.$refs.form.validate()) {
         const res = await httpMethod({
-          url: '/v1/api/room/subRoom/add',
+          url: '/v1/api/room/subRoom/update',
           method: 'POST',
           data: params,
         });
@@ -145,7 +153,7 @@ export default {
             text: `${res.msg}`,
             color: 'success',
           };
-          this.methodCancelAddSubRoom();
+          this.methodCancelUpdateSubRoom();
           this.$emit('execOtherMethod');
         } else {
           alert = {
@@ -157,7 +165,7 @@ export default {
         this.$store.commit('global/setNotifySetting', alert);
       }
     },
-    methodCancelAddSubRoom() {
+    methodCancelUpdateSubRoom() {
       this.methodFormReset();
       this.$emit('closeDialog');
     },
