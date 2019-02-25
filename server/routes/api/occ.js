@@ -33,7 +33,7 @@ const getOccList = async (req, res) => {
     const cid = roomCid.toString();
     if (acc[date] === undefined) return { ...acc, [date]: { [cid]: 1 } };
     const num = acc[date][cid] !== undefined ? acc[date][cid] + 1 : 1;
-    return { ...acc, [date]: { [cid]: num } };
+    return { ...acc, [date]: { ...acc[date], [cid]: num } };
   }, {});
   const completeOccInfo = getDateRangeArr(startTime, endTime).reduce((acc, cur) => ({
     ...acc,
