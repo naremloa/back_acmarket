@@ -1,1 +1,0 @@
-{"options":{},"indexes":[{"v":2,"key":{"_id":1},"name":"_id_","ns":"phelomi.sessions"},{"v":2,"key":{"expires":1},"name":"expires_1","ns":"phelomi.sessions","expireAfterSeconds":0}],"uuid":"8ace4674f20449ab8b588716e0c7b202"}

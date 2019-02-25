@@ -54,8 +54,8 @@ mongoimport --db phelomi --collection users server/db/initJson/user.json --jsonA
 mongoexport --db phelomi --collection users --out user.json --jsonArray
 
 ### 備份與還原資料庫
-mongodump --db phelomi
-mongorestore --db phelomi server/db/exportJson/dump/phelomi/
+mongodump -d phelomi -o server/db/exportJson
+mongorestore --db phelomi server/db/exportJson/phelomi/
 
 ### 新建資料庫操作
 mongoimport --db phelomi --collection routers server/db/initJson/router.json --jsonArray
