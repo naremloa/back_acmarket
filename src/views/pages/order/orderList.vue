@@ -25,7 +25,7 @@
                 clearable
               ></v-text-field>
             </v-flex>
-            <v-flex sm12 md4 lg3 px-1 >
+            <!-- <v-flex sm12 md4 lg3 px-1 >
               <v-select
                 v-model="searchParams.roomType"
                 :items="constList.roomTypeList"
@@ -33,7 +33,7 @@
                 item-value="id"
                 label="訂房房型"
               ></v-select>
-            </v-flex>
+            </v-flex> -->
             <v-flex sm12 md4 lg3 px-1 >
               <v-select
                 v-model="searchParams.status"
@@ -126,36 +126,92 @@
         rows-per-page-text="每頁顯示筆數"
         :rows-per-page-items="rowsPerPageItems"
         :pagination.sync="pagination"
+        :expand="true"
+        item-key="orderId"
       >
         <template slot="items" slot-scope="props">
-          <td class="text-xs-center">{{ props.item.orderId }}</td>
-          <td class="text-xs-center">{{ props.item.name }}</td>
-          <td class="text-xs-center">{{ props.item.phone }}</td>
-          <td class="text-xs-center">{{ props.item.email }}</td>
-          <td class="text-xs-center">{{ props.item.nationality }}</td>
-          <td class="text-xs-center">{{ dateTime(props.item.checkInTime) }}</td>
-          <td class="text-xs-center">{{ dateTime(props.item.checkOutTime) }}</td>
-          <td class="text-xs-center">{{ dateTime(props.item.createTime) }}</td>
-          <td class="text-xs-center">{{ formatRoomType(props.item.roomType) }}</td>
-          <td class="text-xs-right">{{ currencies(props.item.price) }}</td>
-          <td class="text-xs-right">{{ currencies(props.item.totalPrice) }}</td>
-          <td class="text-xs-right">{{ currencies(props.item.totalValidPrice) }}</td>
-          <td class="text-xs-center">
-            <div v-if="props.item.status === 5">{{ formatOrderStatus(props.item.status) }}</div>
-            <v-btn
-              v-else
-              small
-              @click="methodUpdateStatus(props.item)"
-            >{{ formatOrderStatus(props.item.status) }}</v-btn>
-          </td>
-          <td class="text-xs-center">{{ props.item.latestModifyAccount }}</td>
-          <td class="text-xs-center">
-            <v-btn small @click="methodUpdateOrder(props.item)">
-              <v-icon>mdi-square-edit-outline</v-icon>修改訂單
-            </v-btn>
-          </td>
-          <td class="text-xs-center">{{ dateTime(props.item.latestModifyTime) }}</td>
-          <td class="text-xs-center">{{ props.item.note }}</td>
+          <tr @click="props.expanded = !props.expanded">
+            <td class="text-xs-center">{{ props.item.orderId }}</td>
+            <td class="text-xs-center">{{ props.item.name }}</td>
+            <td class="text-xs-center">{{ props.item.gender }}</td>
+            <td class="text-xs-center">{{ props.item.phone }}</td>
+            <td class="text-xs-center">{{ props.item.nationality }}</td>
+            <td class="text-xs-center">{{ props.item.number }}</td>
+            <!-- <td class="text-xs-center">{{ dateTime(props.item.checkInTime) }}</td> -->
+            <!-- <td class="text-xs-center">{{ dateTime(props.item.checkOutTime) }}</td> -->
+            <!-- <td class="text-xs-center">{{ dateTime(props.item.createTime) }}</td> -->
+            <!-- <td class="text-xs-center">{{ formatRoomType(props.item.roomType) }}</td> -->
+            <!-- <td class="text-xs-right">{{ currencies(props.item.price) }}</td> -->
+            <td class="text-xs-right">{{ currencies(props.item.totalPrice) }}</td>
+            <td class="text-xs-right">{{ currencies(props.item.totalValidPrice) }}</td>
+            <td class="text-xs-center">
+              <div v-if="props.item.status === 5">{{ formatOrderStatus(props.item.status) }}</div>
+              <v-btn
+                v-else
+                small
+                @click="methodUpdateStatus(props.item)"
+              >{{ formatOrderStatus(props.item.status) }}</v-btn>
+            </td>
+            <!-- <td class="text-xs-center">{{ props.item.latestModifyAccount }}</td> -->
+            <td class="text-xs-center">
+              <v-btn small @click="methodUpdateOrder(props.item)">
+                <v-icon>mdi-square-edit-outline</v-icon>修改訂單
+              </v-btn>
+            </td>
+            <!-- <td class="text-xs-center">{{ dateTime(props.item.latestModifyTime) }}</td> -->
+            <!-- <td class="text-xs-center">{{ props.item.note }}</td> -->
+          </tr>
+        </template>
+        <template slot="expand" slot-scope="props">
+          <div class="order-list__detail-list pa-3 pl-5 accent">
+            <v-layout row wrap justify-end>
+              <v-flex xs12 md1>
+                <p>更多訂單訊息</p>
+              </v-flex>
+              <v-flex xs12 md11>
+                <table class="order-list__detail-table">
+                  <tr v-for="(key,keyIdx) in ['text', 'value']" :key="`detailRow${keyIdx}`">
+                    <td
+                      v-for="(item,idx) in detailHeaders"
+                      :key="`detailItem${idx}`"
+                    >{{keyIdx === 0
+                      ? item[key]
+                      : methodDetailTableFormat(props.item[item[key]], item.format) }}</td>
+                  </tr>
+                </table>
+              </v-flex>
+            </v-layout>
+            <v-divider class="my-3"></v-divider>
+            <v-layout row wrap justify-end>
+              <v-flex xs12 md1>
+                <p>更多訂房資訊</p>
+                <v-btn small>更多</v-btn>
+              </v-flex>
+              <v-flex xs12 md11>
+                <v-data-table
+                  :headers="detailRoomHeaders"
+                  :items="props.item.roomInfo"
+                  hide-actions
+                >
+                  <template slot="items" slot-scope="props">
+                    <td>{{ formatRoomType(props.item.roomCid) }}</td>
+                    <td>{{ currencies(props.item.price) }}</td>
+                    <td>{{ props.item.num }}</td>
+                  </template>
+                </v-data-table>
+                <!-- <table class="order-list__detail-table">
+                  <tr v-for="(key,keyIdx) in ['text', 'value']" :key="`detailRow${keyIdx}`">
+                    <td
+                      v-for="(item,idx) in detailRoomHeaders"
+                      :key="`detailItem${idx}`"
+                    >{{keyIdx === 0
+                      ? item[key]
+                      : methodDetailTableFormat(props.item.roomInfo[item[key]], item.format) }}</td>
+                  </tr>
+                </table> -->
+              </v-flex>
+            </v-layout>
+          </div>
         </template>
         <v-alert slot="no-results" :value="true" color="warning" icon="mdi-alert">
           找不到有關於 "{{ search }}" 的資料
@@ -204,21 +260,36 @@ export default {
       headers: [
         { text: '訂單編號', value: 'orderId', sortable: false },
         { text: '姓名', value: 'name', sortable: false },
+        { text: '性別', value: 'gender', sortable: false },
         { text: '電話', value: 'phone', sortable: false },
-        { text: '電子郵件', value: 'email', sortable: false },
+        // { text: '電子郵件', value: 'email', sortable: false },
         { text: '國籍', value: 'nationality', sortable: false },
-        { text: '入住時間', value: 'checkInTime', sortable: false },
-        { text: '退房時間', value: 'checkOutTime', sortable: false },
-        { text: '訂房時間', value: 'createTime', sortable: false },
-        { text: '訂房房型', value: 'roomType', sortable: false },
-        { text: '房間單價', value: 'price', sortable: false },
+        { text: '人數', value: 'number', sortable: false },
+        // { text: '入住時間', value: 'checkInTime', sortable: false },
+        // { text: '退房時間', value: 'checkOutTime', sortable: false },
+        // { text: '訂房時間', value: 'createTime', sortable: false },
+        // { text: '訂房房型', value: 'roomType', sortable: false },
+        // { text: '房間單價', value: 'price', sortable: false },
         { text: '應收總價', value: 'totalPrice', sortable: false },
         { text: '實收總價', value: 'totalValidPrice', sortable: false },
         { text: '訂單狀態', value: 'status', sortable: false },
+        // { text: '最近操作訂單帳號', value: 'latestModifyAccount', sortable: false },
         { text: '操作', value: '', sortable: false },
-        { text: '最近操作訂單帳號', value: 'latestModifyAccount', sortable: false },
-        { text: '最近操作訂單時間', value: 'latestModifyTime', sortable: false },
-        { text: '備註', value: 'note', sortable: false },
+        // { text: '最近操作訂單時間', value: 'latestModifyTime', sortable: false },
+        // { text: '備註', value: 'note', sortable: false },
+      ],
+      detailHeaders: [
+        { text: '訂房時間', value: 'createTime', format: 'time' },
+        { text: '電子郵件', value: 'email', format: null },
+        { text: '早餐', value: 'breakfast', format: null },
+        { text: '其他需求', value: 'demand', format: 'string' },
+        { text: '備註', value: 'note', format: null },
+        { text: '最近操作訂單帳號', value: 'latestModifyAccount', format: null },
+      ],
+      detailRoomHeaders: [
+        { text: '房間房型', value: 'roomCid', sortable: false },
+        { text: '房間單價', value: 'price', sortable: false },
+        { text: '房間數量', value: 'num', sortable: false },
       ],
       orderList: [],
       valid: false,
@@ -227,20 +298,21 @@ export default {
         { label: '訂單編號', key: 'orderIdShow' },
         { label: '姓名', key: 'nameShow' },
         { label: '電話', key: 'phoneShow' },
-        { label: '電子郵件', key: 'emailShow' },
+        { label: '早餐', key: 'breakfastShow' },
+        // { label: '電子郵件', key: 'emailShow' },
         { label: '國籍', key: 'nationalityShow' },
-        { label: '最近操作訂單帳號', key: 'latestModifyAccountShow' },
-        { label: '備註', key: 'noteShow' },
+        // { label: '最近操作訂單帳號', key: 'latestModifyAccountShow' },
+        // { label: '備註', key: 'noteShow' },
       ],
       searchTimeParams: [
-        { label: '入住開始時間', key: 'checkInTimeStartShow' },
-        { label: '入住結束時間', key: 'checkInTimeEndShow' },
-        { label: '退房開始時間', key: 'checkOutTimeStartShow' },
-        { label: '退房結束時間', key: 'checkOutTimeEndShow' },
-        { label: '訂房開始時間', key: 'createTimeStartShow' },
-        { label: '訂房結束時間', key: 'createTimeEndShow' },
-        { label: '最近操作訂單開始時間', key: 'latestModifyTimeStartShow' },
-        { label: '最近操作訂單結束時間', key: 'latestModifyTimeEndShow' },
+        // { label: '入住開始時間', key: 'checkInTimeStartShow' },
+        // { label: '入住結束時間', key: 'checkInTimeEndShow' },
+        // { label: '退房開始時間', key: 'checkOutTimeStartShow' },
+        // { label: '退房結束時間', key: 'checkOutTimeEndShow' },
+        { label: '訂房開始時間', key: 'createStartTimeShow' },
+        { label: '訂房結束時間', key: 'createEndTimeShow' },
+        // { label: '最近操作訂單開始時間', key: 'latestModifyTimeStartShow' },
+        // { label: '最近操作訂單結束時間', key: 'latestModifyTimeEndShow' },
       ],
       selectMenu: [false, false, false, false, false, false, false, false],
       confirmDialogInfo: {
@@ -251,17 +323,27 @@ export default {
         confirmMethod: null,
         otherMethod: null,
       },
+      roomTypeList: null,
     };
   },
   mounted() {
     this.getOrder();
+    this.getRoomOptions();
   },
   methods: {
     dateTime,
     currencies,
     formatRoomType(type) {
-      const res = constList.roomTypeList.filter(item => item.id === type)[0];
-      return res ? res.value : '';
+      console.log('TCL: formatRoomType -> type', type);
+      const res = this.roomTypeList.filter(item => item.cid === type)[0];
+      return res ? res.name : '';
+    },
+    async getRoomOptions() {
+      const res = await httpMethod({
+        url: '/v1/api/room/options',
+        method: 'GET',
+      });
+      this.roomTypeList = res.data;
     },
     formatOrderStatus(type) {
       const res = constList.orderStatusList.filter(item => item.id === type)[0];
@@ -269,23 +351,24 @@ export default {
     },
     getParamsOrigin() {
       return {
-        roomType: null,
+        // roomType: null,
         status: null,
         orderIdShow: null,
         nameShow: null,
         phoneShow: null,
-        emailShow: null,
+        breakfastShow: null,
+        // emailShow: null,
         nationalityShow: null,
-        latestModifyAccountShow: null,
-        noteShow: null,
-        checkInTimeStartShow: null,
-        checkInTimeEndShow: null,
-        checkOutTimeStartShow: null,
-        checkOutTimeEndShow: null,
-        createTimeStartShow: null,
-        createTimeEndShow: null,
-        latestModifyTimeStartShow: null,
-        latestModifyTimeEndShow: null,
+        // latestModifyAccountShow: null,
+        // noteShow: null,
+        // checkInTimeStartShow: null,
+        // checkInTimeEndShow: null,
+        // checkOutTimeStartShow: null,
+        // checkOutTimeEndShow: null,
+        createStartTimeShow: null,
+        createEndTimeShow: null,
+        // latestModifyTimeStartShow: null,
+        // latestModifyTimeEndShow: null,
       };
     },
     async getOrder(params) {
@@ -302,42 +385,44 @@ export default {
     },
     methodProcessParams() {
       const {
-        roomType,
+        // roomType,
         status,
         orderIdShow,
         nameShow,
         phoneShow,
-        emailShow,
+        // emailShow,
         nationalityShow,
-        latestModifyAccountShow,
-        noteShow,
-        checkInTimeStartShow,
-        checkInTimeEndShow,
-        checkOutTimeStartShow,
-        checkOutTimeEndShow,
-        createTimeStartShow,
-        createTimeEndShow,
-        latestModifyTimeStartShow,
-        latestModifyTimeEndShow,
+        breakfastShow,
+        // latestModifyAccountShow,
+        // noteShow,
+        // checkInTimeStartShow,
+        // checkInTimeEndShow,
+        // checkOutTimeStartShow,
+        // checkOutTimeEndShow,
+        createStartTimeShow,
+        createEndTimeShow,
+        // latestModifyTimeStartShow,
+        // latestModifyTimeEndShow,
       } = this.searchParams;
       const params = {};
-      if (roomType) params.roomType = roomType;
+      // if (roomType) params.roomType = roomType;
       if (status) params.status = status;
       if (orderIdShow) params.orderId = orderIdShow;
       if (nameShow) params.name = nameShow;
       if (phoneShow) params.phone = phoneShow;
-      if (emailShow) params.email = emailShow;
+      if (breakfastShow) params.breakfast = breakfastShow;
+      // if (emailShow) params.email = emailShow;
       if (nationalityShow) params.nationality = nationalityShow;
-      if (latestModifyAccountShow) params.latestModifyAccount = latestModifyAccountShow;
-      if (noteShow) params.note = noteShow;
-      if (checkInTimeStartShow) params.checkInTimeStart = new Date(checkInTimeStartShow).valueOf();
-      if (checkInTimeEndShow) params.checkInTimeEnd = new Date(checkInTimeEndShow).valueOf();
-      if (checkOutTimeStartShow) params.checkOutTimeStart = new Date(checkOutTimeStartShow).valueOf();
-      if (checkOutTimeEndShow) params.checkOutTimeEnd = new Date(checkOutTimeEndShow).valueOf();
-      if (createTimeStartShow) params.createTimeStart = new Date(createTimeStartShow).valueOf();
-      if (createTimeEndShow) params.createTimeEnd = new Date(createTimeEndShow).valueOf();
-      if (latestModifyTimeStartShow) params.latestModifyTimeStart = new Date(latestModifyTimeStartShow).valueOf();
-      if (latestModifyTimeEndShow) params.latestModifyTimeEnd = new Date(latestModifyTimeEndShow).valueOf();
+      // if (latestModifyAccountShow) params.latestModifyAccount = latestModifyAccountShow;
+      // if (noteShow) params.note = noteShow;
+      // if (checkInTimeStartShow) params.checkInTimeStart = new Date(checkInTimeStartShow).valueOf();
+      // if (checkInTimeEndShow) params.checkInTimeEnd = new Date(checkInTimeEndShow).valueOf();
+      // if (checkOutTimeStartShow) params.checkOutTimeStart = new Date(checkOutTimeStartShow).valueOf();
+      // if (checkOutTimeEndShow) params.checkOutTimeEnd = new Date(checkOutTimeEndShow).valueOf();
+      if (createStartTimeShow) params.createStartTime = new Date(createStartTimeShow).valueOf();
+      if (createEndTimeShow) params.createEndTime = new Date(createEndTimeShow).valueOf();
+      // if (latestModifyTimeStartShow) params.latestModifyTimeStart = new Date(latestModifyTimeStartShow).valueOf();
+      // if (latestModifyTimeEndShow) params.latestModifyTimeEnd = new Date(latestModifyTimeEndShow).valueOf();
       this.getOrder(params);
     },
     methodChangeOpenDialog(val) {
@@ -374,6 +459,22 @@ export default {
         contentData: rowData,
         width: 1000,
       };
+    },
+    methodDetailTableFormat(val, format) {
+      console.log('TCL: methodDetailTableFormat -> val', val);
+      if (format === 'time') {
+        return this.dateTime(val);
+      }
+      if (format === 'string') {
+        return val.toString();
+      }
+      if (format === 'roomType') {
+        return this.formatRoomType(val);
+      }
+      if (format === 'money') {
+        return this.currencies(val);
+      }
+      return val || '無';
     },
   },
 };

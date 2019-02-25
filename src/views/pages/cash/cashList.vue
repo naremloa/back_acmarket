@@ -25,7 +25,7 @@
                 clearable
               ></v-text-field>
             </v-flex>
-            <v-flex sm12 md4 lg3 px-1 >
+            <!-- <v-flex sm12 md4 lg3 px-1 >
               <v-select
                 v-model="searchParams.roomType"
                 :items="constList.roomTypeList"
@@ -33,7 +33,7 @@
                 item-value="id"
                 label="訂房房型"
               ></v-select>
-            </v-flex>
+            </v-flex> -->
             <v-flex sm12 md4 lg3 px-1 >
               <v-select
                 v-model="searchParams.status"
