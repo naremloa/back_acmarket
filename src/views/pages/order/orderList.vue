@@ -199,16 +199,19 @@
                     <td>{{ props.item.num }}</td>
                   </template>
                 </v-data-table>
-                <!-- <table class="order-list__detail-table">
-                  <tr v-for="(key,keyIdx) in ['text', 'value']" :key="`detailRow${keyIdx}`">
-                    <td
-                      v-for="(item,idx) in detailRoomHeaders"
-                      :key="`detailItem${idx}`"
-                    >{{keyIdx === 0
-                      ? item[key]
-                      : methodDetailTableFormat(props.item.roomInfo[item[key]], item.format) }}</td>
-                  </tr>
-                </table> -->
+              </v-flex>
+              <v-flex xs12 v-if="props.item.moreRoomTypeList">
+              <v-divider class="my-3"></v-divider>
+                <v-data-table
+                  :headers="moreDetailRoomHeaders"
+                  :items="props.item.moreRoomTypeList"
+                  hide-actions
+                >
+                  <template slot="items" slot-scope="props">
+                    <td>{{ formatStringDate(props.item.date) }}</td>
+                    <td>{{ props.item.roomName }}</td>
+                  </template>
+                </v-data-table>
               </v-flex>
             </v-layout>
           </div>
@@ -291,6 +294,10 @@ export default {
         { text: '房間單價', value: 'price', sortable: false },
         { text: '房間數量', value: 'num', sortable: false },
       ],
+      moreDetailRoomHeaders: [
+        { text: '入住時間', value: 'date', sortable: false },
+        { text: '房間房型', value: 'roomName', sortable: false },
+      ],
       orderList: [],
       valid: false,
       searchParams: this.getParamsOrigin(),
@@ -347,6 +354,13 @@ export default {
     formatOrderStatus(type) {
       const res = constList.orderStatusList.filter(item => item.id === type)[0];
       return res ? res.value : '';
+    },
+    formatStringDate(stringDate) {
+      stringDate = stringDate.toString();
+      const year = stringDate.slice(0, 4);
+      const month = stringDate.slice(4, 6);
+      const date = stringDate.slice(6, 8);
+      return `${year}/${month}/${date}`;
     },
     getParamsOrigin() {
       return {
@@ -478,8 +492,14 @@ export default {
       const res = await httpMethod({
         url: `/v1/api/order/occ/${orderCid}`,
         method: 'GET',
+        // params:{
+        //   name:orderCid
+        // }
       });
-      console.log('TCL: methodGetMoreRoomOrderInfo -> res', res);
+      const orderListIndex = this.orderList.findIndex(item => item._id === orderCid);
+      if (res && !res.code) {
+        this.$set(this.orderList[orderListIndex], 'moreRoomTypeList', res.data);
+      }
     },
   },
 };

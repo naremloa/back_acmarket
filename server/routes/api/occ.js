@@ -13,7 +13,7 @@ import {
 const { ObjectId } = mongoose.Types;
 
 const getOccList = async (req, res) => {
-  const { name: cid } = req.params;
+  const { 0: cid } = req.params;
   const query = {
     orderCid: ObjectId(cid),
   };
