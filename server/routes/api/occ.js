@@ -8,20 +8,36 @@ import {
 } from '../models/occ';
 import {
   roomFind,
-  roomFindById,
 } from '../models/room';
 
 const { ObjectId } = mongoose.Types;
 
 const getOccList = async (req, res) => {
+  const { name: cid } = req.params;
+  const query = {
+    orderCid: ObjectId(cid),
+  };
+  const occList = await occFind(query);
+  const roomAll = (await roomFind({})).reduce((acc, { _id, name }) => ({
+    ...acc, [_id.toString()]: name,
+  }));
+  const result = occList
+    .map(({ date, roomCid }) => ({ date, roomName: roomAll[roomCid.toString()] }));
+  return res.send(outputSuccess(result));
+};
+
+// 前台，查詢佔用obj
+const getOcc = async (req, res) => {
   const { query: { startTime, endTime } } = req;
   const startDate = dateTime(startTime);
   const endDate = dateTime(endTime);
   if (!startDate || !endDate) return res.send(outputError('查詢條件有誤'));
   const query = { date: { $gte: startDate, $lt: endDate } };
   const roomInfo = (await roomFind({}))
-    .map(i => ({
-      _id: i._id, name: i.name, price: i.price, length: i.roomList.length,
+    .map(({
+      _id, name, price, roomList,
+    }) => ({
+      _id, name, price, length: roomList.length,
     }))
     .reduce((acc, {
       _id, name, price, length,
@@ -131,8 +147,9 @@ const addOcc = async (roomInfo, orderCid) => {
 };
 
 export {
-  getOccList,
+  getOcc,
   getOccByDateAndRoomCidObj,
   addOcc,
   getRoomCidOccByDate,
+  getOccList,
 };
