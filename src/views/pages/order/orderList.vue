@@ -1,11 +1,11 @@
 <template>
   <div class="order-list">
-    <v-layout row wrap justify-end>
+    <!-- <v-layout row wrap justify-end>
       <v-btn @click="methodAddOrder">
         <v-icon>mdi-plus</v-icon>
         新增訂單
       </v-btn>
-    </v-layout>
+    </v-layout> -->
     <v-expansion-panel class="mb-2">
       <v-expansion-panel-content class="accent">
         <div slot="header" class="subheading">搜尋選項</div>
@@ -149,12 +149,12 @@
               <v-btn
                 v-else
                 small
-                @click="methodUpdateStatus(props.item)"
+                @click="methodUpdateStatus(props.item), props.expanded = !props.expanded"
               >{{ formatOrderStatus(props.item.status) }}</v-btn>
             </td>
             <!-- <td class="text-xs-center">{{ props.item.latestModifyAccount }}</td> -->
             <td class="text-xs-center">
-              <v-btn small @click="methodUpdateOrder(props.item)">
+              <v-btn small @click="methodUpdateOrder(props.item), props.expanded = !props.expanded">
                 <v-icon>mdi-square-edit-outline</v-icon>修改訂單
               </v-btn>
             </td>
@@ -185,7 +185,7 @@
             <v-layout row wrap justify-end>
               <v-flex xs12 md1>
                 <p>更多訂房資訊</p>
-                <v-btn small>更多</v-btn>
+                <v-btn small @click="methodGetMoreRoomOrderInfo(props.item._id)">更多</v-btn>
               </v-flex>
               <v-flex xs12 md11>
                 <v-data-table
@@ -334,7 +334,6 @@ export default {
     dateTime,
     currencies,
     formatRoomType(type) {
-      console.log('TCL: formatRoomType -> type', type);
       const res = this.roomTypeList.filter(item => item.cid === type)[0];
       return res ? res.name : '';
     },
@@ -461,7 +460,6 @@ export default {
       };
     },
     methodDetailTableFormat(val, format) {
-      console.log('TCL: methodDetailTableFormat -> val', val);
       if (format === 'time') {
         return this.dateTime(val);
       }
@@ -475,6 +473,13 @@ export default {
         return this.currencies(val);
       }
       return val || '無';
+    },
+    async methodGetMoreRoomOrderInfo(orderCid) {
+      const res = await httpMethod({
+        url: `/v1/api/order/occ/${orderCid}`,
+        method: 'GET',
+      });
+      console.log('TCL: methodGetMoreRoomOrderInfo -> res', res);
     },
   },
 };
