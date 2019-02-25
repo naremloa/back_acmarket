@@ -20,9 +20,9 @@ const getOccList = async (req, res) => {
   const occList = await occFind(query);
   const roomAll = (await roomFind({})).reduce((acc, { _id, name }) => ({
     ...acc, [_id.toString()]: name,
-  }));
+  }), {});
   const result = occList
-    .map(({ date, roomCid }) => ({ date, roomName: roomAll[roomCid.toString()] }));
+    .map(({ date, roomCid }) => ({ date, roomName: roomAll[roomCid.toString() || roomCid] }));
   return res.send(outputSuccess(result));
 };
 

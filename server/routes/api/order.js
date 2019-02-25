@@ -141,7 +141,7 @@ const addOrder = async (req, res) => {
     },
     session: sess,
   } = req;
-  const { userInfo: { account } } = sess;
+  // const { userInfo: { account } } = sess;
 
   // 處理房型房間信息
   const roomAllInfo = await getRoomAllMaxLengthAndPriceInfo();
@@ -191,7 +191,7 @@ const addOrder = async (req, res) => {
     demand,
     roomInfo,
     totalPrice,
-    account,
+    account: '',
     note,
     roomInfoDate,
     roomAllInfo,
