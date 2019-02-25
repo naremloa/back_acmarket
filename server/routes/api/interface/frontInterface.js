@@ -5,7 +5,7 @@ import {
   addOrder,
 } from '../order';
 import {
-  getOccList,
+  getOcc,
 } from '../occ';
 
 export const get = [
@@ -33,7 +33,7 @@ export const get = [
    * }
    */
   ['/front/occ/list',
-    getOccList],
+    getOcc],
 ];
 
 export const post = [

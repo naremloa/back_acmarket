@@ -8,6 +8,9 @@ import {
   updateOrder,
   updateOrderStatus,
 } from '../order';
+import {
+  getOccList,
+} from '../occ';
 
 export const get = [
   /**
@@ -28,6 +31,16 @@ export const get = [
   ['/order/list',
     middlewareCheckLoginStatusSession, middlewareCheckAuthorization,
     getOrder],
+
+  /**
+   * @api {get} /order/occ/{orderCid} 訂單房間明細接口
+   * @apiPermission login admin
+   * @apiName occDetail
+   * @apiGroup order
+   */
+  ['/order/occ/*',
+    middlewareCheckLoginStatusSession, middlewareCheckAuthorization,
+    getOccList],
 ];
 
 export const post = [

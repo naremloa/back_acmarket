@@ -8,12 +8,26 @@ import {
 } from '../models/occ';
 import {
   roomFind,
-  roomFindById,
 } from '../models/room';
 
 const { ObjectId } = mongoose.Types;
 
 const getOccList = async (req, res) => {
+  const { name: cid } = req.params;
+  const query = {
+    orderCid: ObjectId(cid),
+  };
+  const occList = await occFind(query);
+  const roomAll = (await roomFind({})).reduce((acc, { _id, name }) => ({
+    ...acc, [_id.toString()]: name,
+  }));
+  const result = occList
+    .map(({ date, roomCid }) => ({ date, roomName: roomAll[roomCid.toString()] }));
+  return res.send(outputSuccess(result));
+};
+
+// 前台，查詢佔用obj
+const getOcc = async (req, res) => {
   const { query: { startTime, endTime } } = req;
   const startDate = dateTime(startTime);
   const endDate = dateTime(endTime);
@@ -131,8 +145,9 @@ const addOcc = async (roomInfo, orderCid) => {
 };
 
 export {
-  getOccList,
+  getOcc,
   getOccByDateAndRoomCidObj,
   addOcc,
   getRoomCidOccByDate,
+  getOccList,
 };
