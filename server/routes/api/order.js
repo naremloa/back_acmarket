@@ -142,21 +142,21 @@ const addOrder = async (req, res) => {
   // 借totalPrice判斷，若為false則房間訂單不合法，若為數字，則房間訂單成立，並同時給出應計總價
   let totalPrice = true;
   // 遍歷所有訂單房型
-  forOwn(roomInfoCount, (valueRoomCid) => {
+  forOwn(roomInfoCount, (valueRoomCid, keyRoomCid) => {
     if (totalPrice === false) return;
     // 單一房型下最大房間數量
-    const { max, price } = roomAllInfo[valueRoomCid];
+    const { max, price } = roomAllInfo[keyRoomCid];
     // 遍歷當前訂單房型下的入住時間
-    forOwn(roomInfoCount[valueRoomCid], (valueDate) => {
+    forOwn(valueRoomCid, (valueDate, keyDate) => {
       if (totalPrice === false) return;
       // 房間預定數量
-      const num = roomInfoCount[valueRoomCid][valueDate];
+      const num = valueDate;
 
       // 當前房型無佔用, 或當前房型有佔用, 但佔用時間與遍歷時間不一樣, 即 佔用數為 0
-      const occNum = roomAllInDateInfo[valueRoomCid] === undefined
-        || roomAllInDateInfo[valueRoomCid][valueDate] === undefined
-        ? 0 : roomAllInDateInfo[valueRoomCid][valueDate];
-      if (occNum + num <= max) {
+      const occNum = roomAllInDateInfo[keyRoomCid] === undefined
+        || roomAllInDateInfo[keyRoomCid][keyDate] === undefined
+        ? 0 : roomAllInDateInfo[keyRoomCid][keyDate];
+      if (occNum + num > max) {
         totalPrice = false;
         return;
       }

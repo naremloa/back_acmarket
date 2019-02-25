@@ -30,9 +30,9 @@ const getOccList = async (req, res) => {
   const occ = await occFind(query);
   const occInfo = occ.reduce((acc, cur) => {
     const { date, roomCid } = cur;
-    const cid = roomCid.toString;
-    if (acc[date] === undefined) return { ...acc, [date]: { [cid]: 0 } };
-    const num = acc[date][cid] !== undefined ? acc[date][cid] + 1 : 0;
+    const cid = roomCid.toString();
+    if (acc[date] === undefined) return { ...acc, [date]: { [cid]: 1 } };
+    const num = acc[date][cid] !== undefined ? acc[date][cid] + 1 : 1;
     return { ...acc, [date]: { [cid]: num } };
   }, {});
   const completeOccInfo = getDateRangeArr(startTime, endTime).reduce((acc, cur) => ({
@@ -102,8 +102,9 @@ const getOccByDateAndRoomCidObj = async ({ startDate, endDate, roomCidObj }) => 
   return true;
 };
 
-const getRoomCidOccByDate = async (dateArr) => {
-  const query = { date: { $in: dateArr } };
+const getRoomCidOccByDate = async (roomInfoDate) => {
+  const arr = values(roomInfoDate).reduce((acc, cur) => [...acc, ...cur], []);
+  const query = { date: { $in: arr } };
   const occ = await occFind(query);
   const result = occ.reduce((acc, { date, roomCid }) => {
     const localRoomCid = roomCid.toString();
@@ -111,7 +112,7 @@ const getRoomCidOccByDate = async (dateArr) => {
     if (acc[localRoomCid][date] === undefined) acc[localRoomCid][date] = 0;
     acc[localRoomCid][date] += 1;
     return acc;
-  });
+  }, {});
   return result;
 };
 
