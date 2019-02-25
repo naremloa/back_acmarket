@@ -36,13 +36,17 @@ const getOrder = async (req, res) => {
 };
 
 const createOrderSchema = async ({
-  name,
-  phone,
-  email,
-  nationality,
-  totalPrice,
-  account,
-  note,
+  name = '',
+  phone = '',
+  email = '',
+  nationality = '',
+  gender = '',
+  breakfast = '',
+  number = '',
+  demand = [],
+  totalPrice = 0,
+  account = '',
+  note = '',
   roomInfoDate,
   roomAllInfo,
 }) => {
@@ -60,6 +64,10 @@ const createOrderSchema = async ({
     phone,
     email,
     nationality,
+    gender,
+    breakfast,
+    number,
+    demand,
     createTime: nowTime,
     roomInfo: localRoomInfo,
     totalPrice,
@@ -78,6 +86,10 @@ const addOrder = async (req, res) => {
       phone,
       email,
       nationality,
+      gender,
+      breakfast,
+      number,
+      demand,
       /**
        * roomInfo
        * [
@@ -170,6 +182,10 @@ const addOrder = async (req, res) => {
     phone,
     email,
     nationality,
+    gender,
+    breakfast,
+    number,
+    demand,
     roomInfo,
     totalPrice,
     account,

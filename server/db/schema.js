@@ -34,6 +34,10 @@ export const login = {
  * @param {String}   phone  電話
  * @param {String}   email  電子郵件
  * @param {String}   nationality  國籍
+ * @param {String}   gender 性別
+ * @param {String}   breakfast 早餐
+ * @param {String}   number 人數
+ * @param {Array<String>}   demand 其他需求
  * @param {Number}   createTime  訂房時間
  * @param {Array<Object>}   roomInfo 訂房信息
  *    @param {ObjectId} roomCid  房型cid
@@ -52,6 +56,10 @@ export const order = {
   phone: String,
   email: String,
   nationality: String,
+  gender: String,
+  breakfast: String,
+  number: String,
+  demand: [String],
   createTime: Number,
   roomInfo: [
     {
