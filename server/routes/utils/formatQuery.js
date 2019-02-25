@@ -26,6 +26,12 @@ export const formatDateKey = (dateKeyArr, data) => {
   return formatObj;
 };
 
+export const formatDateQuery = (dateKeyArr, data) => {
+  const localQuery = omitDateKey(dateKeyArr, data);
+  const dateQuery = formatDateKey(dateKeyArr, data);
+  return { ...localQuery, ...dateQuery };
+};
+
 export const omitValueValid = obj => omitBy(obj, val => val === undefined);
 
 const timeToDate = (v, number = false) => {

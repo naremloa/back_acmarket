@@ -10,7 +10,21 @@ import {
 } from '../order';
 
 export const get = [
-// 訂單接口
+  /**
+   * @api {get} /order/list 訂單列表接口
+   * @apiPermission login admin
+   * @apiName orderList
+   * @apiGroup order
+   *
+   * @apiParam {String} orderId 訂單編號
+   * @apiParam {String} name 訂單姓名
+   * @apiParam {String} phone 訂單電話
+   * @apiParam {String} nationality 訂單國籍
+   * @apiParam {String} breakfast 早餐
+   * @apiParam {Number} status 訂單狀態
+   * @apiParam {Number} createStartTime 訂單開始時間
+   * @apiParam {Number} createEndTime 訂單結束時間
+   */
   ['/order/list',
     middlewareCheckLoginStatusSession, middlewareCheckAuthorization,
     getOrder],
@@ -19,7 +33,7 @@ export const get = [
 export const post = [
   /**
  * @api {post} /order/add 新增訂單接口
- * @apiPermission login admi
+ * @apiPermission login admin
  * @apiName orderAdd
  * @apiGroup Order
  *

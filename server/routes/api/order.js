@@ -1,10 +1,8 @@
 import { values, keys, forOwn } from 'lodash';
 import mongoose from 'mongoose';
 import {
-  omitDateKey,
-  formatDateKey,
-  dateTime,
-  getDateRangeArr,
+  omitValueValid,
+  formatDateQuery,
 } from '../utils/formatQuery';
 import {
   orderFind,
@@ -26,12 +24,19 @@ import { outputSuccess, outputError } from '../utils/outputFormat';
 const { ObjectId } = mongoose.Types;
 
 const getOrder = async (req, res) => {
-  const { query } = req;
-  const dateCheck = ['checkOut', 'checkIn', 'create'];
-  const localQuery = omitDateKey(dateCheck, query);
-  const dateQuery = formatDateKey(dateCheck, query);
+  const {
+    query: {
+      orderId, name, phone, nationality, breakfast, status, createStartTime, createEndTime,
+    },
+  } = req;
+  const query = formatDateQuery(
+    ['create'],
+    omitValueValid({
+      orderId, name, phone, nationality, breakfast, status, createStartTime, createEndTime,
+    }),
+  );
 
-  const order = await orderFind({ ...localQuery, ...dateQuery });
+  const order = await orderFind(query);
   res.send(outputSuccess(order));
 };
 
@@ -79,6 +84,39 @@ const createOrderSchema = async ({
   };
 };
 
+const getDateAndCountByRoomInfo = (roomInfo) => {
+  /**
+   * 通過roomInfo，轉換成兩種格式
+   * roomInfoDate
+   * {
+   *    5c5ed89dd6b4f80dbe3c1281: [20190217, 20190218],
+   *    ...
+   * }
+   *
+   * roomInfoCount
+   * {
+   *    5c5ed89dd6b4f80dbe3c1281: {
+   *      20190217: 2,
+   *      20190218: 1,
+   *    }
+   * }
+   */
+  const init = { roomInfoDate: {}, roomInfoCount: {} };
+  const result = roomInfo.reduce(({ roomInfoDate, roomInfoCount }, { date, roomCid }) => {
+    // handle Date change
+    const localDate = roomInfoDate;
+    localDate[roomCid] = [...(new Set([...(localDate[roomCid] || []), date]))];
+    // handle Count Change
+    const localCount = roomInfoCount;
+    if (localCount[roomCid] === undefined) localCount[roomCid] = {};
+    if (localCount[roomCid][date] === undefined) localCount[roomCid][date] = 0;
+    localCount[roomCid][date] += 1;
+
+    return { roomInfoDate: localDate, roomInfoCount: localCount };
+  }, init);
+  return result;
+};
+
 const addOrder = async (req, res) => {
   const {
     body: {
@@ -106,48 +144,13 @@ const addOrder = async (req, res) => {
   const { userInfo: { account } } = sess;
 
   // 處理房型房間信息
-  /**
-   * roomAllInfo
-   * {
-   *    5c5ed89dd6b4f80dbe3c1281: {
-   *      max: 5,
-   *      price: 2000,
-   *    },
-   *    ...
-   * }
-   */
   const roomAllInfo = await getRoomAllMaxLengthAndPriceInfo();
   const roomAllCid = keys(roomAllInfo);
   if (roomInfo.find(i => !(roomAllCid.includes(i.roomCid)))) {
     return res.send(outputError('訂單中存在未知房型，生成訂單失敗'));
   }
-  /**
-   * 需要查詢的時間點
-   * roomInfoDate
-   * {
-   *    5c5ed89dd6b4f80dbe3c1281: [20190217, 20190218],
-   *    ...
-   * }
-   */
-  const roomInfoDate = roomInfo.reduce((acc, { date, roomCid }) => ({
-    ...acc, [roomCid]: [...(new Set([...(acc[roomCid] || []), date]))],
-  }), {});
 
-  /**
-   * roomInfoCount
-   * {
-   *    5c5ed89dd6b4f80dbe3c1281: {
-   *      20190217: 2,
-   *      20190218: 1,
-   *    }
-   * }
-   */
-  const roomInfoCount = roomInfo.reduce((acc, { date, roomCid }) => {
-    if (acc[roomCid] === undefined) acc[roomCid] = {};
-    if (acc[roomCid][date] === undefined) acc[roomCid][date] = 0;
-    acc[roomCid][date] += 1;
-    return acc;
-  }, {});
+  const { roomInfoDate, roomInfoCount } = getDateAndCountByRoomInfo(roomInfo);
 
   const roomAllInDateInfo = await getRoomCidOccByDate(roomInfoDate);
 
