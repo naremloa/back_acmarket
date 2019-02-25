@@ -34,8 +34,10 @@ const getOcc = async (req, res) => {
   if (!startDate || !endDate) return res.send(outputError('查詢條件有誤'));
   const query = { date: { $gte: startDate, $lt: endDate } };
   const roomInfo = (await roomFind({}))
-    .map(i => ({
-      _id: i._id, name: i.name, price: i.price, length: i.roomList.length,
+    .map(({
+      _id, name, price, roomList,
+    }) => ({
+      _id, name, price, length: roomList.length,
     }))
     .reduce((acc, {
       _id, name, price, length,
