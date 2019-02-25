@@ -28,6 +28,13 @@ async function httpMethod({
     console.log('error', error);
     res = null;
   }
+  if (!res) {
+    return {
+      ...responseData,
+      code: 1,
+      msg: '伺服器端無回應，請稍號再弒，或聯絡服務人員',
+    };
+  }
   if (
     res
     && has(res.data, 'data')
