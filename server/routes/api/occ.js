@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import { values, keys, has } from 'lodash';
-import { outputSuccess, outputError } from '../utils/outputFormat';
+import { outputSuccess, outputError, formatTryCatch } from '../utils/outputFormat';
 import {
   dateTime, getDateRangeArr, omitValueValid, formatDateQuery,
 } from '../utils/formatQuery';
@@ -65,11 +65,23 @@ const getOccDetailList = async (req, res) => {
   return res.send(outputSuccess(result));
 };
 
+const checkTimeSearch = async (startTime, endTime) => {
+  if (!startTime || !endTime) throw new Error('開始或結束時間不能為空');
+  const startDate = dateTime(startTime);
+  const endDate = dateTime(endTime);
+  if (startDate < dateTime(new Date().getTime())) throw new Error('開始日期不能小於當前日期');
+  if (startDate > endDate) throw new Error('開始日期不能大於結束日期');
+  if (endTime - startTime > 86400000 * 30) throw new Error('搜索間隔不能大於30天');
+  return { startDate, endDate };
+};
+
 // 前台，查詢佔用obj
 const getOcc = async (req, res) => {
   const { query: { startTime, endTime } } = req;
-  const startDate = dateTime(startTime);
-  const endDate = dateTime(endTime);
+  const [err, data] = await formatTryCatch(checkTimeSearch(startTime, endTime));
+  if (err) return res.send(outputError(err.message));
+  const { startDate, endDate } = data;
+
   if (!startDate || !endDate) return res.send(outputError('查詢條件有誤'));
   const query = { date: { $gte: startDate, $lt: endDate } };
   const roomInfo = (await roomFind({}))
