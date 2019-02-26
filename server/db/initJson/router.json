@@ -58,11 +58,31 @@
         "childNode": []
       },
       {
+        "id": 1013,
+        "dataKey": "cashList",
+        "name": "收支明細",
+        "apiRoot": [
+          "/cash"
+        ],
+        "rootId": 1002,
+        "childNode": []
+      },
+      {
         "id": 1016,
         "dataKey": "room",
         "name": "房型設定",
         "apiRoot": [
           "/room"
+        ],
+        "rootId": 1002,
+        "childNode": []
+      },
+      {
+        "id": 1017,
+        "dataKey": "occ",
+        "name": "佔用列表",
+        "apiRoot": [
+          "/occ"
         ],
         "rootId": 1002,
         "childNode": []
