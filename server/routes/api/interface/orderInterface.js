@@ -9,7 +9,7 @@ import {
   updateOrderStatus,
 } from '../order';
 import {
-  getOccList,
+  getOccDetailList,
 } from '../occ';
 
 export const get = [
@@ -40,7 +40,7 @@ export const get = [
    */
   ['/order/occ/*',
     middlewareCheckLoginStatusSession, middlewareCheckAuthorization,
-    getOccList],
+    getOccDetailList],
 ];
 
 export const post = [

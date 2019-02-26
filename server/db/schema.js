@@ -186,13 +186,13 @@ export const location = {
  * @param {Number}    date 房間佔用日期(YMMDD)
  * @param {ObjectId}  orderCid 訂單cid
  * @param {ObjectId}  roomCid 房型cid(非房間)
- * @param {Number}    subRoomId 房間id
+ * @param {Number}    subRoomCid 房間id
  */
 export const occ = {
   date: Number,
   orderCid: { type: 'ObjectId' },
   roomCid: { type: 'ObjectId' },
-  subRoomId: Number,
+  subRoomCid: { type: 'ObjectId' },
 };
 
 /**

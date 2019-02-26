@@ -1,18 +1,57 @@
 import mongoose from 'mongoose';
-import { values, keys } from 'lodash';
+import { values, keys, has } from 'lodash';
 import { outputSuccess, outputError } from '../utils/outputFormat';
-import { dateTime, getDateRangeArr } from '../utils/formatQuery';
+import {
+  dateTime, getDateRangeArr, omitValueValid, formatDateQuery,
+} from '../utils/formatQuery';
 import {
   occFind,
+  occFindById,
   occInsertMany,
+  occFindByIdAndUpdate,
 } from '../models/occ';
 import {
   roomFind,
+  roomFindById,
 } from '../models/room';
 
 const { ObjectId } = mongoose.Types;
 
 const getOccList = async (req, res) => {
+  const {
+    query: {
+      dateStartTime, dateEndTime, roomCid,
+    },
+  } = req;
+  const query = formatDateQuery(
+    ['date'],
+    omitValueValid({ dateStartTime, dateEndTime, roomCid }),
+  );
+  const occ = await occFind(query);
+  res.send(outputSuccess(occ));
+};
+
+const updateOccSubRoomCid = async (req, res) => {
+  const {
+    body: {
+      cid, roomCid, subRoomCid,
+    },
+  } = req;
+  const occ = await occFindById(cid);
+  if (!occ) return res.outputError('查詢不到訂單');
+  const room = await roomFindById(roomCid);
+  if (!room) return res.outputError('查詢不到房型');
+  if (room.roomList.find(e => e._id.toString() === subRoomCid) === undefined) {
+    return res.outputError('查詢不到該房間');
+  }
+  const updateObj = {
+    subRoomCid: ObjectId(subRoomCid),
+  };
+  await occFindByIdAndUpdate(cid, updateObj);
+  return res.send(outputSuccess({}, '更新成功'));
+};
+
+const getOccDetailList = async (req, res) => {
   const { 0: cid } = req.params;
   const query = {
     orderCid: ObjectId(cid),
@@ -151,5 +190,7 @@ export {
   getOccByDateAndRoomCidObj,
   addOcc,
   getRoomCidOccByDate,
+  getOccDetailList,
   getOccList,
+  updateOccSubRoomCid,
 };
