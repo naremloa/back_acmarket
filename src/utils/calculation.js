@@ -30,3 +30,11 @@ export function currencies(v) {
   v = (v).toString().replace(reg, ',');
   return v;
 }
+
+export function formatStringDate(stringDate) {
+  stringDate = stringDate.toString();
+  const year = stringDate.slice(0, 4);
+  const month = stringDate.slice(4, 6);
+  const date = stringDate.slice(6, 8);
+  return `${year}/${month}/${date}`;
+}

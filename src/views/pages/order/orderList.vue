@@ -245,7 +245,7 @@
 import httpMethod from '@/utils/httpMethod';
 import constList from '@/utils/const';
 import dialogComponent from '@/views/layout/components/dialog.vue';
-import { dateTime, currencies } from '@/utils/calculation';
+import { dateTime, currencies,formatStringDate } from '@/utils/calculation';
 
 export default {
   name: 'orderList',
@@ -340,6 +340,7 @@ export default {
   methods: {
     dateTime,
     currencies,
+    formatStringDate,
     formatRoomType(type) {
       const res = this.roomTypeList.filter(item => item.cid === type)[0];
       return res ? res.name : '';
@@ -354,13 +355,6 @@ export default {
     formatOrderStatus(type) {
       const res = constList.orderStatusList.filter(item => item.id === type)[0];
       return res ? res.value : '';
-    },
-    formatStringDate(stringDate) {
-      stringDate = stringDate.toString();
-      const year = stringDate.slice(0, 4);
-      const month = stringDate.slice(4, 6);
-      const date = stringDate.slice(6, 8);
-      return `${year}/${month}/${date}`;
     },
     getParamsOrigin() {
       return {

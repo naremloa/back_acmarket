@@ -128,10 +128,12 @@
         :pagination.sync="pagination"
       >
         <template slot="items" slot-scope="props">
-          <td class="text-xs-center">{{ props.item.id }}</td>
-          <!-- <td class="text-xs-center">{{ props.item.certificateNumber }}</td>
-          <td class="text-xs-center">{{ props.item.content }}</td>
-          <td class="text-xs-center">{{ currencies(props.item.income) }}</td>
+          <td class="text-xs-center">{{ formatStringDate(props.item.date) }}</td>
+          <td class="text-xs-center">{{ props.item.roomCid }}</td>
+          <td :class="['text-xs-center', props.item.subRoomCid ? '': 'warning--text' ]">
+            {{ props.item.subRoomCid || '尚未分配房型' }}
+          </td>
+          <!-- <td class="text-xs-center">{{ currencies(props.item.income) }}</td>
           <td class="text-xs-center">{{ currencies(props.item.outcome) }}</td>
           <td class="text-xs-center">{{ currencies(props.item.balance) }}</td> -->
           <!-- <td class="text-xs-center">{{ formatCashType(props.item.type) }}</td> -->
@@ -174,7 +176,7 @@
 import httpMethod from '@/utils/httpMethod';
 import constList from '@/utils/const';
 import dialogComponent from '@/views/layout/components/dialog.vue';
-import { dateTime, currencies } from '@/utils/calculation';
+import { dateTime, currencies,formatStringDate } from '@/utils/calculation';
 
 export default {
   name: 'occList',
@@ -190,18 +192,19 @@ export default {
         rowsPerPage: 20,
       },
       headers: [
-        { text: '訂單號', value: 'cashId', sortable: false },
-        { text: '憑證號', value: 'certificateNumber', sortable: false },
-        { text: '摘要', value: 'content', sortable: false },
-        { text: '收入金額', value: 'income', sortable: false },
-        { text: '支出金額', value: 'outcome', sortable: false },
-        { text: '餘額', value: 'balance', sortable: false },
-        { text: '帳單類型', value: 'type', sortable: false },
-        { text: '創建日期', value: 'createTime', sortable: false },
-        { text: '創建用戶', value: 'createAccount', sortable: false },
-        { text: '修改操作', value: '', sortable: false },
-        { text: '修改日期', value: 'modifyTime', sortable: false },
-        { text: '修改帳號', value: 'modifyAccount', sortable: false },
+        { text: '入住日期', value: 'date', sortable: false },
+        { text: '房型', value: 'roomCid', sortable: false },
+        { text: '房間', value: 'subRoomCid', sortable: false },
+        { text: '操作', value: '', sortable: false },
+        // { text: '收入金額', value: 'income', sortable: false },
+        // { text: '支出金額', value: 'outcome', sortable: false },
+        // { text: '餘額', value: 'balance', sortable: false },
+        // { text: '帳單類型', value: 'type', sortable: false },
+        // { text: '創建日期', value: 'createTime', sortable: false },
+        // { text: '創建用戶', value: 'createAccount', sortable: false },
+        // { text: '修改操作', value: '', sortable: false },
+        // { text: '修改日期', value: 'modifyTime', sortable: false },
+        // { text: '修改帳號', value: 'modifyAccount', sortable: false },
       ],
       occList: [],
       valid: false,
@@ -227,18 +230,33 @@ export default {
         confirmMethod: null,
         otherMethod: null,
       },
+      subRoomList: [],
     };
   },
   mounted() {
+    this.getSubRoomList();
     this.getOccList();
   },
   methods: {
     dateTime,
     currencies,
+    formatStringDate,
     // formatCashType(type) {
     //   const res = constList.cashTypeList.filter(item => item.id === type)[0];
     //   return res ? res.value : '';
     // },
+    async getSubRoomList() {
+      const res = await httpMethod({
+        url: '/v1/api/room/options',
+        method: 'GET',
+      });
+      if (!res.code) {
+        this.subRoomList = res.data;
+        console.log('​getOccList -> res.data', res.data);
+      } else {
+        this.subRoomList = [];
+      }
+    },
     getParamsOrigin() {
       return {
         type: null,
