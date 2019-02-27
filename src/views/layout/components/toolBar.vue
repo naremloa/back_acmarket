@@ -1,7 +1,7 @@
 <template>
   <v-toolbar app fixed scroll-off-screen :height="height" class="primary">
     <v-toolbar-side-icon @click.stop="localDrawer = !localDrawer"></v-toolbar-side-icon>
-    <v-toolbar-title>Application</v-toolbar-title>
+    <v-toolbar-title>飛樂米星空號網站後台</v-toolbar-title>
     <v-spacer></v-spacer>
     <v-toolbar-items class="hidden-sm-and-down">
       <v-menu offset-y>

@@ -189,20 +189,20 @@ export default {
         this.roomTypeList = [];
       }
     },
-    getParamsOrigin() {
-      return {
-        idShow: null,
-        positionShow: null,
-        contentShow: null,
-        noteShow: null,
-        createAccountShow: null,
-        modifyAccountShow: null,
-        createTimeStartShow: null,
-        createTimeEndShow: null,
-        modifyTimeStartShow: null,
-        modifyTimeEndShow: null,
-      };
-    },
+    // getParamsOrigin() {
+    //   return {
+    //     idShow: null,
+    //     positionShow: null,
+    //     contentShow: null,
+    //     noteShow: null,
+    //     createAccountShow: null,
+    //     modifyAccountShow: null,
+    //     createTimeStartShow: null,
+    //     createTimeEndShow: null,
+    //     modifyTimeStartShow: null,
+    //     modifyTimeEndShow: null,
+    //   };
+    // },
     // methodFormReset() {
     //   this.searchParams = this.getParamsOrigin();
     // },

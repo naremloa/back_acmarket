@@ -109,6 +109,14 @@ export default new Router({
             title: '房型設定',
           },
         },
+        {
+          path: 'occ/list',
+          name: 'occ',
+          component: () => import('@/views/pages/room/occList.vue'),
+          meta: {
+            title: '佔用列表',
+          },
+        },
       ],
     },
     {

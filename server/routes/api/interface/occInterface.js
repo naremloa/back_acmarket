@@ -16,7 +16,7 @@ export const post = [
    * @apiName updateSubRoomCid
    * @apiGroup occ
    *
-   * @apiParam {String} cid occ cid
+   * @apiParam {String} cid occ cic
    * @apiParam {String} roomCid 房型cid
    * @apiParam {String} subRoomCid 房間cid
    */
