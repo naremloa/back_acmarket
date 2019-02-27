@@ -10,7 +10,7 @@ import {
 // 排除遊客和super
 const getRoleList = async (req, res) => {
   const result = (await roleFindAll('id name'))
-    .map(({ id, name }) => ({ id, value: name }))
+    .map(({ id, name, routerGroup }) => ({ id, value: name, routerGroup }))
     .filter(({ id }) => ![0].includes(id));
     // .filter(({ id }) => ![0, 1000].includes(id));
   return res.send(outputSuccess(result));
