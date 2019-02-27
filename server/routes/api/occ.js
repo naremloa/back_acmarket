@@ -30,7 +30,7 @@ const getOccList = async (req, res) => {
     ['date'],
     omitValueValid({ dateStartTime, dateEndTime, roomCid }),
   );
-  const subRoomAll = getSubRoomAboutAll()
+  const subRoomAll = (await getSubRoomAboutAll())
     .reduce((acc, {
       subCid, subName, cid, name,
     }) => ({
@@ -45,7 +45,7 @@ const getOccList = async (req, res) => {
     }), {});
   const occ = (await occFind(query)).map(i => ({
     ...i,
-    roomName: subRoomAll[i.roomCid],
+    roomName: subRoomAll[i.roomCid].name,
     subRoomName: i.subRoomCid ? subRoomAll[i.roomCid].child[i.subRoomCid] : '',
   }));
   res.send(outputSuccess(occ));
