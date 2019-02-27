@@ -49,27 +49,9 @@ export default {
   props: ['contentData', 'openDialog'],
   data() {
     return {
-      // open: ['public'],
-      // files: {
-      //   html: 'mdi-language-html5',
-      //   js: 'mdi-nodejs',
-      //   json: 'mdi-json',
-      //   md: 'mdi-markdown',
-      //   pdf: 'mdi-file-pdf',
-      //   png: 'mdi-file-image',
-      //   txt: 'mdi-file-document-outline',
-      //   xls: 'mdi-file-excel',
-      // },
-      // breweries: [],
-      // isLoading: false,
-      // tree: [],
-      // types: [],
       routerTree: [],
       valid: false,
-      roleParams: {
-        name: null,
-        routerGroup: [],
-      },
+      roleParams: this.getParamsOrigin(),
       nameRules: [
         v => !!v || '此欄位為必填',
       ],
@@ -78,24 +60,29 @@ export default {
   watch: {
     openDialog(val) {
       if (val) {
-        this.getRouterTree();
+        this.getRouterTree().then(() => {
+          this.formatProps();
+        });
         // this.formatProps();
       }
     },
   },
   mounted() {
-    this.getRouterTree();
+    this.getRouterTree().then(() => {
+      this.formatProps();
+    });
   },
   methods: {
-    // getParamsOrigin() {
-    //   return {
-    //     name: null,
-    //     routerGroup: [1003, 1015],
-    //   };
-    // },
+    getParamsOrigin() {
+      return {
+        name: null,
+        routerGroup: [],
+      };
+    },
     formatProps() {
-      this.roleParams.name = this.contentData.value || '';
-      this.roleParams.routerGroup = this.contentData.routerGroup || [];
+      this.roleParams.routerGroup.splice(0);
+      this.$set(this.roleParams, 'name', this.contentData.value || '');
+      this.$set(this.roleParams, 'routerGroup', this.contentData.routerGroup || []);
     },
     async getRouterTree() {
       const res = await httpMethod({
@@ -104,7 +91,6 @@ export default {
       });
       if (!res.code) {
         this.routerTree = res.data;
-        this.formatProps();
       }
     },
     methodProcessParams() {
