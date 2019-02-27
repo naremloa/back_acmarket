@@ -76,7 +76,12 @@ const getRoomAll = async (req, res) => {
 
 const getRoomOption = async (req, res) => {
   const roomAll = await getRoomAboutAll();
-  const result = roomAll.map(({ _id, name }) => ({ cid: _id, name }));
+  const result = roomAll
+    .map(({ _id, name, roomList }) => ({
+      cid: _id,
+      name,
+      child: roomList.map(({ _id: subCid, name: subName }) => ({ cid: subCid, subName })),
+    }));
   return res.send(outputSuccess(result));
 };
 
