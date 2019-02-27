@@ -56,7 +56,14 @@ export const get = [
    *
    * @apiSuccessExample {json} Success-Response:
    * [
-   *    { "cid": "5c5ed89dd6b4f80dbe3c1281", "name": "兩人房型" },
+   *    {
+   *      "cid": "5c5ed89dd6b4f80dbe3c1281",
+   *      "name": "兩人房型",
+   *      "child": [
+   *        { "cid": "5c5ed89dd6b4f80dbe3c1281", "name": "太平洋房" },
+   *        { "cid": "5c5ed89dd6b4f80dbe3c1281", "name": "大西洋房" },
+   *      ]
+   *     },
    *    { "cid": "5c5ed89dd6b4f80dbe3c1500","name": "三人房型" },
    * ]
    */
