@@ -31,7 +31,11 @@
         <template slot="items" slot-scope="props">
           <td class="text-xs-center">{{ props.item.id }}</td>
           <td class="text-xs-center">{{ props.item.value }}</td>
-
+          <td class="text-xs-center">
+            <v-btn small @click="methodUpdateRole(props.item)">
+              <v-icon>mdi-square-edit-outline</v-icon>修改角色權限
+            </v-btn>
+          </td>
         </template>
         <v-alert slot="no-results" :value="true" color="warning" icon="mdi-alert">
           找不到有關於 "{{ search }}" 的資料
@@ -116,6 +120,9 @@ export default {
         contentFilePath: 'pages/user/addRole.vue',
         otherMethod: this.getRoleList,
       };
+    },
+    methodUpdateRole(item) {
+
     },
   },
 };

@@ -164,11 +164,11 @@
         </template>
         <template slot="expand" slot-scope="props">
           <div class="order-list__detail-list pa-3 pl-5 accent">
-            <v-layout row wrap justify-end>
+            <v-layout row wrap>
               <v-flex xs12 md1>
                 <p>更多訂單訊息</p>
               </v-flex>
-              <v-flex xs12 md11>
+              <v-flex xs12 md10 class="order-list__detail-list--content">
                 <table class="order-list__detail-table">
                   <tr v-for="(key,keyIdx) in ['text', 'value']" :key="`detailRow${keyIdx}`">
                     <td
@@ -182,12 +182,12 @@
               </v-flex>
             </v-layout>
             <v-divider class="my-3"></v-divider>
-            <v-layout row wrap justify-end>
+            <v-layout row wrap>
               <v-flex xs12 md1>
                 <p>更多訂房資訊</p>
                 <v-btn small @click="methodGetMoreRoomOrderInfo(props.item._id)">更多</v-btn>
               </v-flex>
-              <v-flex xs12 md11>
+              <v-flex xs12 md10 class="order-list__detail-list--content">
                 <v-data-table
                   :headers="detailRoomHeaders"
                   :items="props.item.roomInfo"
