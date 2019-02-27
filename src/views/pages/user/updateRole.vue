@@ -66,7 +66,10 @@ export default {
       // types: [],
       routerTree: [],
       valid: false,
-      roleParams: this.getParamsOrigin(),
+      roleParams: {
+        name: null,
+        routerGroup: [],
+      },
       nameRules: [
         v => !!v || '此欄位為必填',
       ],
@@ -76,20 +79,20 @@ export default {
     openDialog(val) {
       if (val) {
         this.getRouterTree();
+        // this.formatProps();
       }
     },
   },
   mounted() {
     this.getRouterTree();
-    this.formatProps();
   },
   methods: {
-    getParamsOrigin() {
-      return {
-        name: null,
-        routerGroup: [],
-      };
-    },
+    // getParamsOrigin() {
+    //   return {
+    //     name: null,
+    //     routerGroup: [1003, 1015],
+    //   };
+    // },
     formatProps() {
       this.roleParams.name = this.contentData.value || '';
       this.roleParams.routerGroup = this.contentData.routerGroup || [];
@@ -101,6 +104,7 @@ export default {
       });
       if (!res.code) {
         this.routerTree = res.data;
+        this.formatProps();
       }
     },
     methodProcessParams() {
@@ -109,8 +113,7 @@ export default {
         routerGroup,
       } = this.roleParams;
       const params = {};
-      console.log('TCL: methodProcessParams -> this.contentData', this.contentData);
-      params.cid = this.contentData.id;
+      params.cid = this.contentData.cid;
       if (routerGroup.length > 0) {
         params.routerGroup = routerGroup;
         this.updateRole(params);
@@ -125,7 +128,6 @@ export default {
     },
     async updateRole(params) {
       if (this.$refs.form.validate()) {
-        console.log('TCL: updateRole -> params', params);
         const res = await httpMethod({
           url: '/v1/api/user/role/update',
           method: 'POST',
@@ -139,6 +141,7 @@ export default {
             text: res.data ? '修改成功' : `${res.msg}`,
             color: 'success',
           };
+          this.$emit('closeDialog');
         } else {
           alert = {
             open: true,
