@@ -3,12 +3,13 @@
     <v-form v-model="valid" ref="form" class="px-2" lazy-validation>
       <v-layout row wrap>
         <v-flex sm12>
-          <v-text-field
+          <p>角色名稱：{{roleParams.name}}</p>
+          <!-- <v-text-field
             v-model="roleParams.name"
             label="角色名稱"
             clearable
             :rules="nameRules"
-          ></v-text-field>
+          ></v-text-field> -->
         </v-flex>
         <v-flex sm12 >
           <div class="title pb-3">請勾選此角色可檢視的頁面。</div>
@@ -32,7 +33,7 @@
           <v-btn flat @click="methodCancelUpdateRole">取消</v-btn>
           <v-btn flat @click="methodFormReset">重置</v-btn>
           <v-btn color="primary" @click="methodProcessParams">
-            <v-icon>mdi-check</v-icon>新增角色
+            <v-icon>mdi-check</v-icon>修改角色
           </v-btn>
         </v-flex>
       </v-layout>
@@ -48,21 +49,21 @@ export default {
   props: ['contentData', 'openDialog'],
   data() {
     return {
-      open: ['public'],
-      files: {
-        html: 'mdi-language-html5',
-        js: 'mdi-nodejs',
-        json: 'mdi-json',
-        md: 'mdi-markdown',
-        pdf: 'mdi-file-pdf',
-        png: 'mdi-file-image',
-        txt: 'mdi-file-document-outline',
-        xls: 'mdi-file-excel',
-      },
-      breweries: [],
-      isLoading: false,
-      tree: [],
-      types: [],
+      // open: ['public'],
+      // files: {
+      //   html: 'mdi-language-html5',
+      //   js: 'mdi-nodejs',
+      //   json: 'mdi-json',
+      //   md: 'mdi-markdown',
+      //   pdf: 'mdi-file-pdf',
+      //   png: 'mdi-file-image',
+      //   txt: 'mdi-file-document-outline',
+      //   xls: 'mdi-file-excel',
+      // },
+      // breweries: [],
+      // isLoading: false,
+      // tree: [],
+      // types: [],
       routerTree: [],
       valid: false,
       roleParams: this.getParamsOrigin(),
@@ -80,6 +81,7 @@ export default {
   },
   mounted() {
     this.getRouterTree();
+    this.formatProps();
   },
   methods: {
     getParamsOrigin() {
@@ -87,6 +89,10 @@ export default {
         name: null,
         routerGroup: [],
       };
+    },
+    formatProps() {
+      this.roleParams.name = this.contentData.value || '';
+      this.roleParams.routerGroup = this.contentData.routerGroup || [];
     },
     async getRouterTree() {
       const res = await httpMethod({
@@ -99,11 +105,12 @@ export default {
     },
     methodProcessParams() {
       const {
-        name,
+        // name,
         routerGroup,
       } = this.roleParams;
       const params = {};
-      if (name) params.name = name;
+      console.log('TCL: methodProcessParams -> this.contentData', this.contentData);
+      params.cid = this.contentData.id;
       if (routerGroup.length > 0) {
         params.routerGroup = routerGroup;
         this.updateRole(params);
@@ -120,7 +127,7 @@ export default {
       if (this.$refs.form.validate()) {
         console.log('TCL: updateRole -> params', params);
         const res = await httpMethod({
-          url: '/v1/api/user/role/add',
+          url: '/v1/api/user/role/update',
           method: 'POST',
           data: params,
         });
@@ -129,13 +136,13 @@ export default {
         if (!res.code) {
           alert = {
             open: true,
-            text: res.data ? '新增成功' : `${res.msg}`,
+            text: res.data ? '修改成功' : `${res.msg}`,
             color: 'success',
           };
         } else {
           alert = {
             open: true,
-            text: res.msg || '新增失敗，請重新再弒，或聯絡客服人員',
+            text: res.msg || '修改失敗，請重新再弒，或聯絡客服人員',
             color: 'error',
           };
         }

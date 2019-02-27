@@ -52,6 +52,7 @@
     </v-card>
     <dialogComponent
       :openDialog="confirmDialogInfo.openDialog"
+      :contentData="confirmDialogInfo.contentData"
       @valueChange="methodChangeOpenDialog"
       :title="confirmDialogInfo.title"
       :contentFilePath="confirmDialogInfo.contentFilePath"
@@ -81,10 +82,12 @@ export default {
       headers: [
         { text: '角色ID', value: 'id', sortable: false },
         { text: '角色名稱', value: 'value', sortable: false },
+        { text: '操作', value: '', sortable: false },
       ],
       roleList: [],
       confirmDialogInfo: {
         openDialog: false,
+        contentData: null,
         title: '',
         contentFilePath: 'pages/user/addRole.vue',
         confirmMethod: null,
@@ -121,8 +124,15 @@ export default {
         otherMethod: this.getRoleList,
       };
     },
-    methodUpdateRole(item) {
-
+    methodUpdateRole(rowData) {
+      this.confirmDialogInfo = {
+        ...this.confirmDialogInfo,
+        contentData: rowData,
+        openDialog: true,
+        title: '修改角色',
+        contentFilePath: 'pages/user/updateRole.vue',
+        otherMethod: this.getRoleList,
+      };
     },
   },
 };
