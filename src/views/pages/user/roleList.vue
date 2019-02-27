@@ -31,7 +31,11 @@
         <template slot="items" slot-scope="props">
           <td class="text-xs-center">{{ props.item.id }}</td>
           <td class="text-xs-center">{{ props.item.value }}</td>
-
+          <td class="text-xs-center">
+            <v-btn small @click="methodUpdateRole(props.item)">
+              <v-icon>mdi-square-edit-outline</v-icon>修改角色權限
+            </v-btn>
+          </td>
         </template>
         <v-alert slot="no-results" :value="true" color="warning" icon="mdi-alert">
           找不到有關於 "{{ search }}" 的資料
@@ -48,6 +52,7 @@
     </v-card>
     <dialogComponent
       :openDialog="confirmDialogInfo.openDialog"
+      :contentData="confirmDialogInfo.contentData"
       @valueChange="methodChangeOpenDialog"
       :title="confirmDialogInfo.title"
       :contentFilePath="confirmDialogInfo.contentFilePath"
@@ -77,10 +82,12 @@ export default {
       headers: [
         { text: '角色ID', value: 'id', sortable: false },
         { text: '角色名稱', value: 'value', sortable: false },
+        { text: '操作', value: '', sortable: false },
       ],
       roleList: [],
       confirmDialogInfo: {
         openDialog: false,
+        contentData: null,
         title: '',
         contentFilePath: 'pages/user/addRole.vue',
         confirmMethod: null,
@@ -114,6 +121,16 @@ export default {
         openDialog: true,
         title: '新增角色',
         contentFilePath: 'pages/user/addRole.vue',
+        otherMethod: this.getRoleList,
+      };
+    },
+    methodUpdateRole(rowData) {
+      this.confirmDialogInfo = {
+        ...this.confirmDialogInfo,
+        contentData: rowData,
+        openDialog: true,
+        title: '修改角色',
+        contentFilePath: 'pages/user/updateRole.vue',
         otherMethod: this.getRoleList,
       };
     },
