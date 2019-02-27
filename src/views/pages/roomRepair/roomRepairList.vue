@@ -5,10 +5,6 @@
         <v-icon>mdi-plus</v-icon>
         新增維修事項
       </v-btn>
-      <v-btn @click="methodAddSubRoom">
-        <v-icon>mdi-plus</v-icon>
-        新增房間
-      </v-btn>
     </v-layout>
     <v-expansion-panel class="mb-2">
       <v-expansion-panel-content class="accent">
@@ -305,17 +301,6 @@ export default {
         contentData: rowData,
         width: 1000,
       };
-    },
-
-    async methodAddSubRoom() {
-      const res = await httpMethod({
-        url: '/v1/api/room/subRoom/add',
-        method: 'POST',
-        data: {
-          cid: '5c728b7b44e77ca854b57cd7',
-          name: '太平洋房',
-        },
-      });
     },
     async getRoomOption() {
       const res = await httpMethod({

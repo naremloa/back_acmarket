@@ -26,7 +26,7 @@ export default new Router({
           name: 'dashboard',
           component: () => import('@/views/pages/dashboard/dashboard.vue'),
           meta: {
-            title: '首页',
+            title: '首頁',
           },
         },
       ],
