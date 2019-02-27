@@ -14,6 +14,9 @@ import {
   roomFind,
   roomFindById,
 } from '../models/room';
+import {
+  getSubRoomAboutAll,
+} from './room';
 
 const { ObjectId } = mongoose.Types;
 
@@ -27,7 +30,24 @@ const getOccList = async (req, res) => {
     ['date'],
     omitValueValid({ dateStartTime, dateEndTime, roomCid }),
   );
-  const occ = await occFind(query);
+  const subRoomAll = getSubRoomAboutAll()
+    .reduce((acc, {
+      subCid, subName, cid, name,
+    }) => ({
+      ...acc,
+      [cid]: {
+        name,
+        child: {
+          ...(acc[cid] !== undefined ? acc[cid].child : {}),
+          [subCid]: subName,
+        },
+      },
+    }), {});
+  const occ = (await occFind(query)).map(i => ({
+    ...i,
+    roomName: subRoomAll[i.roomCid],
+    subRoomName: i.subRoomCid ? subRoomAll[i.roomCid].child[i.subRoomCid] : '',
+  }));
   res.send(outputSuccess(occ));
 };
 

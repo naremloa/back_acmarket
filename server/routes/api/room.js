@@ -33,6 +33,19 @@ const getRoomAboutAll = async () => {
   return roomAll;
 };
 
+const getSubRoomAboutAll = async () => {
+  const roomAll = await getRoomAboutAll();
+  const subRoomAll = [];
+  roomAll.forEach(({ _id: cid, name, roomList }) => {
+    roomList.forEach(({ _id: subCid, name: subName }) => {
+      subRoomAll.push({
+        subCid, subName, cid, name,
+      });
+    });
+  });
+  return subRoomAll;
+};
+
 /**
  * {
  *    5c5ed89dd6b4f80dbe3c1281: {
@@ -166,4 +179,5 @@ export {
   getRoomDetail,
   getRoomAllMaxLengthAndPriceInfo,
   getRoomOption,
+  getSubRoomAboutAll,
 };
