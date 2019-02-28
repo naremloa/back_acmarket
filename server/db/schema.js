@@ -45,7 +45,7 @@ export const login = {
  *    @param {Number}   num  入住天數
  * @param {Number}   totalPrice  應收總價(單位: 分)
  * @param {Number}   totalValidPrice  實收總價(單位: 分)
- * @param {Number}   status  訂單狀態
+ * @param {Number}   status  訂單狀態(1: 下訂單, 2: 已付款, 3: 已入住, 4: 已退房, 5: 已取消 )
  * @param {String}   latestModifyAccount  最近操作訂單帳號
  * @param {Number}   latestModifyTime  最近操作訂單時間
  * @param {String}   note  備註
