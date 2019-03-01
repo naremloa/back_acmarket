@@ -33,6 +33,10 @@ export const get = [
    * @apiName occList
    * @apiGroup Occ
    *
+   * @apiParam {String} dateStartTime 入住開始時間
+   * @apiParam {String} dateEndTime 入住結束時間
+   * @apiParam {String} roomCid 房型cid
+   *
    * @apiSuccessExample {json} Success-Response:
    * [
    *    {
