@@ -19,8 +19,8 @@
           <v-select
             v-model="occInfoParams.selectedSubRoom"
             :items="subRoomList"
-            item-text="value"
-            item-value="id"
+            item-text="name"
+            item-value="cid"
             label="選擇房間"
           ></v-select>
         </v-flex>
@@ -87,7 +87,6 @@ export default {
   },
   mounted() {
     this.getSubRoomList();
-    console.log('TCL: mounted -> this.contentData', this.contentData);
     this.formatProps(this.contentData);
   },
   methods: {
@@ -127,11 +126,10 @@ export default {
       this.$store.commit('global/setNotifySetting', alert);
     },
     formatProps(rowData) {
-      console.log('TCL: formatProps -> rowData', rowData);
       const {
-        roomName,
+        subRoomCid,
       } = rowData;
-      this.occInfoParams.name = roomName;
+      this.occInfoParams.selectedSubRoom = subRoomCid;
     },
     methodFormReset() {
       this.occInfoParams = this.getParamsOrigin();
@@ -139,11 +137,10 @@ export default {
     },
     methodProcessParams() {
       const params = {};
-      const { roomCid: cid } = this.contentData;
-      const { name, priceShow } = this.occInfoParams;
-      params.cid = cid;
-      params.name = name;
-      params.price = priceShow * 100;
+      const { _id, roomCid } = this.contentData;
+      params.cid = _id;
+      params.roomCid = roomCid;
+      params.subRoomCid = this.occInfoParams.selectedSubRoom;
       this.updateOcc(params);
     },
     async updateOcc(params) {
@@ -153,7 +150,6 @@ export default {
           method: 'POST',
           data: params,
         });
-        console.log(res);
         let alert = null;
         if (!res.code) {
           alert = {
@@ -166,7 +162,7 @@ export default {
         } else {
           alert = {
             open: true,
-            text: res.msg || '新增失敗，請重新再試，或聯絡客服人員',
+            text: res.msg || '修改失敗，請重新再試，或聯絡客服人員',
             color: 'error',
           };
         }
