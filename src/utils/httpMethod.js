@@ -32,7 +32,7 @@ async function httpMethod({
     return {
       ...responseData,
       code: 1,
-      msg: '伺服器端無回應，請稍號再弒，或聯絡服務人員',
+      msg: '伺服器端無回應，請稍號再試，或聯絡服務人員',
     };
   }
   if (

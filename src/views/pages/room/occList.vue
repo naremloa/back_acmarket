@@ -106,7 +106,7 @@
     </v-expansion-panel>
     <v-card>
       <v-card-title>
-        收支列表
+        佔用列表
         <v-spacer></v-spacer>
         <v-text-field
           v-model="search"

@@ -116,7 +116,7 @@ export default {
       } else {
         const alert = {
           open: true,
-          text: res.msg || '登入失敗，請重新再弒，或聯絡客服人員',
+          text: res.msg || '登入失敗，請重新再試，或聯絡客服人員',
           color: 'red darken-3',
         };
         this.$store.commit('global/setNotifySetting', alert);
