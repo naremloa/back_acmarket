@@ -217,6 +217,26 @@ const addOcc = async (roomInfo, orderCid) => {
   return true;
 };
 
+const getOccRoomOption = async (req, res) => {
+  const { query: { cid } } = req;
+  const occ = await occFindById(cid);
+  if (!occ) return res.send(outputError('查詢不到訂單'));
+  const { occRoomCid, occDate } = occ;
+  const room = await roomFindById(occRoomCid.toString());
+  if (!room) return res.send(outputError('該訂單房型異常'));
+  const allSubRoomArr = room.roomList.map(({ _id, name }) => ({ cid: _id.toString(), name }));
+  const queryOccArr = {
+    date: occDate,
+    roomCid: occRoomCid,
+  };
+  const occArrTmp = (await occFind(queryOccArr))
+    .map(i => i.subRoomCid.toString())
+    .filter(i => i !== undefined);
+  const occArr = [...(new Set(occArrTmp))];
+  const result = allSubRoomArr.filter(i => !occArr.includes(i.cid));
+  return res.send(outputSuccess(result));
+};
+
 export {
   getOcc,
   getOccByDateAndRoomCidObj,
@@ -225,4 +245,5 @@ export {
   getOccDetailList,
   getOccList,
   updateOccSubRoomCid,
+  getOccRoomOption,
 };

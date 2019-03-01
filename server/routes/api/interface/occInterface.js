@@ -5,6 +5,7 @@ import {
 import {
   getOccList,
   updateOccSubRoomCid,
+  getOccRoomOption,
 } from '../occ';
 
 // ⚠️： 房間和房型有區別
@@ -46,4 +47,23 @@ export const get = [
   ['/occ/list',
     middlewareCheckLoginStatusSession, middlewareCheckAuthorization,
     getOccList],
+
+
+  /**
+   * @api {get} /occ/room/options ooc可分配房間接口
+   * @apiPermission login admin
+   * @apiName occRoomOptions
+   * @apiGroup Occ
+   *
+   * @apiParam {string} cid occ cid
+   *
+   * @apiSuccessExample {json} Success-Response:
+   * [
+   *    { "cid": "5c5ed89dd6b4f80dbe3c1281", "name": "太平洋房" },
+   *    { "cid": "5c5ed89dd6b4f80dbe3c1281", "name": "太平洋房" },
+   * ]
+   */
+  ['/occ/room/options',
+    middlewareCheckLoginStatusSession, middlewareCheckAuthorization,
+    getOccRoomOption],
 ];
