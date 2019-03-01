@@ -2,6 +2,30 @@
   <div class="update-occ">
     <v-form v-model="valid" ref="form" class="px-2" lazy-validation>
       <v-layout row wrap>
+        <v-flex sm4>
+          入住時間：
+        </v-flex>
+        <v-flex sm8>
+          {{formatStringDate(contentData.date) || ''}}
+        </v-flex>
+        <v-flex sm4>
+          入住房型：
+        </v-flex>
+        <v-flex sm8>
+          {{contentData.roomName || ''}}
+        </v-flex>
+
+        <v-flex sm12 md4 lg3 px-1 >
+          <v-select
+            v-model="occInfoParams.selectedSubRoom"
+            :items="subRoomList"
+            item-text="value"
+            item-value="id"
+            label="選擇房間"
+          ></v-select>
+        </v-flex>
+      </v-layout>
+      <!-- <v-layout row wrap>
         <v-flex
           sm12
           md4
@@ -18,13 +42,13 @@
             :required="item.require"
           ></v-text-field>
         </v-flex>
-      </v-layout>
+      </v-layout> -->
       <v-layout>
         <v-flex text-xs-right>
           <v-btn flat @click="methodCancelUpdateOcc">取消</v-btn>
           <v-btn flat @click="methodFormReset">重置</v-btn>
           <v-btn color="primary" @click="methodProcessParams">
-            <v-icon>mdi-check</v-icon>更新房型資訊
+            <v-icon>mdi-check</v-icon>分配房間
           </v-btn>
         </v-flex>
       </v-layout>
@@ -34,6 +58,7 @@
 <script>
 import httpMethod from '@/utils/httpMethod';
 import constList from '@/utils/const';
+import { dateTime, currencies, formatStringDate } from '@/utils/calculation';
 
 export default {
   name: 'updateOcc',
@@ -45,11 +70,8 @@ export default {
       occInfoParams: this.getParamsOrigin(),
       occParamsList: [
         { label: '房型名稱', key: 'name', require: true },
-        { label: '房型價格', key: 'priceShow', require: true },
-        { label: '房型介紹', key: 'intro', require: false },
-        { label: '住房須知', key: 'regulation', require: false },
-        { label: '退訂政策', key: 'refund', require: false },
       ],
+      subRoomList: [],
       nameRules: [
         v => !!v || '此欄位為必填',
       ],
@@ -57,37 +79,59 @@ export default {
   },
   watch: {
     openDialog(val) {
-      if (val) this.formatProps(this.contentData);
+      if (val) {
+        this.getSubRoomList();
+        this.formatProps(this.contentData);
+      }
     },
   },
   mounted() {
+    this.getSubRoomList();
     console.log('TCL: mounted -> this.contentData', this.contentData);
     this.formatProps(this.contentData);
   },
   methods: {
+    formatStringDate,
     getParamsOrigin() {
       return {
-        name: null,
-        priceShow: null,
-        intro: null,
-        regulation: null,
-        refund: null,
+        selectedSubRoom: null,
       };
+    },
+    async getSubRoomList() {
+      const params = {
+        cid: this.contentData._id,
+      };
+      const res = await httpMethod({
+        url: '/v1/api/occ/room/options',
+        method: 'GET',
+        params,
+      });
+      console.log(res);
+      let alert = null;
+      if (!res.code) {
+        // alert = {
+        //   open: true,
+        //   text: `${res.msg}`,
+        //   color: 'success',
+        // };
+        this.subRoomList = res.data;
+        // this.methodCancelUpdateOcc();
+        // this.$emit('execOtherMethod');
+      } else {
+        alert = {
+          open: true,
+          text: res.msg || '無法取得房間列表，請重新再試，或聯絡客服人員',
+          color: 'error',
+        };
+      }
+      this.$store.commit('global/setNotifySetting', alert);
     },
     formatProps(rowData) {
       console.log('TCL: formatProps -> rowData', rowData);
       const {
         roomName,
-        price,
-        intro,
-        regulation,
-        refund,
       } = rowData;
       this.occInfoParams.name = roomName;
-      this.occInfoParams.priceShow = (Number(price) || 0) / 100;
-      this.occInfoParams.intro = intro;
-      this.occInfoParams.regulation = regulation;
-      this.occInfoParams.refund = refund;
     },
     methodFormReset() {
       this.occInfoParams = this.getParamsOrigin();

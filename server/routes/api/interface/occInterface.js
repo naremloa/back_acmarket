@@ -50,7 +50,7 @@ export const get = [
 
 
   /**
-   * @api {get} /occ/room/options ooc可分配房間接口
+   * @api {get} /occ/room/options occ可分配房間接口
    * @apiPermission login admin
    * @apiName occRoomOptions
    * @apiGroup Occ

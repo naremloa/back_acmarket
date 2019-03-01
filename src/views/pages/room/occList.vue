@@ -129,9 +129,9 @@
       >
         <template slot="items" slot-scope="props">
           <td class="text-xs-center">{{ formatStringDate(props.item.date) }}</td>
-          <td class="text-xs-center">{{ props.item.roomCid }}</td>
-          <td :class="['text-xs-center', props.item.subRoomCid ? '': 'warning--text' ]">
-            {{ props.item.subRoomCid || '尚未分配房型' }}
+          <td class="text-xs-center">{{ props.item.roomName }}</td>
+          <td :class="['text-xs-center', props.item.subRoomName ? '': 'warning--text' ]">
+            {{ props.item.subRoomName || '尚未分配房型' }}
           </td>
           <!-- <td class="text-xs-center">{{ currencies(props.item.income) }}</td>
           <td class="text-xs-center">{{ currencies(props.item.outcome) }}</td>
@@ -176,7 +176,7 @@
 import httpMethod from '@/utils/httpMethod';
 import constList from '@/utils/const';
 import dialogComponent from '@/views/layout/components/dialog.vue';
-import { dateTime, currencies,formatStringDate } from '@/utils/calculation';
+import { dateTime, currencies, formatStringDate } from '@/utils/calculation';
 
 export default {
   name: 'occList',
@@ -193,8 +193,8 @@ export default {
       },
       headers: [
         { text: '入住日期', value: 'date', sortable: false },
-        { text: '房型', value: 'roomCid', sortable: false },
-        { text: '房間', value: 'subRoomCid', sortable: false },
+        { text: '房型', value: 'roomName', sortable: false },
+        { text: '房間', value: 'subRoomName', sortable: false },
         { text: '操作', value: '', sortable: false },
         // { text: '收入金額', value: 'income', sortable: false },
         // { text: '支出金額', value: 'outcome', sortable: false },
@@ -229,6 +229,7 @@ export default {
         contentFilePath: 'pages/occ/updateOcc.vue',
         confirmMethod: null,
         otherMethod: null,
+        width: 1000,
       },
       subRoomList: [],
     };
@@ -334,7 +335,7 @@ export default {
         contentFilePath: 'pages/room/updateOcc.vue',
         otherMethod: this.getOccList,
         contentData: rowData,
-        width: 1000,
+        width: 500,
       };
     },
   },
