@@ -226,11 +226,12 @@ const updateOccSubRoomCid = async (req, res) => {
     body: { cid, subRoomCid = '' },
   } = req;
   const occ = await occFindById(cid);
-  if (!occ) return res.outputError('查詢不到訂單');
+  if (!occ) return res.send(outputError('查詢不到訂單'));
   const { roomCid, date } = occ;
-  const restSubRoomArr = await getRestSubRoomArr({ date, roomCid });
-  if (subRoomCid !== '' && !restSubRoomArr.indluces(subRoomCid)) {
-    return res.outputError('不能分配該房間');
+  const restSubRoomArr = (await getRestSubRoomArr({ date, roomCid })).map(i => i.cid);
+  console.log('check', restSubRoomArr, subRoomCid);
+  if (subRoomCid !== '' && !restSubRoomArr.includes(subRoomCid)) {
+    return res.send(outputError('不能分配該房間'));
   }
   const updateObj = {
     subRoomCid: subRoomCid === '' ? null : ObjectId(subRoomCid),
