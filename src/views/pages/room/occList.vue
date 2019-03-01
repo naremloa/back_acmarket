@@ -11,7 +11,7 @@
         <div slot="header" class="subheading">搜尋選項</div>
         <v-form v-model="valid" class="px-2">
           <v-layout row wrap>
-            <v-flex
+            <!-- <v-flex
               sm12
               md4
               lg3
@@ -24,7 +24,7 @@
                 :label="item.label"
                 clearable
               ></v-text-field>
-            </v-flex>
+            </v-flex> -->
             <!-- <v-flex sm12 md4 lg3 px-1 >
               <v-select
                 v-model="searchParams.roomType"
@@ -36,11 +36,11 @@
             </v-flex> -->
             <v-flex sm12 md4 lg3 px-1 >
               <v-select
-                v-model="searchParams.status"
-                :items="constList.orderStatusList"
-                item-text="value"
-                item-value="id"
-                label="訂單狀態"
+                v-model="searchParams.subRoomCid"
+                :items="subRoomList"
+                item-text="name"
+                item-value="cid"
+                label="房型列表"
               ></v-select>
             </v-flex>
           </v-layout>
@@ -174,7 +174,7 @@
 </template>
 <script>
 import httpMethod from '@/utils/httpMethod';
-import constList from '@/utils/const';
+// import constList from '@/utils/const';
 import dialogComponent from '@/views/layout/components/dialog.vue';
 import { dateTime, currencies, formatStringDate } from '@/utils/calculation';
 
@@ -185,7 +185,7 @@ export default {
   },
   data() {
     return {
-      constList,
+      // constList,
       search: '',
       rowsPerPageItems: [20, 30, 50, 80, 100],
       pagination: {
@@ -209,16 +209,16 @@ export default {
       occList: [],
       valid: false,
       searchParams: this.getParamsOrigin(),
-      searchItemParams: [
-        { label: '訂單號', key: 'cashIdShow' },
-        // { label: '憑證號', key: 'certificateNumberShow' },
-        // { label: '摘要', key: 'contentShow' },
-        // { label: '創建用戶', key: 'createAccountShow' },
-        // { label: '修改帳號', key: 'modifyAccountShow' },
-      ],
+      // searchItemParams: [
+      // { label: '訂單號', key: 'cashIdShow' },
+      // { label: '憑證號', key: 'certificateNumberShow' },
+      // { label: '摘要', key: 'contentShow' },
+      // { label: '創建用戶', key: 'createAccountShow' },
+      // { label: '修改帳號', key: 'modifyAccountShow' },
+      // ],
       searchTimeParams: [
-        { label: '創建開始時間', key: 'createTimeStartShow' },
-        { label: '創建結束時間', key: 'createTimeEndShow' },
+        { label: '創建開始時間', key: 'dateStartTimeShow' },
+        { label: '創建結束時間', key: 'dateEndTimeShow' },
         // { label: '修改開始時間', key: 'modifyTimeStartShow' },
         // { label: '修改結束時間', key: 'modifyTimeEndShow' },
       ],
@@ -260,16 +260,16 @@ export default {
     },
     getParamsOrigin() {
       return {
-        type: null,
-        cashIdShow: null,
-        certificateNumberShow: null,
-        contentShow: null,
-        createAccountShow: null,
-        modifyAccountShow: null,
-        createTimeStartShow: null,
-        createTimeEndShow: null,
-        modifyTimeStartShow: null,
-        modifyTimeEndShow: null,
+        subRoomCid: null,
+        // cashIdShow: null,
+        // certificateNumberShow: null,
+        // contentShow: null,
+        // createAccountShow: null,
+        // modifyAccountShow: null,
+        dateStartTimeShow: null,
+        dateEndTimeShow: null,
+        // modifyTimeStartShow: null,
+        // modifyTimeEndShow: null,
       };
     },
     async getOccList(params) {
@@ -290,28 +290,14 @@ export default {
     },
     methodProcessParams() {
       const {
-        type,
-        cashIdShow,
-        certificateNumberShow,
-        contentShow,
-        createAccountShow,
-        modifyAccountShow,
-        createTimeStartShow,
-        createTimeEndShow,
-        modifyTimeStartShow,
-        modifyTimeEndShow,
+        subRoomCid,
+        dateStartTimeShow,
+        dateEndTimeShow,
       } = this.searchParams;
       const params = {};
-      if (type) params.type = type;
-      if (cashIdShow) params.id = cashIdShow;
-      if (certificateNumberShow) params.certificateNumber = certificateNumberShow;
-      if (contentShow) params.content = contentShow;
-      if (createAccountShow) params.createAccount = createAccountShow;
-      if (modifyAccountShow) params.modifyAccount = modifyAccountShow;
-      if (createTimeStartShow) params.createTimeStart = new Date(createTimeStartShow).valueOf();
-      if (createTimeEndShow) params.createTimeEnd = new Date(createTimeEndShow).valueOf();
-      if (modifyTimeStartShow) params.modifyTimeStart = new Date(modifyTimeStartShow).valueOf();
-      if (modifyTimeEndShow) params.modifyTimeEnd = new Date(modifyTimeEndShow).valueOf();
+      if (subRoomCid) params.roomCid = subRoomCid;
+      if (dateStartTimeShow) params.dateStartTime = new Date(dateStartTimeShow).valueOf();
+      if (dateEndTimeShow) params.dateEndTime = new Date(dateEndTimeShow).valueOf();
       this.getOccList(params);
     },
     methodChangeOpenDialog(val) {

@@ -1,21 +1,13 @@
 <template>
   <div class="update-occ">
     <v-form v-model="valid" ref="form" class="px-2" lazy-validation>
-      <v-layout row wrap>
-        <v-flex sm4>
-          入住時間：
-        </v-flex>
-        <v-flex sm8>
-          {{formatStringDate(contentData.date) || ''}}
-        </v-flex>
-        <v-flex sm4>
-          入住房型：
-        </v-flex>
-        <v-flex sm8>
-          {{contentData.roomName || ''}}
-        </v-flex>
-
-        <v-flex sm12 md4 lg3 px-1 >
+      <v-layout row wrap align-center>
+        <v-flex sm4>入住時間：</v-flex>
+        <v-flex sm8>{{formatStringDate(contentData.date) || ''}}</v-flex>
+        <v-flex sm4>入住房型：</v-flex>
+        <v-flex sm8>{{contentData.roomName || ''}}</v-flex>
+        <v-flex sm4>分配房間：</v-flex>
+        <v-flex sm12 md8>
           <v-select
             v-model="occInfoParams.selectedSubRoom"
             :items="subRoomList"
