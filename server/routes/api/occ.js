@@ -47,6 +47,7 @@ const getOccList = async (req, res) => {
     }), {});
   const occ = (await occFind(query)).map(i => ({
     ...i,
+    subRoomCid: i.subRoomCid ? i.subRoomCid : '',
     roomName: subRoomAll[i.roomCid].name,
     subRoomName: i.subRoomCid ? subRoomAll[i.roomCid].child[i.subRoomCid] : '',
   }));
