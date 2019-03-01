@@ -6,6 +6,8 @@
         <v-flex sm8>{{formatStringDate(contentData.date) || ''}}</v-flex>
         <v-flex sm4>入住房型：</v-flex>
         <v-flex sm8>{{contentData.roomName || ''}}</v-flex>
+        <v-flex sm4 v-if="contentData.subRoomCid">已分配房型：</v-flex>
+        <v-flex sm8 v-if="contentData.subRoomCid">{{contentData.subRoomName || ''}}</v-flex>
         <v-flex sm4>分配房間：</v-flex>
         <v-flex sm12 md8>
           <v-select
@@ -39,6 +41,7 @@
         <v-flex text-xs-right>
           <v-btn flat @click="methodCancelUpdateOcc">取消</v-btn>
           <v-btn flat @click="methodFormReset">重置</v-btn>
+          <v-btn flat @click="methodClearSubRoom">清除分配房間</v-btn>
           <v-btn color="primary" @click="methodProcessParams">
             <v-icon>mdi-check</v-icon>分配房間
           </v-btn>
@@ -74,10 +77,12 @@ export default {
       if (val) {
         this.getSubRoomList();
         this.formatProps(this.contentData);
+        console.log('TCL: contentData', this.contentData);
       }
     },
   },
   mounted() {
+    console.log('TCL: contentData', this.contentData);
     this.getSubRoomList();
     this.formatProps(this.contentData);
   },
@@ -159,6 +164,34 @@ export default {
           };
         }
         this.$store.commit('global/setNotifySetting', alert);
+      }
+    },
+    async methodClearSubRoom() {
+      const params = {};
+      const { _id, roomCid } = this.contentData;
+      params.cid = _id;
+      params.roomCid = roomCid;
+      params.subRoomCid = '';
+      const res = await httpMethod({
+        url: '/v1/api/occ/update/subRoomCid',
+        method: 'POST',
+        data: params,
+      });
+      let alert = null;
+      if (!res.code) {
+        alert = {
+          open: true,
+          text: `${res.msg}`,
+          color: 'success',
+        };
+        this.methodCancelUpdateOcc();
+        this.$emit('execOtherMethod');
+      } else {
+        alert = {
+          open: true,
+          text: res.msg || '修改失敗，請重新再試，或聯絡客服人員',
+          color: 'error',
+        };
       }
     },
     methodCancelUpdateOcc() {

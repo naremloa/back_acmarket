@@ -96,7 +96,7 @@
             </v-flex>
             <v-flex text-xs-right>
               <v-btn flat @click="methodFormReset">重置</v-btn>
-              <v-btn color="primary" @click="methodProcessParams">
+              <v-btn color="primary" @click="getOccList">
                 <v-icon>mdi-magnify</v-icon>搜尋
               </v-btn>
             </v-flex>
@@ -272,7 +272,16 @@ export default {
         // modifyTimeEndShow: null,
       };
     },
-    async getOccList(params) {
+    async getOccList() {
+      const params = {};
+      const {
+        subRoomCid,
+        dateStartTimeShow,
+        dateEndTimeShow,
+      } = this.searchParams;
+      if (subRoomCid) params.roomCid = subRoomCid;
+      if (dateStartTimeShow) params.dateStartTime = new Date(dateStartTimeShow).valueOf();
+      if (dateEndTimeShow) params.dateEndTime = new Date(dateEndTimeShow).valueOf();
       const res = await httpMethod({
         url: '/v1/api/occ/list',
         method: 'GET',
@@ -288,18 +297,18 @@ export default {
     methodFormReset() {
       this.searchParams = this.getParamsOrigin();
     },
-    methodProcessParams() {
-      const {
-        subRoomCid,
-        dateStartTimeShow,
-        dateEndTimeShow,
-      } = this.searchParams;
-      const params = {};
-      if (subRoomCid) params.roomCid = subRoomCid;
-      if (dateStartTimeShow) params.dateStartTime = new Date(dateStartTimeShow).valueOf();
-      if (dateEndTimeShow) params.dateEndTime = new Date(dateEndTimeShow).valueOf();
-      this.getOccList(params);
-    },
+    // methodProcessParams() {
+    //   const {
+    //     subRoomCid,
+    //     dateStartTimeShow,
+    //     dateEndTimeShow,
+    //   } = this.searchParams;
+    //   const params = {};
+    //   if (subRoomCid) params.roomCid = subRoomCid;
+    //   if (dateStartTimeShow) params.dateStartTime = new Date(dateStartTimeShow).valueOf();
+    //   if (dateEndTimeShow) params.dateEndTime = new Date(dateEndTimeShow).valueOf();
+    //   this.getOccList(params);
+    // },
     methodChangeOpenDialog(val) {
       this.confirmDialogInfo.openDialog = val;
     },
