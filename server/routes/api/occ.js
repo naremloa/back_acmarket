@@ -205,7 +205,7 @@ const getRestSubRoomArr = async ({ date, roomCid }) => {
     ? room.roomList.map(({ _id, name }) => ({ cid: _id.toString(), name })) : [];
   const queryOccArr = { date, roomCid };
   const occArrTmp = (await occFind(queryOccArr))
-    .map(i => i.subRoomCid.toString())
+    .map(i => i.subRoomCid && i.subRoomCid.toString())
     .filter(i => i !== undefined);
   const occArr = [...(new Set(occArrTmp))];
   const restSubRoom = allSubRoomArr.filter(i => !occArr.includes(i.cid));
