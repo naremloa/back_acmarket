@@ -1,5 +1,7 @@
 import mongoose from 'mongoose';
-import { values, keys, has } from 'lodash';
+import {
+  values, keys, has, isArray,
+} from 'lodash';
 import { outputSuccess, outputError, formatTryCatch } from '../utils/outputFormat';
 import {
   dateTime, getDateRangeArr, omitValueValid, formatDateQuery,
@@ -49,26 +51,6 @@ const getOccList = async (req, res) => {
     subRoomName: i.subRoomCid ? subRoomAll[i.roomCid].child[i.subRoomCid] : '',
   }));
   res.send(outputSuccess(occ));
-};
-
-const updateOccSubRoomCid = async (req, res) => {
-  const {
-    body: {
-      cid, roomCid, subRoomCid = '',
-    },
-  } = req;
-  const occ = await occFindById(cid);
-  if (!occ) return res.outputError('查詢不到訂單');
-  const room = await roomFindById(roomCid);
-  if (!room) return res.outputError('查詢不到房型');
-  if (subRoomCid !== '' && room.roomList.find(e => e._id.toString() === subRoomCid) === undefined) {
-    return res.outputError('查詢不到該房間');
-  }
-  const updateObj = {
-    subRoomCid: subRoomCid === '' ? null : ObjectId(subRoomCid),
-  };
-  await occFindByIdAndUpdate(cid, updateObj);
-  return res.send(outputSuccess({}, '更新成功'));
 };
 
 const getOccDetailList = async (req, res) => {
@@ -217,24 +199,44 @@ const addOcc = async (roomInfo, orderCid) => {
   return true;
 };
 
-const getOccRoomOption = async (req, res) => {
-  const { query: { cid } } = req;
-  const occ = await occFindById(cid);
-  if (!occ) return res.send(outputError('查詢不到訂單'));
-  const { occRoomCid, occDate } = occ;
-  const room = await roomFindById(occRoomCid.toString());
-  if (!room) return res.send(outputError('該訂單房型異常'));
-  const allSubRoomArr = room.roomList.map(({ _id, name }) => ({ cid: _id.toString(), name }));
-  const queryOccArr = {
-    date: occDate,
-    roomCid: occRoomCid,
-  };
+const getRestSubRoomArr = async ({ date, roomCid }) => {
+  const room = await roomFindById(roomCid.toString());
+  const allSubRoomArr = isArray(room && room.roomList)
+    ? room.roomList.map(({ _id, name }) => ({ cid: _id.toString(), name })) : [];
+  const queryOccArr = { date, roomCid };
   const occArrTmp = (await occFind(queryOccArr))
     .map(i => i.subRoomCid.toString())
     .filter(i => i !== undefined);
   const occArr = [...(new Set(occArrTmp))];
-  const result = allSubRoomArr.filter(i => !occArr.includes(i.cid));
+  const restSubRoom = allSubRoomArr.filter(i => !occArr.includes(i.cid));
+  return restSubRoom;
+};
+
+const getOccRoomOption = async (req, res) => {
+  const { query: { cid } } = req;
+  const occ = await occFindById(cid);
+  if (!occ) return res.send(outputError('查詢不到訂單'));
+  const { roomCid, date } = occ;
+  const result = await getRestSubRoomArr({ date, roomCid });
   return res.send(outputSuccess(result));
+};
+
+const updateOccSubRoomCid = async (req, res) => {
+  const {
+    body: { cid, subRoomCid = '' },
+  } = req;
+  const occ = await occFindById(cid);
+  if (!occ) return res.outputError('查詢不到訂單');
+  const { roomCid, date } = occ;
+  const restSubRoomArr = await getRestSubRoomArr({ date, roomCid });
+  if (subRoomCid !== '' && !restSubRoomArr.indluces(subRoomCid)) {
+    return res.outputError('不能分配該房間');
+  }
+  const updateObj = {
+    subRoomCid: subRoomCid === '' ? null : ObjectId(subRoomCid),
+  };
+  await occFindByIdAndUpdate(cid, updateObj);
+  return res.send(outputSuccess({}, '更新成功'));
 };
 
 export {
