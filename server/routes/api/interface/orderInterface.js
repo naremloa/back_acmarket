@@ -27,6 +27,8 @@ export const get = [
    * @apiParam {Number} status 訂單狀態
    * @apiParam {Number} createStartTime 訂單開始時間
    * @apiParam {Number} createEndTime 訂單結束時間
+   * @apiParam {Boolean} outOfTimeSign 即將逾時標誌
+   * @apiParam {Boolean} timeOutSign 逾時標誌
    */
   ['/order/list',
     middlewareCheckLoginStatusSession, middlewareCheckAuthorization,

@@ -6,7 +6,7 @@ const { Order } = Models;
 const { ObjectId } = mongoose.Types;
 
 const orderFind = async (query) => {
-  const res = await Order.find(query);
+  const res = await Order.find(query).lean();
   return res;
 };
 

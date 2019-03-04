@@ -28,18 +28,46 @@ const { ObjectId } = mongoose.Types;
 const getOrder = async (req, res) => {
   const {
     query: {
-      orderId, name, phone, nationality, breakfast, status, createStartTime, createEndTime,
+      orderId, name, phone, nationality, breakfast,
+      status, createStartTime, createEndTime,
+      outOfTimeSign = false, timeOutSign = false,
     },
   } = req;
+  const nowTime = new Date().getTime();
+  const outOfTimeNum = 8640000 * 2;
+  const timeOutNum = 86400000 * 3;
   const query = formatDateQuery(
     ['create'],
     omitValueValid({
-      orderId, name, phone, nationality, breakfast, status, createStartTime, createEndTime,
+      orderId,
+      name,
+      phone,
+      nationality,
+      breakfast,
+      status,
+      createStartTime,
+      createEndTime,
     }),
   );
+  if (outOfTimeSign) {
+    query.createTime = { $gte: nowTime - outOfTimeNum, $lt: nowTime - timeOutNum };
+  }
+  if (timeOutSign) {
+    query.createTime = { $gte: nowTime - timeOutNum };
+  }
 
   const order = await orderFind(query);
-  res.send(outputSuccess(order));
+  const handleOutOfTimeAndTimeOutAboutOrder = order.map((i) => {
+    const timeDiff = nowTime - i.createTime;
+    let outOfTime = false;
+    let timeOut = false;
+    if (timeDiff >= 8640000 * 2) {
+      if (timeDiff >= 8640000 * 3) timeOut = true;
+      else outOfTime = true;
+    }
+    return { ...i, outOfTimeSign: outOfTime, timeOutSign: timeOut };
+  });
+  res.send(outputSuccess(handleOutOfTimeAndTimeOutAboutOrder));
 };
 
 const createOrderSchema = async ({
