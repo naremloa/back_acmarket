@@ -197,6 +197,11 @@ export const occ = {
 
 /**
  * roomSchema
+ * 注:
+ * weekday 週一～週五
+ * weekend 週六～週日
+ * lowSeason 4月～9月
+ * peakSeason 10月~3月
  */
 export const room = {
   name: String,
@@ -205,7 +210,12 @@ export const room = {
     regulation: String,
     refund: String,
   },
-  price: Number,
+  price: {
+    lowSeasonWeekday: Number,
+    lowSeasonWeekend: Number,
+    peakSeasonWeekday: Number,
+    peakSeasonWeekend: Number,
+  },
   roomList: [
     {
       id: Number,

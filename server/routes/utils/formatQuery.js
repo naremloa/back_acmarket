@@ -39,11 +39,13 @@ const timeToDate = (v, number = false) => {
   const Y = date.getFullYear();
   const M = (date.getMonth() + 1).toString().padStart(2, '0');
   const D = date.getDate().toString().padStart(2, '0');
+  const day = Number(date.getDay()) || 7;
   return {
     date,
     Y: number ? Number(Y) : Y,
     M: number ? Number(M) : M,
     D: number ? Number(D) : D,
+    day: number ? Number(day) : `${day}`,
   };
 };
 
@@ -51,6 +53,16 @@ export const dateTime = (time) => {
   if (time) {
     const { Y, M, D } = timeToDate(time);
     return Number(`${Y}${M}${D}`);
+  }
+  return false;
+};
+
+export const getDatePriceKey = (date) => {
+  if (date) {
+    const { M, day } = timeToDate(date, true);
+    const frontKey = (M >= 4 && M <= 9) ? 'peakSeason' : 'lowSeason';
+    const backKey = (day >= 1 && day <= 5) ? 'Weekday' : 'Weekend';
+    return `${frontKey}${backKey}`;
   }
   return false;
 };
