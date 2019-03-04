@@ -45,8 +45,15 @@ const timeToDate = (v, number = false) => {
     Y: number ? Number(Y) : Y,
     M: number ? Number(M) : M,
     D: number ? Number(D) : D,
-    day: number ? Number(day) : `${day}`,
+    day: number ? Number(dd ay) : `${day}`,
   };
+};
+
+export const chNumToDate = (num) => {
+  if (num) {
+    return `${num}`.replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3');
+  }
+  return false;
 };
 
 export const dateTime = (time) => {
@@ -60,7 +67,7 @@ export const dateTime = (time) => {
 export const getDatePriceKey = (date) => {
   if (date) {
     const { M, day } = timeToDate(date, true);
-    const frontKey = (M >= 4 && M <= 9) ? 'peakSeason' : 'lowSeason';
+    const frontKey = (M >= 4 && M <= 10) ? 'peakSeason' : 'lowSeason';
     const backKey = (day >= 1 && day <= 5) ? 'Weekday' : 'Weekend';
     return `${frontKey}${backKey}`;
   }

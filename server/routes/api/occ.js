@@ -126,7 +126,12 @@ const getOcc = async (req, res) => {
  *    5c5ed89dd6b4f80dbe3c1281: {
  *      qty: 2,
  *      max: 5,
- *      price: 2000,
+ *      price: {
+ *        lowSeasonWeekday: 2000,
+ *        lowSeasonWeekend: 2000,
+ *        peakSeasonWeekday: 2000,
+ *        peakSeasonWeekend: 2000,
+ *      },
  *    }
  *    ...
  * }

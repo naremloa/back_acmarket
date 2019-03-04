@@ -3,6 +3,8 @@ import mongoose from 'mongoose';
 import {
   omitValueValid,
   formatDateQuery,
+  chNumToDate,
+  getDatePriceKey,
 } from '../utils/formatQuery';
 import {
   orderFind,
@@ -159,13 +161,15 @@ const addOrder = async (req, res) => {
   // 遍歷所有訂單房型
   forOwn(roomInfoCount, (valueRoomCid, keyRoomCid) => {
     if (totalPrice === false) return;
-    // 單一房型下最大房間數量
+    // 單一房型下最大房間數量和單價
     const { max, price } = roomAllInfo[keyRoomCid];
     // 遍歷當前訂單房型下的入住時間
     forOwn(valueRoomCid, (valueDate, keyDate) => {
       if (totalPrice === false) return;
       // 房間預定數量
       const num = valueDate;
+      // 房間入住時間價格
+      const subRoomPrice = price[getDatePriceKey(chNumToDate(keyDate))];
 
       // 當前房型無佔用, 或當前房型有佔用, 但佔用時間與遍歷時間不一樣, 即 佔用數為 0
       const occNum = roomAllInDateInfo[keyRoomCid] === undefined
@@ -175,7 +179,7 @@ const addOrder = async (req, res) => {
         totalPrice = false;
         return;
       }
-      totalPrice += (price * num);
+      totalPrice += (subRoomPrice * num);
     });
   });
   if (totalPrice === false) return res.send(outputError('新增訂單異常，occ查詢不過'));
@@ -205,6 +209,7 @@ const addOrder = async (req, res) => {
   return res.send(outputSuccess({}, '新增訂單'));
 };
 
+// 舊的部分，暫停使用
 const updateOrder = async (req, res) => {
   const {
     body: {

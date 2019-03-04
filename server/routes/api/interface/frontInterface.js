@@ -26,9 +26,26 @@ export const get = [
    *      "20190228": { A: 3, B: 1, C: 2 },
    *    },
    *    "info": {
-   *      "A": { "length": 3, "name": "太平洋", "price": 3000 },
-   *      "B": { "length": 3, "name": "太平洋", "price": 3000 },
-   *      "C": { "length": 3, "name": "太平洋", "price": 3000 },
+   *      "A": {
+   *        "length": 3,
+   *        "name": "太平洋",
+   *        "price": {
+   *          "lowSeasonWeekday": 1500,
+   *          "lowSeasonWeekend": 2500,
+   *          "peakSeasonWeekday": 2000,
+   *          "peakSeasonWeekend": 3000,
+   *        },
+   *      },
+   *      "B": {
+   *        "length": 3,
+   *        "name": "太平洋",
+   *        "price": {
+   *          "lowSeasonWeekday": 1500,
+   *          "lowSeasonWeekend": 2500,
+   *          "peakSeasonWeekday": 2000,
+   *          "peakSeasonWeekend": 3000,
+   *        },
+   *      },
    *    }
    * }
    */

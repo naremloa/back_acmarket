@@ -200,8 +200,8 @@ export const occ = {
  * 注:
  * weekday 週一～週五
  * weekend 週六～週日
- * lowSeason 4月～9月
- * peakSeason 10月~3月
+ * lowSeason 11月～3月
+ * peakSeason 4月~10月
  */
 export const room = {
   name: String,

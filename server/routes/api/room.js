@@ -11,9 +11,21 @@ const createRoomSchema = ({
   intro = '',
   regulation = '',
   refund = '',
-  price = 0,
+  lowNormalPrice = 0,
+  lowHolidayPrice = 0,
+  peakNormalPrice = 0,
+  peakHolidayPrice = 0,
 }, update = false) => {
-  const mainPart = { name, content: { intro, regulation, refund }, price };
+  const mainPart = {
+    name,
+    content: { intro, regulation, refund },
+    price: {
+      lowSeasonWeekday: lowNormalPrice,
+      lowSeasonWeekend: lowHolidayPrice,
+      peakSeasonWeekday: peakNormalPrice,
+      peakSeasonWeekend: peakHolidayPrice,
+    },
+  };
   if (update) return mainPart;
   return { ...mainPart, roomList: [] };
 };
@@ -50,7 +62,12 @@ const getSubRoomAboutAll = async () => {
  * {
  *    5c5ed89dd6b4f80dbe3c1281: {
  *      max: 5,
- *      price: 2000,
+ *      price: {
+ *              lowSeasonWeekday: 2000,
+ *              lowSeasonWeekend: 2000,
+ *              peakSeasonWeekday: 2000,
+ *              peakSeasonWeekend: 2000,
+ *      },
  *    }
  * }
  */
@@ -139,13 +156,24 @@ const updateSubRoom = async (req, res) => {
 const updateRoom = async (req, res) => {
   const {
     body: {
-      cid, name, intro, regulation, refund, price = 0,
+      cid, name, intro, regulation, refund,
+      lowNormalPrice = 0,
+      lowHolidayPrice = 0,
+      peakNormalPrice = 0,
+      peakHolidayPrice = 0,
     },
   } = req;
   const room = await roomFindById(cid);
   if (!room) return res.send(outputError('不存在該房型'));
   const updatePart = createRoomSchema({
-    name, intro, regulation, refund, price,
+    name,
+    intro,
+    regulation,
+    refund,
+    lowNormalPrice,
+    lowHolidayPrice,
+    peakNormalPrice,
+    peakHolidayPrice,
   }, true);
   const updateObj = { ...room, ...updatePart };
   const result = await roomFindByIdAndUpdate(cid, updateObj);

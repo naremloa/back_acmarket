@@ -31,7 +31,10 @@ export const post = [
    *
    * @apiParam {String} cid 房型cid
    * @apiParam {String} name 房型名稱
-   * @apiParam {Number} price 房型單價
+   * @apiParam {Number} lowNormalPrice 淡季平日單價
+   * @apiParam {Number} lowHolidayPrice 淡季假日單價
+   * @apiParam {Number} peakNormalPrice 旺季平日單價
+   * @apiParam {Number} peakHolidayPrice 旺季假日單價
    */
   ['/room/update', middlewareCheckLoginStatusSession, updateRoom],
 
