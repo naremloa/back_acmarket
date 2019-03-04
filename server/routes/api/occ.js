@@ -19,6 +19,9 @@ import {
 import {
   getSubRoomAboutAll,
 } from './room';
+import {
+  orderFindById,
+} from '../models/order';
 
 const { ObjectId } = mongoose.Types;
 
@@ -246,6 +249,16 @@ const updateOccSubRoomCid = async (req, res) => {
   return res.send(outputSuccess({}, '更新成功'));
 };
 
+const getOccOrderInfo = async (req, res) => {
+  const { query: { occCid, orderCid } } = req;
+  const occ = await occFindById(occCid);
+  if (!occ) return res.send(outputError('查詢occ有誤'));
+  if (occ.orderCid.toString() !== orderCid) return res.send(outputError('查詢訂單cid與occ不符'));
+  const order = await orderFindById(orderCid);
+  if (!order) return res.send(outputError('查詢訂單有誤'));
+  return res.send(outputSuccess(order, '查詢成功'));
+};
+
 export {
   getOcc,
   getOccByDateAndRoomCidObj,
@@ -255,4 +268,5 @@ export {
   getOccList,
   updateOccSubRoomCid,
   getOccRoomOption,
+  getOccOrderInfo,
 };

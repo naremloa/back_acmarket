@@ -6,6 +6,7 @@ import {
   getOccList,
   updateOccSubRoomCid,
   getOccRoomOption,
+  getOccOrderInfo,
 } from '../occ';
 
 // ⚠️： 房間和房型有區別
@@ -51,6 +52,27 @@ export const get = [
   ['/occ/list',
     middlewareCheckLoginStatusSession, middlewareCheckAuthorization,
     getOccList],
+
+  /**
+   * @api {get} /occ/get/orderInfo occ列表獲取訂單資訊接口
+   * @apiPermission login admin
+   * @apiName occGetOrderInfo
+   * @apiGroup Occ
+   *
+   * @apiParam {String} occCid occ cid
+   * @apiParam {String} orderCid 訂單cid
+   *
+   * @apiSuccessExample {json} Success-Response:
+   * {
+   *    orderId: 2019030241
+   *    name: '二狗蛋',
+   *    phone: '123456678',
+   *    ...
+   * }
+   */
+  ['/occ/get/orderInfo',
+    middlewareCheckLoginStatusSession, middlewareCheckAuthorization,
+    getOccOrderInfo],
 
 
   /**

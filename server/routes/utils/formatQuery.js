@@ -45,7 +45,7 @@ const timeToDate = (v, number = false) => {
     Y: number ? Number(Y) : Y,
     M: number ? Number(M) : M,
     D: number ? Number(D) : D,
-    day: number ? Number(dd ay) : `${day}`,
+    day: number ? Number(day) : `${day}`,
   };
 };
 
