@@ -43,8 +43,8 @@
                 label="房型列表"
               ></v-select>
             </v-flex>
-          </v-layout>
-          <v-layout row wrap>
+          <!-- </v-layout>
+          <v-layout row wrap> -->
             <v-flex
               sm12
               md3
@@ -330,7 +330,7 @@ export default {
         contentFilePath: 'pages/room/updateOcc.vue',
         otherMethod: this.getOccList,
         contentData: rowData,
-        width: 500,
+        width: 600,
       };
     },
   },
