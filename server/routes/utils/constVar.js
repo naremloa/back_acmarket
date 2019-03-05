@@ -12,3 +12,7 @@ export const breakfastOptions = [
 ];
 
 export const fake = {};
+
+export const dayMilli = 86400000;
+
+export const depositPercent = 0.3;

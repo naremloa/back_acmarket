@@ -25,9 +25,15 @@ const occFindByIdAndUpdate = async (cid, updateObj) => {
   return res;
 };
 
+const occDeleteManyByOrderCid = async (orderCid) => {
+  const res = await Occ.deleteMany({ orderCid: ObjectId(orderCid) });
+  return res;
+};
+
 export {
   occFind,
   occInsertMany,
   occFindById,
   occFindByIdAndUpdate,
+  occDeleteManyByOrderCid,
 };

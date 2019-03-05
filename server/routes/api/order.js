@@ -20,11 +20,16 @@ import {
   getRoomCidOccByDate,
 } from './occ';
 import {
+  occDeleteManyByOrderCid,
+} from '../models/occ';
+import {
   getRoomAllMaxLengthAndPriceInfo,
 } from './room';
 import { outputSuccess, outputError } from '../utils/outputFormat';
 import {
   orderCheckedStauts,
+  dayMilli,
+  depositPercent,
 } from '../utils/constVar';
 
 const { ObjectId } = mongoose.Types;
@@ -32,14 +37,13 @@ const { ObjectId } = mongoose.Types;
 const getOrder = async (req, res) => {
   const {
     query: {
-      orderId, name, phone, nationality, breakfast,
-      status, createStartTime, createEndTime,
+      orderId, name, phone, nationality, breakfast, status, createStartTime, createEndTime,
       outOfTimeSign = false, timeOutSign = false,
     },
   } = req;
   const nowTime = new Date().getTime();
-  const outOfTimeNum = 86400000 * 2;
-  const timeOutNum = 86400000 * 3;
+  const outOfTimeNum = dayMilli * 2;
+  const timeOutNum = dayMilli * 3;
   const query = formatDateQuery(
     ['create'],
     omitValueValid({
@@ -63,13 +67,11 @@ const getOrder = async (req, res) => {
   const order = await orderFind(query);
   const handleOutOfTimeAndTimeOutAboutOrder = order.map((i) => {
     const timeDiff = nowTime - i.createTime;
-    let outOfTime = false;
-    let timeOut = false;
-    if (timeDiff >= 86400000 * 2) {
-      if (timeDiff >= 86400000 * 3) timeOut = true;
-      else outOfTime = true;
-    }
-    return { ...i, outOfTimeSign: outOfTime, timeOutSign: timeOut };
+    return {
+      ...i,
+      outOfTimeSign: timeDiff >= outOfTimeNum && timeDiff < timeOutNum,
+      timeOutSign: timeDiff >= timeOutNum,
+    };
   });
   res.send(outputSuccess(handleOutOfTimeAndTimeOutAboutOrder));
 };
@@ -114,7 +116,7 @@ const createOrderSchema = async ({
     roomCid: ObjectId(roomCid),
     num: dateArr.length,
   }));
-  const totalDeposit = totalPrice * 0.3 || 0;
+  const totalDeposit = totalPrice * depositPercent || 0;
   return {
     ...maintPart,
     orderId,
@@ -294,16 +296,35 @@ const updateOrder = async (req, res) => {
   return res.send(outputSuccess({}, '更新成功'));
 };
 
+const checkedOrder = async (cid) => {
+  const res = await occDeleteManyByOrderCid(cid);
+};
+
 /**
  * 訂單狀態更新規則:
  * 已下訂單 1: 已付訂金(2), 已退訂(6), 無效(8)
+ * 動作: (1 -> 2)確認實收訂金,  (1 -> 6)計算應退金額,進入結單流程  (1 -> 8)進入結單流程
+ *
  * 已付訂金 2: 已付尾款(3), 已退訂(6), 無效(8)
+ * 動作: (2 -> 3)確認實收總價,  (2 -> 6)計算應退金額,進入結單流程  (2 -> 8)進入結單流程
+ *
  * 已付尾款 3: 已入住(4), 已退訂(6), 無效(8)
+ * 動作: (3 -> 6)計算應退金額,進入結單流程  (3 -> 8)進入結單流程
+ *
  * 已入住 4: 結單(5), 已退訂(6), 無效(8)
+ * 動作: (4 -> 5)進入結單流程,  (4 -> 6)計算應退金額,進入結單流程  (4 -> 8)進入結單流程
+ *
  * 結單 5: 無效(8)
+ * 動作: 已結單
+ *
  * 已退訂 6: 退訂結單(7), 無效(8)
+ * 動作: (6 -> 7)確認實退金額
+ *
  * 退訂結單 7: 無效(8)
+ * 動作: 已結單
+ *
  * 無效 8:
+ * 動作: 已結單
  */
 const validStatusChange = {
   1: [2, 6, 8],
@@ -314,6 +335,14 @@ const validStatusChange = {
   6: [7, 8],
   7: [8],
   8: [],
+};
+const actionStatusChange = {
+  2: ['confirmDeposit'],
+  3: ['confirmPrice'],
+  5: ['checkedOrder'],
+  6: ['calRefund', 'checkedOrder'],
+  7: ['confirmRefund'],
+  8: ['checkedOrder'],
 };
 
 const verifyOrderStatusChange = (preStatus, afterStatus) => {
