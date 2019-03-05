@@ -54,11 +54,24 @@ export const get = [
 ];
 
 export const post = [
+  /**
+   * @api {post} /front/order/new 添加新訂單
+   * @apiPermission none
+   * @apiName frontOrderNew
+   * @apiGroup Front
+   *
+   * @param {String}  name 訂單人姓名
+   * @param {String}  phone 訂單人電話
+   * @param {String}  email 訂單人電子郵箱
+   * @param {String}  nationality 訂單人國際
+   * @param {String}  gender 訂單人性別
+   * @param {String}  breakfast 早餐需求
+   * @param {Number}  numberAdult 成人人數
+   * @param {Number}  numberChild 幼兒人數
+   * @param {String}  note 備註
+   * @param {Array<String>}  demand 訂單人額外需求
+   * @param {Array<Object>}  roomInfo 訂房明細
+   */
   ['/front/order/new',
     addOrder],
 ];
-
-// export const post = [
-//   ['/front/order/post',
-//     addNewOrder],
-// ];

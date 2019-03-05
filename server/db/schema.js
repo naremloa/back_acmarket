@@ -29,7 +29,6 @@ export const login = {
 
 /**
  * orderSchema
- * @param {Number}   orderId  訂單編號(key)
  * @param {String}   name  姓名
  * @param {String}   phone  電話
  * @param {String}   email  電子郵件
@@ -41,35 +40,47 @@ export const login = {
  * @param {Number}   createTime  訂房時間
  * @param {Array<Object>}   roomInfo 訂房信息
  *    @param {ObjectId} roomCid  房型cid
- *    @param {Number}   price  房型單價
  *    @param {Number}   num  入住天數
+ * @param {Number}   orderId  訂單編號(key)
+ * @param {Number}   totalDeposit  應收總訂金(單位: 分)
+ * @param {Number}   totalValidDeposit  實收總訂金(單位: 分)
  * @param {Number}   totalPrice  應收總價(單位: 分)
  * @param {Number}   totalValidPrice  實收總價(單位: 分)
- * @param {Number}   status  訂單狀態(1: 下訂單, 2: 已付款, 3: 已入住, 4: 已退房, 5: 已取消 )
+ * @param {Number}   totalRefund  應退總價(單位: 分)
+ * @param {Number}   totalValidRefund  實退總價(單位: 分)
+ * @param {Number}   status  訂單狀態
+ * 1: 下訂單, 2: 已付訂金, 3: 已付尾款, 4: 已入住, 5: 結單, 6: 已退訂, 7: 退訂結單, 8: 無效
  * @param {String}   latestModifyAccount  最近操作訂單帳號
  * @param {Number}   latestModifyTime  最近操作訂單時間
  * @param {String}   note  備註
  */
 export const order = {
-  orderId: Number,
+  // 訂單人資訊
   name: String,
   phone: String,
   email: String,
   nationality: String,
   gender: String,
   breakfast: String,
-  number: String,
+  numberAdult: Number,
+  numberChild: Number,
   demand: [String],
   createTime: Number,
+  // 房間資訊
   roomInfo: [
     {
       roomCid: { type: 'ObjectId' },
-      price: Number,
       num: Number,
     },
   ],
+  // 訂單附加資訊
+  orderId: Number,
+  totalDeposit: Number,
+  totalValidDeposit: Number,
   totalPrice: Number,
   totalValidPrice: Number,
+  totalRefund: Number,
+  totalValidRefund: Number,
   status: Number,
   latestModifyAccount: String,
   latestModifyTime: Number,

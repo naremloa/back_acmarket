@@ -8,6 +8,7 @@ const helmet = require('helmet');
 const MongoStore = require('connect-mongo')(session);
 const { db } = require('./db');
 const api = require('./routes/api/index');
+const { dateTime } = require('./routes/utils/formatQuery');
 
 // express初始設置
 const app = express();
@@ -37,7 +38,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use((req, res, next) => {
-  console.log('interface', req.originalUrl, Date.now());
+  console.log('interface', req.originalUrl, dateTime(Date.now(), true));
   next();
 });
 
