@@ -23,6 +23,9 @@ import {
   getRoomAllMaxLengthAndPriceInfo,
 } from './room';
 import { outputSuccess, outputError } from '../utils/outputFormat';
+import {
+  orderCheckedStauts,
+} from '../utils/constVar';
 
 const { ObjectId } = mongoose.Types;
 
@@ -85,8 +88,25 @@ const createOrderSchema = async ({
   account = '',
   note = '',
   roomInfoDate,
-}) => {
+}, update = false) => {
   const nowTime = new Date().getTime();
+  // update
+  const maintPart = {
+    name,
+    phone,
+    email,
+    nationality,
+    gender,
+    breakfast,
+    numberAdult: Number.isNaN(Number(numberAdult)) ? Number(numberAdult) : 0,
+    numberChild: Number.isNaN(Number(numberChild)) ? Number(numberChild) : 0,
+    demand: demand.join(),
+    latestModifyAccount: account,
+    lastestModifyTime: nowTime,
+    note,
+  };
+  if (!update) return maintPart;
+  // create
   const count = await orderCountByCreateTime();
   const orderId = Number(`${dateTime(nowTime)}${count.toString().padStart(2, '0')}`) + 1;
   const localRoomInfo = [];
@@ -96,16 +116,8 @@ const createOrderSchema = async ({
   }));
   const totalDeposit = totalPrice * 0.3 || 0;
   return {
+    ...maintPart,
     orderId,
-    name,
-    phone,
-    email,
-    nationality,
-    gender,
-    breakfast,
-    numberAdult: Number.isNaN(Number(numberAdult)) ? Number(numberAdult) : 0,
-    numberChild: Number.isNaN(Number(numberChild)) ? Number(numberChild) : 0,
-    demand,
     createTime: nowTime,
     roomInfo: localRoomInfo,
     totalDeposit,
@@ -115,9 +127,6 @@ const createOrderSchema = async ({
     totalRefund: 0,
     totalValidRefund: 0,
     status: 1,
-    latestModifyAccount: account,
-    lastestModifyTime: nowTime,
-    note,
   };
 };
 
@@ -247,7 +256,6 @@ const addOrder = async (req, res) => {
   return res.send(outputSuccess({}, '新增訂單'));
 };
 
-// 舊的部分，暫停使用
 const updateOrder = async (req, res) => {
   const {
     body: {
@@ -256,31 +264,32 @@ const updateOrder = async (req, res) => {
       phone,
       email,
       nationality,
-      checkInTime,
-      checkOutTime,
-      roomCid,
-      price,
-      totalPrice,
+      gender,
+      breakfast,
+      numberAdult,
+      numberChild,
+      demand,
       note,
     },
     session: sess,
   } = req;
   const { userInfo: { account } } = sess;
-  const nowTime = new Date().getTime();
-  const updateObj = {
+  const order = await orderFindById(cid);
+  if (!order) return res.send(outputError('找不到相關訂單'));
+  if (orderCheckedStauts.includes(order.status)) return res.send(outputError('此訂單已結單'));
+  const updateObj = createOrderSchema({
     name,
     phone,
     email,
     nationality,
-    checkInTime,
-    checkOutTime,
-    roomCid,
-    price,
-    totalPrice,
+    gender,
+    breakfast,
+    numberAdult,
+    numberChild,
+    demand,
+    account,
     note,
-    latestModifyAccount: account,
-    lastestModifyTime: nowTime,
-  };
+  }, true);
   await orderFindByIdAndUpdate(cid, updateObj);
   return res.send(outputSuccess({}, '更新成功'));
 };
