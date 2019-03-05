@@ -1,17 +1,26 @@
 import mongoose from 'mongoose';
 import { Models } from '../../db';
+import { dateTime, chNumToDate } from '../utils/formatQuery';
 
 const { Order } = Models;
 
 const { ObjectId } = mongoose.Types;
 
 const orderFind = async (query) => {
-  const res = await Order.find(query).lean();
+  const res = await Order.find(query).sort({ createTime: -1 }).lean();
   return res;
 };
 
 const orderCount = async () => {
   const res = await Order.estimatedDocumentCount();
+  return res;
+};
+
+const orderCountByCreateTime = async (createTime) => {
+  const today = new Date(chNumToDate(dateTime(createTime))).getTime();
+  const tomorrow = new Date(chNumToDate(dateTime(createTime + 86400000))).getTime();
+  const query = { createTime: { $gte: today, $lt: tomorrow } };
+  const res = await Order.countDocuments(query).lean();
   return res;
 };
 
@@ -39,4 +48,5 @@ export {
   orderInsert,
   orderFindByIdAndUpdate,
   orderFindById,
+  orderCountByCreateTime,
 };

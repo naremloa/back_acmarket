@@ -69,7 +69,6 @@ export const post = [
     middlewareCheckLoginStatusSession, middlewareCheckAuthorization,
     addOrder],
 
-  // ⚠️ 暫時不能用
   /**
  * @api {post} /order/update 更新訂單接口
  * @apiPermission login admin
@@ -77,14 +76,15 @@ export const post = [
  * @apiGroup Order
  *
  * @apiParam {String} cid 訂單id
- * @apiParam {String} name 訂房姓名
- * @apiParam {String} phone 訂房電話
- * @apiParam {String} nationality 訂房人國籍
- * @apiParam {Number} checkInTime 入住時間
- * @apiParam {Number} checkOutTime 退房時間
- * @apiParam {Number} roomType 訂房房型
- * @apiParam {Number} price 房型單價
- * @apiParam {Number} totalPrice 總價
+ * @apiParam {String} name 姓名
+ * @apiParam {String} phone 電話
+ * @apiParam {String} email 電子郵件
+ * @apiParam {String} nationality 國籍
+ * @apiParam {String} gender 性別
+ * @apiParam {String} breakfast 早餐
+ * @apiParam {Number} numberAdult 成人人數
+ * @apiParam {Number} numberChild 幼兒人數
+ * @apiParam {Array<String>} demand 額外需求
  * @apiParam {String} note 備註
  */
   ['/order/update',

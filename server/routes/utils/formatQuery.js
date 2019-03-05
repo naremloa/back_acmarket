@@ -36,16 +36,25 @@ export const omitValueValid = obj => omitBy(obj, val => val === undefined);
 
 const timeToDate = (v, number = false) => {
   const date = new Date(Number(v));
-  const Y = date.getFullYear();
-  const M = (date.getMonth() + 1).toString().padStart(2, '0');
-  const D = date.getDate().toString().padStart(2, '0');
-  const day = Number(date.getDay()) || 7;
+  const deconstruction = {
+    Y: date.getFullYear(),
+    M: (date.getMonth() + 1).toString().padStart(2, '0'),
+    D: date.getDate().toString().padStart(2, '0'),
+    h: date.getHours().toString().padStart(2, '0'),
+    m: date.getMinutes().toString().padStart(2, '0'),
+    s: date.getSeconds().toString().padStart(2, '0'),
+    day: Number(date.getDay()) || 7,
+  };
+  const result = ['Y', 'M', 'D', 'h', 'm', 's', 'day']
+    .reduce((acc, cur) => ({
+      ...acc,
+      [cur]: number
+        ? Number(deconstruction[cur])
+        : deconstruction[cur],
+    }), {});
   return {
     date,
-    Y: number ? Number(Y) : Y,
-    M: number ? Number(M) : M,
-    D: number ? Number(D) : D,
-    day: number ? Number(day) : `${day}`,
+    ...result,
   };
 };
 
@@ -56,9 +65,12 @@ export const chNumToDate = (num) => {
   return false;
 };
 
-export const dateTime = (time) => {
+export const dateTime = (time, all = false) => {
   if (time) {
-    const { Y, M, D } = timeToDate(time);
+    const {
+      Y, M, D, h, m, s,
+    } = timeToDate(time);
+    if (all) return Number(`${Y}${M}${D}${h}${m}${s}`);
     return Number(`${Y}${M}${D}`);
   }
   return false;

@@ -5,13 +5,14 @@ import {
   formatDateQuery,
   chNumToDate,
   getDatePriceKey,
+  dateTime,
 } from '../utils/formatQuery';
 import {
   orderFind,
-  orderCount,
   orderInsert,
   orderFindByIdAndUpdate,
   orderFindById,
+  orderCountByCreateTime,
 } from '../models/order';
 import {
   getOccByDateAndRoomCidObj,
@@ -22,6 +23,9 @@ import {
   getRoomAllMaxLengthAndPriceInfo,
 } from './room';
 import { outputSuccess, outputError } from '../utils/outputFormat';
+import {
+  orderCheckedStauts,
+} from '../utils/constVar';
 
 const { ObjectId } = mongoose.Types;
 
@@ -34,7 +38,7 @@ const getOrder = async (req, res) => {
     },
   } = req;
   const nowTime = new Date().getTime();
-  const outOfTimeNum = 8640000 * 2;
+  const outOfTimeNum = 86400000 * 2;
   const timeOutNum = 86400000 * 3;
   const query = formatDateQuery(
     ['create'],
@@ -61,8 +65,8 @@ const getOrder = async (req, res) => {
     const timeDiff = nowTime - i.createTime;
     let outOfTime = false;
     let timeOut = false;
-    if (timeDiff >= 8640000 * 2) {
-      if (timeDiff >= 8640000 * 3) timeOut = true;
+    if (timeDiff >= 86400000 * 2) {
+      if (timeDiff >= 86400000 * 3) timeOut = true;
       else outOfTime = true;
     }
     return { ...i, outOfTimeSign: outOfTime, timeOutSign: timeOut };
@@ -77,40 +81,52 @@ const createOrderSchema = async ({
   nationality = '',
   gender = '',
   breakfast = '',
-  number = '',
+  numberAdult = 0,
+  numberChild = 0,
   demand = [],
   totalPrice = 0,
   account = '',
   note = '',
   roomInfoDate,
-  roomAllInfo,
-}) => {
+}, update = false) => {
   const nowTime = new Date().getTime();
-  const count = await orderCount();
-  const localRoomInfo = [];
-  forOwn(roomInfoDate, (dateArr, roomCid) => localRoomInfo.push({
-    roomCid: ObjectId(roomCid),
-    price: roomAllInfo[roomCid].price,
-    num: dateArr.length,
-  }));
-  return {
-    orderId: count + 1,
+  // update
+  const maintPart = {
     name,
     phone,
     email,
     nationality,
     gender,
     breakfast,
-    number,
-    demand,
-    createTime: nowTime,
-    roomInfo: localRoomInfo,
-    totalPrice,
-    totalValidPrice: 0,
-    status: 1,
+    numberAdult: Number.isNaN(Number(numberAdult)) ? Number(numberAdult) : 0,
+    numberChild: Number.isNaN(Number(numberChild)) ? Number(numberChild) : 0,
+    demand: demand.join(),
     latestModifyAccount: account,
     lastestModifyTime: nowTime,
     note,
+  };
+  if (!update) return maintPart;
+  // create
+  const count = await orderCountByCreateTime();
+  const orderId = Number(`${dateTime(nowTime)}${count.toString().padStart(2, '0')}`) + 1;
+  const localRoomInfo = [];
+  forOwn(roomInfoDate, (dateArr, roomCid) => localRoomInfo.push({
+    roomCid: ObjectId(roomCid),
+    num: dateArr.length,
+  }));
+  const totalDeposit = totalPrice * 0.3 || 0;
+  return {
+    ...maintPart,
+    orderId,
+    createTime: nowTime,
+    roomInfo: localRoomInfo,
+    totalDeposit,
+    totalValidDeposit: 0,
+    totalPrice,
+    totalValidPrice: 0,
+    totalRefund: 0,
+    totalValidRefund: 0,
+    status: 1,
   };
 };
 
@@ -156,7 +172,9 @@ const addOrder = async (req, res) => {
       nationality,
       gender,
       breakfast,
-      number,
+      numberAdult,
+      numberChild,
+      note,
       demand,
       /**
        * roomInfo
@@ -167,11 +185,12 @@ const addOrder = async (req, res) => {
        * ]
        */
       roomInfo,
-      note,
     },
     session: sess,
   } = req;
-  // const { userInfo: { account } } = sess;
+  const account = /^\/front/.test(req.url)
+    ? 'guestFromFront'
+    : sess.userInfo && sess.userInfo.account;
 
   // 處理房型房間信息
   const roomAllInfo = await getRoomAllMaxLengthAndPriceInfo();
@@ -219,14 +238,14 @@ const addOrder = async (req, res) => {
     nationality,
     gender,
     breakfast,
-    number,
+    numberAdult,
+    numberChild,
     demand,
     roomInfo,
     totalPrice,
-    account: '',
+    account,
     note,
     roomInfoDate,
-    roomAllInfo,
   });
   const newOrder = await orderInsert(newOrderObj);
   console.log('newOrder', newOrder);
@@ -237,7 +256,6 @@ const addOrder = async (req, res) => {
   return res.send(outputSuccess({}, '新增訂單'));
 };
 
-// 舊的部分，暫停使用
 const updateOrder = async (req, res) => {
   const {
     body: {
@@ -246,51 +264,61 @@ const updateOrder = async (req, res) => {
       phone,
       email,
       nationality,
-      checkInTime,
-      checkOutTime,
-      roomCid,
-      price,
-      totalPrice,
+      gender,
+      breakfast,
+      numberAdult,
+      numberChild,
+      demand,
       note,
     },
     session: sess,
   } = req;
   const { userInfo: { account } } = sess;
-  const nowTime = new Date().getTime();
-  const updateObj = {
+  const order = await orderFindById(cid);
+  if (!order) return res.send(outputError('找不到相關訂單'));
+  if (orderCheckedStauts.includes(order.status)) return res.send(outputError('此訂單已結單'));
+  const updateObj = createOrderSchema({
     name,
     phone,
     email,
     nationality,
-    checkInTime,
-    checkOutTime,
-    roomCid,
-    price,
-    totalPrice,
+    gender,
+    breakfast,
+    numberAdult,
+    numberChild,
+    demand,
+    account,
     note,
-    latestModifyAccount: account,
-    lastestModifyTime: nowTime,
-  };
+  }, true);
   await orderFindByIdAndUpdate(cid, updateObj);
   return res.send(outputSuccess({}, '更新成功'));
 };
 
 /**
- * 訂單狀態更新有規則
- * 已下訂單 1: 已付款(2), 已取消(5)
- * 已付款 2: 已入住(3), 已取消(5)
- * 已入住 3: 已退房(4)
- * 已退房 4:
+ * 訂單狀態更新規則:
+ * 已下訂單 1: 已付訂金(2), 已退訂(6), 無效(8)
+ * 已付訂金 2: 已付尾款(3), 已退訂(6), 無效(8)
+ * 已付尾款 3: 已入住(4), 已退訂(6), 無效(8)
+ * 已入住 4: 結單(5), 已退訂(6), 無效(8)
+ * 結單 5: 無效(8)
+ * 已退訂 6: 退訂結單(7), 無效(8)
+ * 退訂結單 7: 無效(8)
+ * 無效 8:
  */
 const validStatusChange = {
-  1: [2, 5],
-  2: [3, 5],
-  3: [4],
+  1: [2, 6, 8],
+  2: [3, 6, 8],
+  3: [4, 6, 8],
+  4: [5, 6, 8],
+  5: [8],
+  6: [7, 8],
+  7: [8],
+  8: [],
 };
 
 const verifyOrderStatusChange = (preStatus, afterStatus) => {
   const tmp = validStatusChange[preStatus];
-  return tmp === undefined || tmp.includes(afterStatus);
+  return tmp !== undefined && tmp.includes(Number(afterStatus));
 };
 
 const updateOrderStatus = async (req, res) => {
