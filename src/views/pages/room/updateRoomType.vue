@@ -45,7 +45,10 @@ export default {
       roomTypeInfoParams: this.getParamsOrigin(),
       roomTypeParamsList: [
         { label: '房型名稱', key: 'name', require: true },
-        { label: '房型價格', key: 'priceShow', require: true },
+        { label: '淡季平日單價', key: 'lowNormalPriceShow', require: true },
+        { label: '淡季假日單價', key: 'lowHolidayPriceShow', require: true },
+        { label: '旺季平日單價', key: 'peakNormalPriceShow', require: true },
+        { label: '旺季假日單價', key: 'peakHolidayPriceShow', require: true },
         { label: '房型介紹', key: 'intro', require: false },
         { label: '住房須知', key: 'regulation', require: false },
         { label: '退訂政策', key: 'refund', require: false },
@@ -68,7 +71,10 @@ export default {
     getParamsOrigin() {
       return {
         name: null,
-        priceShow: null,
+        lowNormalPriceShow: null,
+        lowHolidayPriceShow: null,
+        peakNormalPriceShow: null,
+        peakHolidayPriceShow: null,
         intro: null,
         regulation: null,
         refund: null,
@@ -83,8 +89,17 @@ export default {
         regulation,
         refund,
       } = rowData;
+      const {
+        lowSeasonWeekday: lowNormalPrice,
+        lowSeasonWeekend: lowHolidayPrice,
+        peakSeasonWeekday: peakNormalPrice,
+        peakSeasonWeekend: peakHolidayPrice,
+      } = price;
       this.roomTypeInfoParams.name = roomName;
-      this.roomTypeInfoParams.priceShow = (Number(price) || 0) / 100;
+      this.roomTypeInfoParams.lowNormalPriceShow = (Number(lowNormalPrice) || 0) / 100;
+      this.roomTypeInfoParams.lowHolidayPriceShow = (Number(lowHolidayPrice) || 0) / 100;
+      this.roomTypeInfoParams.peakNormalPriceShow = (Number(peakNormalPrice) || 0) / 100;
+      this.roomTypeInfoParams.peakHolidayPriceShow = (Number(peakHolidayPrice) || 0) / 100;
       this.roomTypeInfoParams.intro = intro;
       this.roomTypeInfoParams.regulation = regulation;
       this.roomTypeInfoParams.refund = refund;
@@ -96,10 +111,19 @@ export default {
     methodProcessParams() {
       const params = {};
       const { roomCid: cid } = this.contentData;
-      const { name, priceShow } = this.roomTypeInfoParams;
+      const {
+        name,
+        lowNormalPriceShow,
+        lowHolidayPriceShow,
+        peakNormalPriceShow,
+        peakHolidayPriceShow,
+      } = this.roomTypeInfoParams;
       params.cid = cid;
       params.name = name;
-      params.price = priceShow * 100;
+      params.lowNormalPrice = lowNormalPriceShow * 100;
+      params.lowHolidayPrice = lowHolidayPriceShow * 100;
+      params.peakNormalPrice = peakNormalPriceShow * 100;
+      params.peakHolidayPrice = peakHolidayPriceShow * 100;
       this.updateRoomTypeInfo(params);
     },
     async updateRoomTypeInfo(params) {
