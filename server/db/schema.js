@@ -39,6 +39,7 @@ export const login = {
  * @apiParam {Number} numberChild 幼兒人數
  * @apiParam {String} demand 其他需求 (Array.join)
  * @apiParam {Array<Object>} roomInfo 訂房信息
+ * @apiParam {String} arriveTime 預計到達時間
  * @apiParam {String} note  備註
  *    @apiParam {ObjectId} roomCid  房型cid
  *    @apiParam {Number} num  入住天數
@@ -66,6 +67,7 @@ export const order = {
   numberAdult: Number,
   numberChild: Number,
   demand: String,
+  arriveTime: String,
   note: String,
   // 房間資訊
   roomInfo: [

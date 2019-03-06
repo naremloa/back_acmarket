@@ -88,6 +88,7 @@ const createOrderSchema = async ({
   demand = [],
   totalPrice = 0,
   account = '',
+  arriveTime = '',
   note = '',
   roomInfoDate,
 }, update = false) => {
@@ -100,11 +101,12 @@ const createOrderSchema = async ({
     nationality,
     gender,
     breakfast,
-    numberAdult: Number.isNaN(Number(numberAdult)) ? Number(numberAdult) : 0,
-    numberChild: Number.isNaN(Number(numberChild)) ? Number(numberChild) : 0,
+    numberAdult: Number.isNaN(Number(numberAdult)) ? 0 : Number(numberAdult),
+    numberChild: Number.isNaN(Number(numberChild)) ? 0 : Number(numberChild),
     demand: demand.join(),
     latestModifyAccount: account,
     lastestModifyTime: nowTime,
+    arriveTime,
     note,
   };
   if (!update) return maintPart;
@@ -178,6 +180,7 @@ const addOrder = async (req, res) => {
       numberChild,
       note,
       demand,
+      arriveTime,
       /**
        * roomInfo
        * [
@@ -247,6 +250,7 @@ const addOrder = async (req, res) => {
     totalPrice,
     account,
     note,
+    arriveTime,
     roomInfoDate,
   });
   const newOrder = await orderInsert(newOrderObj);
@@ -271,6 +275,7 @@ const updateOrder = async (req, res) => {
       numberAdult,
       numberChild,
       demand,
+      arriveTime,
       note,
     },
     session: sess,
@@ -290,6 +295,7 @@ const updateOrder = async (req, res) => {
     numberChild,
     demand,
     account,
+    arriveTime,
     note,
   }, true);
   await orderFindByIdAndUpdate(cid, updateObj);
