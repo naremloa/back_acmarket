@@ -1,39 +1,10 @@
 <template>
   <div class="occ-list">
-    <!-- <v-layout row wrap justify-end>
-      <v-btn @click="methodAddCash">
-        <v-icon>mdi-plus</v-icon>
-        新增收支
-      </v-btn>
-    </v-layout> -->
     <v-expansion-panel class="mb-2">
       <v-expansion-panel-content class="accent">
         <div slot="header" class="subheading">搜尋選項</div>
         <v-form v-model="valid" class="px-2">
           <v-layout row wrap>
-            <!-- <v-flex
-              sm12
-              md4
-              lg3
-              px-1
-              v-for="(item, idx) in searchItemParams"
-              :key="`searchItemParams${idx}`"
-            >
-              <v-text-field
-                v-model="searchParams[item.key]"
-                :label="item.label"
-                clearable
-              ></v-text-field>
-            </v-flex> -->
-            <!-- <v-flex sm12 md4 lg3 px-1 >
-              <v-select
-                v-model="searchParams.roomType"
-                :items="constList.roomTypeList"
-                item-text="value"
-                item-value="id"
-                label="訂房房型"
-              ></v-select>
-            </v-flex> -->
             <v-flex sm12 md4 lg3 px-1 >
               <v-select
                 v-model="searchParams.subRoomCid"
@@ -43,8 +14,6 @@
                 label="房型列表"
               ></v-select>
             </v-flex>
-          <!-- </v-layout>
-          <v-layout row wrap> -->
             <v-flex
               sm12
               md3
@@ -133,19 +102,11 @@
           <td :class="['text-xs-center', props.item.subRoomName ? '': 'warning--text' ]">
             {{ props.item.subRoomName || '尚未分配房型' }}
           </td>
-          <!-- <td class="text-xs-center">{{ currencies(props.item.income) }}</td>
-          <td class="text-xs-center">{{ currencies(props.item.outcome) }}</td>
-          <td class="text-xs-center">{{ currencies(props.item.balance) }}</td> -->
-          <!-- <td class="text-xs-center">{{ formatCashType(props.item.type) }}</td> -->
-          <!-- <td class="text-xs-center">{{ dateTime(props.item.createTime) }}</td> -->
-          <!-- <td class="text-xs-center">{{ props.item.createAccount }}</td> -->
           <td class="text-xs-center">
             <v-btn small @click="methodUpdateOcc(props.item)">
               <v-icon>mdi-square-edit-outline</v-icon>分配房間
             </v-btn>
           </td>
-          <!-- <td class="text-xs-center">{{ dateTime(props.item.modifyTime) }}</td> -->
-          <!-- <td class="text-xs-center">{{ props.item.modifyAccount }}</td> -->
         </template>
         <v-alert slot="no-results" :value="true" color="warning" icon="mdi-alert">
           找不到有關於 "{{ search }}" 的資料
@@ -174,7 +135,6 @@
 </template>
 <script>
 import httpMethod from '@/utils/httpMethod';
-// import constList from '@/utils/const';
 import dialogComponent from '@/views/layout/components/dialog.vue';
 import { dateTime, currencies, formatStringDate } from '@/utils/calculation';
 
@@ -185,7 +145,6 @@ export default {
   },
   data() {
     return {
-      // constList,
       search: '',
       rowsPerPageItems: [20, 30, 50, 80, 100],
       pagination: {
@@ -196,31 +155,13 @@ export default {
         { text: '房型', value: 'roomName', sortable: false },
         { text: '房間', value: 'subRoomName', sortable: false },
         { text: '操作', value: '', sortable: false },
-        // { text: '收入金額', value: 'income', sortable: false },
-        // { text: '支出金額', value: 'outcome', sortable: false },
-        // { text: '餘額', value: 'balance', sortable: false },
-        // { text: '帳單類型', value: 'type', sortable: false },
-        // { text: '創建日期', value: 'createTime', sortable: false },
-        // { text: '創建用戶', value: 'createAccount', sortable: false },
-        // { text: '修改操作', value: '', sortable: false },
-        // { text: '修改日期', value: 'modifyTime', sortable: false },
-        // { text: '修改帳號', value: 'modifyAccount', sortable: false },
       ],
       occList: [],
       valid: false,
       searchParams: this.getParamsOrigin(),
-      // searchItemParams: [
-      // { label: '訂單號', key: 'cashIdShow' },
-      // { label: '憑證號', key: 'certificateNumberShow' },
-      // { label: '摘要', key: 'contentShow' },
-      // { label: '創建用戶', key: 'createAccountShow' },
-      // { label: '修改帳號', key: 'modifyAccountShow' },
-      // ],
       searchTimeParams: [
         { label: '創建開始時間', key: 'dateStartTimeShow' },
         { label: '創建結束時間', key: 'dateEndTimeShow' },
-        // { label: '修改開始時間', key: 'modifyTimeStartShow' },
-        // { label: '修改結束時間', key: 'modifyTimeEndShow' },
       ],
       selectMenu: [false, false, false, false, false, false, false, false],
       confirmDialogInfo: {
@@ -242,10 +183,6 @@ export default {
     dateTime,
     currencies,
     formatStringDate,
-    // formatCashType(type) {
-    //   const res = constList.cashTypeList.filter(item => item.id === type)[0];
-    //   return res ? res.value : '';
-    // },
     async getSubRoomList() {
       const res = await httpMethod({
         url: '/v1/api/room/options',
@@ -261,15 +198,8 @@ export default {
     getParamsOrigin() {
       return {
         subRoomCid: null,
-        // cashIdShow: null,
-        // certificateNumberShow: null,
-        // contentShow: null,
-        // createAccountShow: null,
-        // modifyAccountShow: null,
         dateStartTimeShow: null,
         dateEndTimeShow: null,
-        // modifyTimeStartShow: null,
-        // modifyTimeEndShow: null,
       };
     },
     async getOccList() {
@@ -297,31 +227,9 @@ export default {
     methodFormReset() {
       this.searchParams = this.getParamsOrigin();
     },
-    // methodProcessParams() {
-    //   const {
-    //     subRoomCid,
-    //     dateStartTimeShow,
-    //     dateEndTimeShow,
-    //   } = this.searchParams;
-    //   const params = {};
-    //   if (subRoomCid) params.roomCid = subRoomCid;
-    //   if (dateStartTimeShow) params.dateStartTime = new Date(dateStartTimeShow).valueOf();
-    //   if (dateEndTimeShow) params.dateEndTime = new Date(dateEndTimeShow).valueOf();
-    //   this.getOccList(params);
-    // },
     methodChangeOpenDialog(val) {
       this.confirmDialogInfo.openDialog = val;
     },
-    // methodAddCash() {
-    //   this.confirmDialogInfo = {
-    //     ...this.confirmDialogInfo,
-    //     openDialog: true,
-    //     title: '新增收支項目',
-    //     contentFilePath: 'pages/cash/addCash.vue',
-    //     otherMethod: this.getOccList,
-    //     width: 1000,
-    //   };
-    // },
     methodUpdateOcc(rowData) {
       this.confirmDialogInfo = {
         ...this.confirmDialogInfo,
