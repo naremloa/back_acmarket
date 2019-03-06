@@ -136,7 +136,8 @@
             <td class="text-xs-center">{{ props.item.gender }}</td>
             <td class="text-xs-center">{{ props.item.phone }}</td>
             <td class="text-xs-center">{{ props.item.nationality }}</td>
-            <td class="text-xs-center">{{ props.item.number }}</td>
+            <td class="text-xs-center">{{ props.item.numberAdult }}</td>
+            <td class="text-xs-center">{{ props.item.numberChild }}</td>
             <!-- <td class="text-xs-center">{{ dateTime(props.item.checkInTime) }}</td> -->
             <!-- <td class="text-xs-center">{{ dateTime(props.item.checkOutTime) }}</td> -->
             <!-- <td class="text-xs-center">{{ dateTime(props.item.createTime) }}</td> -->
@@ -267,7 +268,8 @@ export default {
         { text: '電話', value: 'phone', sortable: false },
         // { text: '電子郵件', value: 'email', sortable: false },
         { text: '國籍', value: 'nationality', sortable: false },
-        { text: '人數', value: 'number', sortable: false },
+        { text: '成人人數', value: 'numberAdult', sortable: false },
+        { text: '小孩人數', value: 'numberChild', sortable: false },
         // { text: '入住時間', value: 'checkInTime', sortable: false },
         // { text: '退房時間', value: 'checkOutTime', sortable: false },
         // { text: '訂房時間', value: 'createTime', sortable: false },
