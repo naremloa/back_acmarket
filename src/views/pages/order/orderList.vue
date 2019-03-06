@@ -126,7 +126,7 @@
         rows-per-page-text="每頁顯示筆數"
         :rows-per-page-items="rowsPerPageItems"
         :pagination.sync="pagination"
-        :expand="true"
+        expand
         item-key="orderId"
       >
         <template slot="items" slot-scope="props">
@@ -466,7 +466,7 @@ export default {
         contentFilePath: 'pages/order/updateOrder.vue',
         otherMethod: this.getOrder,
         contentData: rowData,
-        width: 1000,
+        width: 1200,
       };
     },
     methodDetailTableFormat(val, format) {
