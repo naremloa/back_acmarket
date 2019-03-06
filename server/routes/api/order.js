@@ -109,9 +109,9 @@ const createOrderSchema = async ({
     arriveTime,
     note,
   };
-  if (!update) return maintPart;
+  if (update) return maintPart;
   // create
-  const count = await orderCountByCreateTime();
+  const count = await orderCountByCreateTime(nowTime);
   const orderId = Number(`${dateTime(nowTime)}${count.toString().padStart(2, '0')}`) + 1;
   const localRoomInfo = [];
   forOwn(roomInfoDate, (dateArr, roomCid) => localRoomInfo.push({
