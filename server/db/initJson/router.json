@@ -9,7 +9,7 @@
       {
         "id": 1010,
         "dataKey": "userList",
-        "name": "帳號列表",
+        "name": "使用者列表",
         "apiRoot": [
           "/user",
           "/router"
@@ -20,7 +20,7 @@
       {
         "id": 1014,
         "dataKey": "roleList",
-        "name": "角色列表",
+        "name": "使用者角色列表",
         "apiRoot": [
           "/user",
           "/router"
@@ -40,7 +40,7 @@
       {
         "id": 1011,
         "dataKey": "orderList",
-        "name": "訂單列表",
+        "name": "訂單資訊",
         "apiRoot": [
           "/order"
         ],

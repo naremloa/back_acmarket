@@ -69,6 +69,7 @@ export default {
       nameRules: [
         v => !!v || '此欄位為必填',
       ],
+      validRouterTree: new Map(),
     };
   },
   watch: {
@@ -95,6 +96,13 @@ export default {
       });
       if (!res.code) {
         this.routerTree = res.data;
+        res.data.forEach((item) => {
+          const childList = [];
+          item.childNode.forEach((child) => {
+            childList.push(child.id);
+          });
+          this.validRouterTree.set(item.id, childList);
+        });
       }
     },
     methodProcessParams() {
@@ -105,7 +113,15 @@ export default {
       const params = {};
       if (name) params.name = name;
       if (routerGroup.length > 0) {
-        params.routerGroup = routerGroup;
+        const routerGroupSet = new Set(routerGroup);
+        routerGroupSet.forEach((item) => {
+          this.validRouterTree.forEach((valueList, key) => {
+            if (valueList.findIndex(i => i === item) !== -1) {
+              routerGroupSet.add(key);
+            }
+          });
+        });
+        params.routerGroup = [...routerGroupSet];
         this.addRole(params);
       } else {
         const alert = {
@@ -118,7 +134,6 @@ export default {
     },
     async addRole(params) {
       if (this.$refs.form.validate()) {
-        console.log('TCL: addRole -> params', params);
         const res = await httpMethod({
           url: '/v1/api/user/role/add',
           method: 'POST',

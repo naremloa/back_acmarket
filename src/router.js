@@ -57,14 +57,14 @@ export default new Router({
             title: '使用者角色列表',
           },
         },
-        {
-          path: 'router/list',
-          name: 'routerList',
-          component: () => import('@/views/pages/user/routerList.vue'),
-          meta: {
-            title: '路由列表',
-          },
-        },
+        // {
+        //   path: 'router/list',
+        //   name: 'routerList',
+        //   component: () => import('@/views/pages/user/routerList.vue'),
+        //   meta: {
+        //     title: '路由列表',
+        //   },
+        // },
       ],
     },
     {

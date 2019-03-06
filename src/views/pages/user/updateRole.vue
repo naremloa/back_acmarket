@@ -55,6 +55,7 @@ export default {
       nameRules: [
         v => !!v || '此欄位為必填',
       ],
+      validRouterTree: new Map(),
     };
   },
   watch: {
@@ -82,7 +83,15 @@ export default {
     formatProps() {
       this.roleParams.routerGroup.splice(0);
       this.$set(this.roleParams, 'name', this.contentData.value || '');
-      this.$set(this.roleParams, 'routerGroup', this.contentData.routerGroup || []);
+      const routerGroupSet = new Set(this.contentData.routerGroup);
+      this.validRouterTree.forEach((valueList, key) => {
+        let count = valueList.length;
+        valueList.forEach((childId) => {
+          if (this.contentData.routerGroup.findIndex(i => i === childId) !== -1) count -= 1;
+        });
+        if (count) routerGroupSet.delete(Number(key));
+      });
+      this.$set(this.roleParams, 'routerGroup', [...routerGroupSet] || []);
     },
     async getRouterTree() {
       const res = await httpMethod({
@@ -91,6 +100,13 @@ export default {
       });
       if (!res.code) {
         this.routerTree = res.data;
+        res.data.forEach((item) => {
+          const childList = [];
+          item.childNode.forEach((child) => {
+            childList.push(child.id);
+          });
+          this.validRouterTree.set(item.id, childList);
+        });
       }
     },
     methodProcessParams() {
@@ -101,7 +117,15 @@ export default {
       const params = {};
       params.cid = this.contentData.cid;
       if (routerGroup.length > 0) {
-        params.routerGroup = routerGroup;
+        const routerGroupSet = new Set(routerGroup);
+        routerGroupSet.forEach((item) => {
+          this.validRouterTree.forEach((valueList, key) => {
+            if (valueList.findIndex(i => i === item) !== -1) {
+              routerGroupSet.add(key);
+            }
+          });
+        });
+        params.routerGroup = [...routerGroupSet];
         this.updateRole(params);
       } else {
         const alert = {
