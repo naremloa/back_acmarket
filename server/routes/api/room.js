@@ -62,6 +62,7 @@ const getSubRoomAboutAll = async () => {
  * {
  *    5c5ed89dd6b4f80dbe3c1281: {
  *      max: 5,
+ *      name: '超值多人房'
  *      price: {
  *        lowSeasonWeekday: 2000,
  *        lowSeasonWeekend: 2000,
@@ -74,11 +75,14 @@ const getSubRoomAboutAll = async () => {
 const getRoomAllMaxLengthAndPriceInfo = async () => {
   const roomAll = await getRoomAboutAll();
   const result = roomAll
-    .reduce((acc, cur) => ({
+    .reduce((acc, {
+      _id, roomList, price, name,
+    }) => ({
       ...acc,
-      [cur._id.toString()]: {
-        max: cur.roomList.length,
-        price: cur.price,
+      [_id.toString()]: {
+        max: roomList.length,
+        price,
+        name,
       },
     }), {});
   return result;

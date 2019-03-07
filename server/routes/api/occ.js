@@ -184,9 +184,10 @@ const getOccByDateAndRoomCidObj = async ({ startDate, endDate, roomCidObj }) => 
  * 根據roomInfoDate 來獲取這些時間點下，所有房型的佔用數
  * @param {*} roomInfoDate 根據roomInfo 轉換出來的，每個房型下訂的時間點
  */
-const getRoomCidOccByDate = async (roomInfoDate) => {
-  const arr = values(roomInfoDate).reduce((acc, cur) => [...acc, ...cur], []);
-  const query = { date: { $in: arr } };
+const getRoomCidOccByDate = async (roomInfoCount) => {
+  const arr = keys(roomInfoCount)
+    .reduce((acc, cur) => [...acc, ...keys(roomInfoCount[cur])], []);
+  const query = { date: { $in: [...(new Set(arr))] } };
   const occ = await occFind(query);
   const result = occ.reduce((acc, { date, roomCid }) => {
     const localRoomCid = roomCid.toString();

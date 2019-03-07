@@ -1,4 +1,6 @@
-import { values, keys, forOwn } from 'lodash';
+import {
+  values, keys, forOwn, isObject,
+} from 'lodash';
 import mongoose from 'mongoose';
 import {
   omitValueValid,
@@ -90,7 +92,8 @@ const createOrderSchema = async ({
   account = '',
   arriveTime = '',
   note = '',
-  roomInfoDate,
+  roomInfoCount,
+  roomAllInfo,
 }, update = false) => {
   const nowTime = new Date().getTime();
   // update
@@ -112,18 +115,25 @@ const createOrderSchema = async ({
   if (update) return maintPart;
   // create
   const count = await orderCountByCreateTime(nowTime);
-  const orderId = Number(`${dateTime(nowTime)}${count.toString().padStart(2, '0')}`) + 1;
-  const localRoomInfo = [];
-  forOwn(roomInfoDate, (dateArr, roomCid) => localRoomInfo.push({
-    roomCid: ObjectId(roomCid),
-    num: dateArr.length,
-  }));
+  const orderId = Number(`${dateTime(nowTime)}${count.toString().padStart(3, '0')}`) + 1;
   const totalDeposit = totalPrice * depositPercent || 0;
+  const localRoomInfo = {};
+  forOwn(roomInfoCount, (dateObj, roomCid) => {
+    const { name: roomName, price } = roomAllInfo[roomCid];
+    forOwn(dateObj, (num, date) => {
+      const roomPrice = price[getDatePriceKey(date)];
+      localRoomInfo[date] = [
+        ...(localRoomInfo[date] || []),
+        {
+          roomName, roomPrice, roomCount: num, subTotal: num * roomPrice,
+        },
+      ];
+    });
+  });
   return {
     ...maintPart,
     orderId,
     createTime: nowTime,
-    roomInfo: localRoomInfo,
     totalDeposit,
     totalValidDeposit: 0,
     totalPrice,
@@ -131,41 +141,30 @@ const createOrderSchema = async ({
     totalRefund: 0,
     totalValidRefund: 0,
     status: 1,
+    roomInfo: localRoomInfo,
   };
 };
 
-const getDateAndCountByRoomInfo = (roomInfo) => {
-  /**
-   * 通過roomInfo，轉換成兩種格式
-   * roomInfoDate
-   * {
-   *    5c5ed89dd6b4f80dbe3c1281: [20190217, 20190218],
-   *    ...
-   * }
-   *
-   * roomInfoCount
-   * {
-   *    5c5ed89dd6b4f80dbe3c1281: {
-   *      20190217: 2,
-   *      20190218: 1,
-   *    }
-   * }
-   */
-  const init = { roomInfoDate: {}, roomInfoCount: {} };
-  const result = roomInfo.reduce(({ roomInfoDate, roomInfoCount }, { date, roomCid }) => {
-    // handle Date change
-    const localDate = roomInfoDate;
-    localDate[roomCid] = [...(new Set([...(localDate[roomCid] || []), date]))];
-    // handle Count Change
-    const localCount = roomInfoCount;
-    if (localCount[roomCid] === undefined) localCount[roomCid] = {};
-    if (localCount[roomCid][date] === undefined) localCount[roomCid][date] = 0;
-    localCount[roomCid][date] += 1;
-
-    return { roomInfoDate: localDate, roomInfoCount: localCount };
-  }, init);
-  return result;
-};
+/**
+ * 通過roomInfo，解析 roomInfoCount
+ * roomInfoCount
+ * {
+ *    5c5ed89dd6b4f80dbe3c1281: {
+ *      20190217: 2,
+ *      20190218: 1,
+ *    }
+ * }
+ */
+const getCountByRoomInfo = roomInfo => roomInfo
+  .reduce((acc, { date, roomCid }) => ({
+    ...acc,
+    [roomCid]: !isObject(acc[roomCid])
+      ? { [date]: 1 }
+      : {
+        ...acc[roomCid],
+        [date]: (acc[roomCid][date] || 0) + 1,
+      },
+  }), {});
 
 const addOrder = async (req, res) => {
   const {
@@ -204,9 +203,9 @@ const addOrder = async (req, res) => {
     return res.send(outputError('訂單中存在未知房型，生成訂單失敗'));
   }
 
-  const { roomInfoDate, roomInfoCount } = getDateAndCountByRoomInfo(roomInfo);
+  const roomInfoCount = getCountByRoomInfo(roomInfo);
 
-  const roomAllInDateInfo = await getRoomCidOccByDate(roomInfoDate);
+  const roomAllInDateInfo = await getRoomCidOccByDate(roomInfoCount);
 
   // 借totalPrice判斷，若為false則房間訂單不合法，若為數字，則房間訂單成立，並同時給出應計總價
   let totalPrice = true;
@@ -221,7 +220,7 @@ const addOrder = async (req, res) => {
       // 房間預定數量
       const num = valueDate;
       // 房間入住時間價格
-      const subRoomPrice = price[getDatePriceKey(chNumToDate(keyDate))];
+      const subRoomPrice = price[getDatePriceKey(keyDate)];
 
       // 當前房型無佔用, 或當前房型有佔用, 但佔用時間與遍歷時間不一樣, 即 佔用數為 0
       const occNum = roomAllInDateInfo[keyRoomCid] === undefined
@@ -246,12 +245,12 @@ const addOrder = async (req, res) => {
     numberAdult,
     numberChild,
     demand,
-    roomInfo,
     totalPrice,
     account,
     note,
     arriveTime,
-    roomInfoDate,
+    roomInfoCount,
+    roomAllInfo,
   });
   const newOrder = await orderInsert(newOrderObj);
   console.log('newOrder', newOrder);
@@ -260,7 +259,7 @@ const addOrder = async (req, res) => {
   await addOcc(
     roomInfo.map(({ date, roomCid }) => {
       const { price } = roomAllInfo[roomCid];
-      return { date, roomCid, price: price[getDatePriceKey(chNumToDate(date))] };
+      return { date, roomCid, price: price[getDatePriceKey(date)] };
     }),
     newOrder._id,
   );

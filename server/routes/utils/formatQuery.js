@@ -1,4 +1,6 @@
-import { has, omit, omitBy } from 'lodash';
+import {
+  has, omit, omitBy, isNumber,
+} from 'lodash';
 
 export const omitDateKey = (dateKeyArr, data) => {
   const localDateKeyArr = dateKeyArr.map(i => [`${i}TimeStart`, `${i}TimeEnd`]);
@@ -78,7 +80,8 @@ export const dateTime = (time, all = false) => {
 
 export const getDatePriceKey = (date) => {
   if (date) {
-    const { M, day } = timeToDate(date, true);
+    const localDate = isNumber(date) ? chNumToDate(date) : date;
+    const { M, day } = timeToDate(localDate, true);
     const frontKey = (M >= 4 && M <= 10) ? 'peakSeason' : 'lowSeason';
     const backKey = (day >= 1 && day <= 5) ? 'Weekday' : 'Weekend';
     return `${frontKey}${backKey}`;

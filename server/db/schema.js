@@ -42,8 +42,15 @@ export const login = {
  * @apiParam {String} arriveTime 預計到達時間
  * @apiParam {String} note  備註
  * @apiParam {Array<Object>} roomInfo 房間明細
- *    @apiParam {ObjectId} roomCid  房型cid
- *    @apiParam {Number} num  入住天數
+ * {
+ *    '20190311': [
+ *      { roomName: 'a', roomPrice: 200, roomCount: 2, subTotal: 400 },
+ *      { roomName: 'b', roomPrice: 100, roomCount: 1, subTotal: 100 },
+ *    ],
+ *    '20190312': [
+ *      { roomName: 'a', roomPrice: 120, roomCount: 2, subTotal: 240 },
+ *    ],
+ *  }
  * @apiParam {Number} createTime  訂房時間
  * @apiParam {String} orderId  訂單編號(key)
  * @apiParam {Number} totalDeposit  應收總訂金(單位: 分)
@@ -71,12 +78,7 @@ export const order = {
   arriveTime: String,
   note: String,
   // 房間資訊
-  roomInfo: [
-    {
-      roomCid: { type: 'ObjectId' },
-      num: Number,
-    },
-  ],
+  roomInfo: Object,
   // 訂單附加資訊
   createTime: Number,
   orderId: String,
