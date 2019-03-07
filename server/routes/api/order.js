@@ -257,7 +257,13 @@ const addOrder = async (req, res) => {
   console.log('newOrder', newOrder);
   // TODO: 新增訂單同時，塞進occ表中佔位
 
-  await addOcc(roomInfo, newOrder._id);
+  await addOcc(
+    roomInfo.map(({ date, roomCid }) => {
+      const { price } = roomAllInfo[roomCid];
+      return { date, roomCid, price: price[getDatePriceKey(chNumToDate(date))] };
+    }),
+    newOrder._id,
+  );
   // TODO:
   return res.send(outputSuccess({}, '新增訂單'));
 };
@@ -360,18 +366,21 @@ const updateOrderStatus = async (req, res) => {
   const {
     body: {
       cid,
-      status,
+      status: afterStatus,
     },
     session: sess,
   } = req;
   const targetOrder = await orderFindById(cid);
   if (!targetOrder) return res.send(outputError('更新帳單異常'));
-  if (!verifyOrderStatusChange(targetOrder.status, status)) return res.send(outputError('更新狀態值異常'));
+  const { status } = targetOrder;
+  // 判斷是否符合狀態更新規則
+  if (!verifyOrderStatusChange(targetOrder.status, afterStatus)) return res.send(outputError('更新狀態值異常'));
+  // 執行更新狀態後必要操作
 
   const { userInfo: { account } } = sess;
   const nowTime = new Date().getTime();
   const updateObj = {
-    status,
+    afterStatus,
     latestModifyAccount: account,
     lastestModifyTime: nowTime,
   };

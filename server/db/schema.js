@@ -41,6 +41,7 @@ export const login = {
  * @apiParam {Array<Object>} roomInfo 訂房信息
  * @apiParam {String} arriveTime 預計到達時間
  * @apiParam {String} note  備註
+ * @apiParam {Array<Object>} roomInfo 房間明細
  *    @apiParam {ObjectId} roomCid  房型cid
  *    @apiParam {Number} num  入住天數
  * @apiParam {Number} createTime  訂房時間
@@ -201,12 +202,14 @@ export const location = {
  * @param {ObjectId}  orderCid 訂單cid
  * @param {ObjectId}  roomCid 房型cid(非房間)
  * @param {Number}    subRoomCid 房間id
+ * @param {Number}    price 訂房當天房型單價
  */
 export const occ = {
   date: Number,
   orderCid: { type: 'ObjectId' },
   roomCid: { type: 'ObjectId' },
   subRoomCid: { type: 'ObjectId' },
+  price: Number,
 };
 
 /**

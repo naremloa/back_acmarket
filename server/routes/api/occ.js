@@ -199,10 +199,11 @@ const getRoomCidOccByDate = async (roomInfoDate) => {
 };
 
 const addOcc = async (roomInfo, orderCid) => {
-  const localRoomInfo = roomInfo.map(({ date, roomCid }) => ({
+  const localRoomInfo = roomInfo.map(({ date, roomCid, price }) => ({
     date,
     roomCid: ObjectId(roomCid),
     orderCid,
+    price,
   }));
   const result = await occInsertMany(localRoomInfo);
   return true;
