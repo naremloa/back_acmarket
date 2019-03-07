@@ -95,18 +95,80 @@
         rows-per-page-text="每頁顯示筆數"
         :rows-per-page-items="rowsPerPageItems"
         :pagination.sync="pagination"
+        expand
+        item-key="_id"
       >
         <template slot="items" slot-scope="props">
-          <td class="text-xs-center">{{ formatStringDate(props.item.date) }}</td>
-          <td class="text-xs-center">{{ props.item.roomName }}</td>
-          <td :class="['text-xs-center', props.item.subRoomName ? '': 'warning--text' ]">
-            {{ props.item.subRoomName || '尚未分配房型' }}
-          </td>
-          <td class="text-xs-center">
-            <v-btn small @click="methodUpdateOcc(props.item)">
-              <v-icon>mdi-square-edit-outline</v-icon>分配房間
-            </v-btn>
-          </td>
+          <tr @click="props.expanded = !props.expanded">
+            <td class="text-xs-center">{{ formatStringDate(props.item.date) }}</td>
+            <td class="text-xs-center">{{ props.item.roomName }}</td>
+            <td :class="['text-xs-center', props.item.subRoomName ? '': 'warning--text' ]">
+              {{ props.item.subRoomName || '尚未分配房型' }}
+            </td>
+            <td class="text-xs-center">
+              <v-btn small @click="methodUpdateOcc(props.item)">
+                <v-icon>mdi-square-edit-outline</v-icon>分配房間
+              </v-btn>
+            </td>
+          </tr>
+        </template>
+        <template slot="expand" slot-scope="props">
+          <div class="order-list__detail-list pa-3 pl-5 accent">
+            <div>
+                <p>更多訂單訊息</p>
+                <p>{{methodGetOrderInfo(props.item)}}</p>
+            </div>
+            <!-- <v-layout row wrap>
+              <v-flex xs12 md1>
+                <p>更多訂單訊息</p>
+              </v-flex>
+              <v-flex xs12 md10 class="order-list__detail-list--content">
+                <table class="order-list__detail-table">
+                  <tr v-for="(key,keyIdx) in ['text', 'value']" :key="`detailRow${keyIdx}`">
+                    <td
+                      v-for="(item,idx) in detailHeaders"
+                      :key="`detailItem${idx}`"
+                    >{{keyIdx === 0
+                      ? item[key]
+                      : methodDetailTableFormat(props.item[item[key]], item.format) }}</td>
+                  </tr>
+                </table>
+              </v-flex>
+            </v-layout>
+            <v-divider class="my-3"></v-divider>
+            <v-layout row wrap>
+              <v-flex xs12 md1>
+                <p>更多訂房資訊</p>
+                <v-btn small @click="methodGetMoreRoomOrderInfo(props.item._id)">更多</v-btn>
+              </v-flex>
+              <v-flex xs12 md10 class="order-list__detail-list--content">
+                <v-data-table
+                  :headers="detailRoomHeaders"
+                  :items="props.item.roomInfo"
+                  hide-actions
+                >
+                  <template slot="items" slot-scope="props">
+                    <td>{{ formatRoomType(props.item.roomCid) }}</td>
+                    <td>{{ currencies(props.item.price) }}</td>
+                    <td>{{ props.item.num }}</td>
+                  </template>
+                </v-data-table>
+              </v-flex>
+              <v-flex xs12 v-if="props.item.moreRoomTypeList">
+              <v-divider class="my-3"></v-divider>
+                <v-data-table
+                  :headers="moreDetailRoomHeaders"
+                  :items="props.item.moreRoomTypeList"
+                  hide-actions
+                >
+                  <template slot="items" slot-scope="props">
+                    <td>{{ formatStringDate(props.item.date) }}</td>
+                    <td>{{ props.item.roomName }}</td>
+                  </template>
+                </v-data-table>
+              </v-flex>
+            </v-layout> -->
+          </div>
         </template>
         <v-alert slot="no-results" :value="true" color="warning" icon="mdi-alert">
           找不到有關於 "{{ search }}" 的資料
@@ -190,7 +252,7 @@ export default {
       });
       if (!res.code) {
         this.subRoomList = res.data;
-        console.log('​getOccList -> res.data', res.data);
+        // console.log('​getOccList -> res.data', res.data);
       } else {
         this.subRoomList = [];
       }
@@ -240,6 +302,23 @@ export default {
         contentData: rowData,
         width: 600,
       };
+    },
+    async methodGetOrderInfo(rowData) {
+      console.log('TCL: methodGetOrderInfo -> rowData', rowData);
+      const params = {
+        occCid: rowData._id,
+        orderCid: rowData.orderCid,
+      };
+      const res = await httpMethod({
+        url: '/v1/api/occ/get/orderInfo',
+        method: 'GET',
+        params,
+      });
+      if (!res.code) {
+        console.log('TCL: methodGetOrderInfo -> res', res);
+        return res.data;
+      }
+      return [];
     },
   },
 };
