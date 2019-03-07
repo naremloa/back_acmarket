@@ -290,7 +290,7 @@ const updateOrder = async (req, res) => {
   const order = await orderFindById(cid);
   if (!order) return res.send(outputError('找不到相關訂單'));
   if (orderCheckedStauts.includes(order.status)) return res.send(outputError('此訂單已結單'));
-  const updateObj = createOrderSchema({
+  const updateObj = await createOrderSchema({
     name,
     phone,
     email,

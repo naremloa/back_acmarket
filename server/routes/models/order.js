@@ -34,9 +34,9 @@ const orderFindById = async (id) => {
   return res;
 };
 
-const orderFindByIdAndUpdate = async (id, updateObj) => {
+const orderFindByIdAndUpdate = async (cid, updateObj) => {
   const res = await Order.findByIdAndUpdate(
-    ObjectId(id),
+    ObjectId(cid),
     updateObj,
   );
   return res;
