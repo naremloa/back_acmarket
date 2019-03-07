@@ -43,6 +43,21 @@
                 label="訂單狀態"
               ></v-select>
             </v-flex>
+            <v-flex
+              sm12
+              md4
+              lg3
+              px-1
+              v-for="(item, idx) in searchSwitchParams"
+              :key="`searchSwitch${idx}`"
+            >
+              <v-switch
+                class="justify-center"
+                color="primary"
+                v-model="searchParams[item.key]"
+                :label="item.label"
+              ></v-switch>
+            </v-flex>
           </v-layout>
           <v-layout row wrap>
             <v-flex
@@ -63,6 +78,7 @@
                 transition="scale-transition"
                 offset-y
                 full-width
+                :disabled="searchParams.outOfTimeSignShow || searchParams.timeOutSignShow"
               >
                 <v-text-field
                   slot="activator"
@@ -71,6 +87,7 @@
                   clearable
                   prepend-icon="mdi-calendar"
                   readonly
+                  :disabled="searchParams.outOfTimeSignShow || searchParams.timeOutSignShow"
                 ></v-text-field>
                 <v-date-picker
                   v-model="searchParams[item.key]"
@@ -130,19 +147,27 @@
         item-key="orderId"
       >
         <template slot="items" slot-scope="props">
-          <tr @click="props.expanded = !props.expanded">
+          <tr
+            @click="props.expanded = !props.expanded"
+            :class="[
+              props.item.outOfTimeSign ? 'amber accent-1' : '',
+              props.item.timeOutSign ? 'red accent-1' : ''
+            ]"
+          >
             <td class="text-xs-center">{{ props.item.orderId }}</td>
             <td class="text-xs-center">{{ props.item.name }}</td>
             <td class="text-xs-center">{{ props.item.gender }}</td>
             <td class="text-xs-center">{{ props.item.phone }}</td>
             <td class="text-xs-center">{{ props.item.nationality }}</td>
-            <td class="text-xs-center">{{ props.item.numberAdult }}</td>
-            <td class="text-xs-center">{{ props.item.numberChild }}</td>
+            <!-- <td class="text-xs-center">{{ props.item.numberAdult }}</td>
+            <td class="text-xs-center">{{ props.item.numberChild }}</td> -->
             <!-- <td class="text-xs-center">{{ dateTime(props.item.checkInTime) }}</td> -->
             <!-- <td class="text-xs-center">{{ dateTime(props.item.checkOutTime) }}</td> -->
             <!-- <td class="text-xs-center">{{ dateTime(props.item.createTime) }}</td> -->
             <!-- <td class="text-xs-center">{{ formatRoomType(props.item.roomType) }}</td> -->
             <!-- <td class="text-xs-right">{{ currencies(props.item.price) }}</td> -->
+            <td class="text-xs-right">{{ currencies(props.item.totalDeposit) }}</td>
+            <td class="text-xs-right">{{ currencies(props.item.totalValidDeposit) }}</td>
             <td class="text-xs-right">{{ currencies(props.item.totalPrice) }}</td>
             <td class="text-xs-right">{{ currencies(props.item.totalValidPrice) }}</td>
             <td class="text-xs-center">
@@ -246,7 +271,7 @@
 import httpMethod from '@/utils/httpMethod';
 import constList from '@/utils/const';
 import dialogComponent from '@/views/layout/components/dialog.vue';
-import { dateTime, currencies,formatStringDate } from '@/utils/calculation';
+import { dateTime, currencies, formatStringDate } from '@/utils/calculation';
 
 export default {
   name: 'orderList',
@@ -268,13 +293,15 @@ export default {
         { text: '電話', value: 'phone', sortable: false },
         // { text: '電子郵件', value: 'email', sortable: false },
         { text: '國籍', value: 'nationality', sortable: false },
-        { text: '成人人數', value: 'numberAdult', sortable: false },
-        { text: '小孩人數', value: 'numberChild', sortable: false },
+        // { text: '成人人數', value: 'numberAdult', sortable: false },
+        // { text: '小孩人數', value: 'numberChild', sortable: false },
         // { text: '入住時間', value: 'checkInTime', sortable: false },
         // { text: '退房時間', value: 'checkOutTime', sortable: false },
         // { text: '訂房時間', value: 'createTime', sortable: false },
         // { text: '訂房房型', value: 'roomType', sortable: false },
         // { text: '房間單價', value: 'price', sortable: false },
+        { text: '應收總訂金', value: 'totalDeposit', sortable: false },
+        { text: '實收總訂金', value: 'totalValidDeposit', sortable: false },
         { text: '應收總價', value: 'totalPrice', sortable: false },
         { text: '實收總價', value: 'totalValidPrice', sortable: false },
         { text: '訂單狀態', value: 'status', sortable: false },
@@ -286,9 +313,12 @@ export default {
       detailHeaders: [
         { text: '訂房時間', value: 'createTime', format: 'time' },
         { text: '電子郵件', value: 'email', format: null },
+        { text: '成人人數', value: 'numberAdult', format: null },
+        { text: '小孩人數', value: 'numberChild', format: null },
         { text: '早餐', value: 'breakfast', format: null },
         { text: '其他需求', value: 'demand', format: 'string' },
         { text: '備註', value: 'note', format: null },
+        { text: '預計抵達時間', value: 'arriveTime', format: null },
         { text: '最近操作訂單帳號', value: 'latestModifyAccount', format: null },
       ],
       detailRoomHeaders: [
@@ -323,6 +353,10 @@ export default {
         // { label: '最近操作訂單開始時間', key: 'latestModifyTimeStartShow' },
         // { label: '最近操作訂單結束時間', key: 'latestModifyTimeEndShow' },
       ],
+      searchSwitchParams: [
+        { label: '即將逾時訂單', key: 'outOfTimeSignShow' },
+        { label: '已逾時訂單', key: 'timeOutSignShow' },
+      ],
       selectMenu: [false, false, false, false, false, false, false, false],
       confirmDialogInfo: {
         openDialog: false,
@@ -334,6 +368,22 @@ export default {
       },
       roomTypeList: null,
     };
+  },
+  watch: {
+    'searchParams.outOfTimeSignShow': {
+      handler(val) {
+        if (val) {
+          this.searchParams.timeOutSignShow = false;
+        }
+      },
+    },
+    'searchParams.timeOutSignShow': {
+      handler(val) {
+        if (val) {
+          this.searchParams.outOfTimeSignShow = false;
+        }
+      },
+    },
   },
   mounted() {
     this.getOrder();
@@ -374,6 +424,8 @@ export default {
         // checkInTimeEndShow: null,
         // checkOutTimeStartShow: null,
         // checkOutTimeEndShow: null,
+        outOfTimeSignShow: null,
+        timeOutSignShow: null,
         createStartTimeShow: null,
         createEndTimeShow: null,
         // latestModifyTimeStartShow: null,
@@ -387,6 +439,8 @@ export default {
         params,
       });
       console.log(res);
+      // res.data[0].outOfTimeSign = true;
+      // res.data[1].timeOutSign = true;
       this.orderList = res.data;
     },
     methodFormReset() {
@@ -408,6 +462,8 @@ export default {
         // checkInTimeEndShow,
         // checkOutTimeStartShow,
         // checkOutTimeEndShow,
+        outOfTimeSignShow,
+        timeOutSignShow,
         createStartTimeShow,
         createEndTimeShow,
         // latestModifyTimeStartShow,
@@ -422,14 +478,18 @@ export default {
       if (breakfastShow) params.breakfast = breakfastShow;
       // if (emailShow) params.email = emailShow;
       if (nationalityShow) params.nationality = nationalityShow;
+      if (outOfTimeSignShow) params.outOfTimeSign = outOfTimeSignShow;
+      if (timeOutSignShow) params.timeOutSign = timeOutSignShow;
       // if (latestModifyAccountShow) params.latestModifyAccount = latestModifyAccountShow;
       // if (noteShow) params.note = noteShow;
       // if (checkInTimeStartShow) params.checkInTimeStart = new Date(checkInTimeStartShow).valueOf();
       // if (checkInTimeEndShow) params.checkInTimeEnd = new Date(checkInTimeEndShow).valueOf();
       // if (checkOutTimeStartShow) params.checkOutTimeStart = new Date(checkOutTimeStartShow).valueOf();
       // if (checkOutTimeEndShow) params.checkOutTimeEnd = new Date(checkOutTimeEndShow).valueOf();
-      if (createStartTimeShow) params.createStartTime = new Date(createStartTimeShow).valueOf();
-      if (createEndTimeShow) params.createEndTime = new Date(createEndTimeShow).valueOf();
+      if (!outOfTimeSignShow && !timeOutSignShow) {
+        if (createStartTimeShow) params.createStartTime = new Date(createStartTimeShow).valueOf();
+        if (createEndTimeShow) params.createEndTime = new Date(createEndTimeShow).valueOf();
+      }
       // if (latestModifyTimeStartShow) params.latestModifyTimeStart = new Date(latestModifyTimeStartShow).valueOf();
       // if (latestModifyTimeEndShow) params.latestModifyTimeEnd = new Date(latestModifyTimeEndShow).valueOf();
       this.getOrder(params);
