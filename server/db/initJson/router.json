@@ -86,6 +86,16 @@
         ],
         "rootId": 1002,
         "childNode": []
+      },
+      {
+        "id": 1018,
+        "dataKey": "activity",
+        "name": "活動列表",
+        "apiRoot": [
+          "/activity"
+        ],
+        "rootId": 1002,
+        "childNode": []
       }
     ]
   },

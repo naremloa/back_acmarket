@@ -243,3 +243,33 @@ export const room = {
     },
   ],
 };
+
+/**
+ * activitySchema
+ * @param {String} name 活動名稱
+ * @param {Number} startDate 開始日期
+ * @param {Number} endDate 結束日期
+ * @param {Number} roomActivityPrice 房型活動價基數
+ * @param {Number} mag 倍率(根據活動指定有效時間內，逐天減半)
+ * @param {Number} activityPrice 活動額外價格
+ * @param {Number} remainDay 活動有效天數
+ * @param {Number} status 活動狀態(1: 啟用, 2: 停用, 3: 逾期)
+ * @param {Number} createTime 創建時間
+ * @param {String} createAccount 創建帳號
+ * @param {Number} modifyTime 修改時間
+ * @param {String} modifyAccount 修改帳號
+ */
+export const activity = {
+  name: String,
+  startDate: Number,
+  endDate: Number,
+  roomActivityPrice: Number,
+  mag: Number,
+  activityPrice: Number,
+  remainDay: Number,
+  status: Number,
+  createTime: Number,
+  createAccount: String,
+  modifyTime: Number,
+  modifyAccount: String,
+};

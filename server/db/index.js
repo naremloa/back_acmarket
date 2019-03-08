@@ -11,6 +11,7 @@ import {
   location,
   occ,
   room,
+  activity,
 } from './schema';
 
 const mongoose = require('mongoose');
@@ -64,6 +65,8 @@ const occSchema = initSchema(occ);
 
 const roomSchema = initSchema(room);
 
+const activitySchema = initSchema(activity);
+
 // model
 const Models = {
   User: Model('User', loginSchema),
@@ -76,6 +79,7 @@ const Models = {
   Location: Model('Location', locationSchema),
   Occ: Model('Occ', occSchema),
   Room: Model('Room', roomSchema),
+  Activity: Model('Activity', activitySchema),
 };
 
 export {

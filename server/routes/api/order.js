@@ -97,7 +97,7 @@ const createOrderSchema = async ({
 }, update = false) => {
   const nowTime = new Date().getTime();
   // update
-  const maintPart = {
+  const mainPart = {
     name,
     phone,
     email,
@@ -112,7 +112,7 @@ const createOrderSchema = async ({
     arriveTime,
     note,
   };
-  if (update) return maintPart;
+  if (update) return mainPart;
   // create
   const count = await orderCountByCreateTime(nowTime);
   const orderId = Number(`${dateTime(nowTime)}${count.toString().padStart(3, '0')}`) + 1;
@@ -131,7 +131,7 @@ const createOrderSchema = async ({
     });
   });
   return {
-    ...maintPart,
+    ...mainPart,
     orderId,
     createTime: nowTime,
     totalDeposit,
