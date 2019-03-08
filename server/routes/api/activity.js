@@ -76,7 +76,30 @@ const addActivity = async (req, res) => {
   return res(outputSuccess({}, '新增成功'));
 };
 
+// {roomActivityPrice: 380, mag: 2, activityPrice: 380, remainDay: 2, price: 2660}
+const getActivityRoomPriceByDay = ({
+  roomActivityPrice: r, mag: m, activityPrice: a, remainDay, price: p,
+}, day) => {
+  if (remainDay < day) return p;
+  return p + a + (r * m / (2 ** (day - 1)));
+};
+
+const getActivityTotalPrice = ({
+  roomActivityPrice: r, mag: m, activityPrice: a, remainDay, price: p,
+}, totalDay) => {
+  const cal = (localDay) => {
+    const tmp = (localDay * (p + a)) + (r * m * ((2 ** localDay) - 1) / (2 ** (localDay - 1)));
+    return tmp;
+  };
+  if (totalDay <= remainDay) {
+    return cal(totalDay);
+  }
+  return cal(remainDay) + (totalDay - remainDay) * p;
+};
+
 export {
   getActivity,
   addActivity,
+  getActivityRoomPriceByDay,
+  getActivityTotalPrice,
 };
