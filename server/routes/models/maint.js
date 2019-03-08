@@ -6,7 +6,7 @@ const { Maint } = Models;
 const { ObjectId } = mongoose.Types;
 
 const maintFind = async (query) => {
-  const res = await Maint.find(query);
+  const res = await Maint.find(query).sort({ modifyTime: -1 }).lean();
   return res;
 };
 
