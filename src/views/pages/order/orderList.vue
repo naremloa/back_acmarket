@@ -175,12 +175,12 @@
               <v-btn
                 v-else
                 small
-                @click="methodUpdateStatus(props.item), props.expanded = !props.expanded"
+                @click.stop="methodUpdateStatus(props.item)"
               >{{ formatOrderStatus(props.item.status) }}</v-btn>
             </td>
             <!-- <td class="text-xs-center">{{ props.item.latestModifyAccount }}</td> -->
             <td class="text-xs-center">
-              <v-btn small @click="methodUpdateOrder(props.item), props.expanded = !props.expanded">
+              <v-btn small @click.stop="methodUpdateOrder(props.item)">
                 <v-icon>mdi-square-edit-outline</v-icon>修改訂單
               </v-btn>
             </td>
@@ -191,10 +191,10 @@
         <template slot="expand" slot-scope="props">
           <div class="order-list__detail-list pa-3 pl-5 accent">
             <v-layout row wrap>
-              <v-flex xs12 md1>
-                <p>更多訂單訊息</p>
+              <v-flex xs12>
+                <p>訂單訊息</p>
               </v-flex>
-              <v-flex xs12 md10 class="order-list__detail-list--content">
+              <v-flex xs12 class="order-list__detail-list--content">
                 <table class="order-list__detail-table">
                   <tr v-for="(key,keyIdx) in ['text', 'value']" :key="`detailRow${keyIdx}`">
                     <td
@@ -209,35 +209,13 @@
             </v-layout>
             <v-divider class="my-3"></v-divider>
             <v-layout row wrap>
-              <v-flex xs12 md1>
-                <p>更多訂房資訊</p>
-                <v-btn small @click="methodGetMoreRoomOrderInfo(props.item._id)">更多</v-btn>
+              <v-flex xs12>
+                <p>訂房資訊</p>
               </v-flex>
-              <v-flex xs12 md10 class="order-list__detail-list--content">
-                <v-data-table
-                  :headers="detailRoomHeaders"
-                  :items="props.item.roomInfo"
-                  hide-actions
-                >
-                  <template slot="items" slot-scope="props">
-                    <td>{{ formatRoomType(props.item.roomCid) }}</td>
-                    <td>{{ currencies(props.item.price) }}</td>
-                    <td>{{ props.item.num }}</td>
-                  </template>
-                </v-data-table>
-              </v-flex>
-              <v-flex xs12 v-if="props.item.moreRoomTypeList">
-              <v-divider class="my-3"></v-divider>
-                <v-data-table
-                  :headers="moreDetailRoomHeaders"
-                  :items="props.item.moreRoomTypeList"
-                  hide-actions
-                >
-                  <template slot="items" slot-scope="props">
-                    <td>{{ formatStringDate(props.item.date) }}</td>
-                    <td>{{ props.item.roomName }}</td>
-                  </template>
-                </v-data-table>
+              <v-flex xs12 class="order-list__detail-list--content">
+                <order-rooms
+                  :orderRoomList="props.item.roomInfo"
+                />
               </v-flex>
             </v-layout>
           </div>
@@ -271,12 +249,14 @@
 import httpMethod from '@/utils/httpMethod';
 import constList from '@/utils/const';
 import dialogComponent from '@/views/layout/components/dialog.vue';
+import orderRooms from './orderRooms.vue';
 import { dateTime, currencies, formatStringDate } from '@/utils/calculation';
 
 export default {
   name: 'orderList',
   components: {
     dialogComponent,
+    orderRooms,
   },
   data() {
     return {
@@ -325,10 +305,6 @@ export default {
         { text: '房間房型', value: 'roomCid', sortable: false },
         { text: '房間單價', value: 'price', sortable: false },
         { text: '房間數量', value: 'num', sortable: false },
-      ],
-      moreDetailRoomHeaders: [
-        { text: '入住時間', value: 'date', sortable: false },
-        { text: '房間房型', value: 'roomName', sortable: false },
       ],
       orderList: [],
       valid: false,
@@ -543,19 +519,6 @@ export default {
         return this.currencies(val);
       }
       return val || '無';
-    },
-    async methodGetMoreRoomOrderInfo(orderCid) {
-      const res = await httpMethod({
-        url: `/v1/api/order/occ/${orderCid}`,
-        method: 'GET',
-        // params:{
-        //   name:orderCid
-        // }
-      });
-      const orderListIndex = this.orderList.findIndex(item => item._id === orderCid);
-      if (res && !res.code) {
-        this.$set(this.orderList[orderListIndex], 'moreRoomTypeList', res.data);
-      }
     },
   },
 };

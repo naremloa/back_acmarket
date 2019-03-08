@@ -37,13 +37,13 @@
             <td class="text-xs-center">
               <v-btn
                 small
-                @click="props.expanded = !props.expanded, methodUpdateRoomType(props.item)"
+                @click.stop="methodUpdateRoomType(props.item)"
               >
                 <v-icon>mdi-square-edit-outline</v-icon>修改房型
               </v-btn>
               <v-btn
                 small
-                @click="props.expanded = !props.expanded, methodAddSubRoom(props.item)"
+                @click.stop="methodAddSubRoom(props.item)"
               >
                 <v-icon>mdi-plus</v-icon>新增房間
               </v-btn>

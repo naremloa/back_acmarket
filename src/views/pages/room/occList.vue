@@ -106,7 +106,7 @@
               {{ props.item.subRoomName || '尚未分配房型' }}
             </td>
             <td class="text-xs-center">
-              <v-btn small @click="methodUpdateOcc(props.item)">
+              <v-btn small @click.stop="methodUpdateOcc(props.item)">
                 <v-icon>mdi-square-edit-outline</v-icon>分配房間
               </v-btn>
             </td>
