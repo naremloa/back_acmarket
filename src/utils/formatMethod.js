@@ -1,3 +1,5 @@
+import constList from '@/utils/const';
+
 export const getDate = (timeType, type = 'fullDate') => {
   const dayList = ['日', '一', '二', '三', '四', '五', '六'];
   let timestamp = Date.now();
@@ -41,3 +43,5 @@ export const formatNumberDate = (numberDate) => {
 
   return `${year}/${month}/${date}`;
 };
+
+export const formatOrderStatus = statusId => constList.orderStatusList.find(item => item.id === statusId).value;

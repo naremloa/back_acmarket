@@ -99,7 +99,7 @@
         item-key="_id"
       >
         <template slot="items" slot-scope="props">
-          <tr @click="props.expanded = !props.expanded">
+          <tr @click="methodGetOrderInfo(props.item).then(()=>{ props.expanded = !props.expanded })">
             <td class="text-xs-center">{{ formatStringDate(props.item.date) }}</td>
             <td class="text-xs-center">{{ props.item.roomName }}</td>
             <td :class="['text-xs-center', props.item.subRoomName ? '': 'warning--text' ]">
@@ -114,10 +114,35 @@
         </template>
         <template slot="expand" slot-scope="props">
           <div class="order-list__detail-list pa-3 pl-5 accent">
-            <div>
-                <p>更多訂單訊息</p>
-                <p>{{methodGetOrderInfo(props.item)}}</p>
-            </div>
+            <v-layout row wrap>
+              <v-flex xs12>
+                <p>訂單訊息</p>
+              </v-flex>
+              <v-flex xs12 class="order-list__detail-list--content">
+                <v-data-table
+                  :headers="detailHeaders"
+                  :items="detailOrderList[props.item._id]"
+                  hide-actions
+                >
+                  <template slot="items" slot-scope="props">
+                    <td class="text-xs-center">{{ props.item.orderId }}</td>
+                    <td class="text-xs-center">{{ dateTime(props.item.createTime) }}</td>
+                    <td class="text-xs-center">{{ formatOrderStatus(props.item.status) }}</td>
+                    <td class="text-xs-center">{{ props.item.name }}</td>
+                    <td class="text-xs-center">{{ props.item.gender }}</td>
+                    <td class="text-xs-center">{{ props.item.phone }}</td>
+                    <td class="text-xs-center">{{ props.item.email }}</td>
+                    <td class="text-xs-center">{{ props.item.nationality }}</td>
+                    <td class="text-xs-center">{{ props.item.numberAdult }}</td>
+                    <td class="text-xs-center">{{ props.item.numberChild }}</td>
+                    <!-- <td class="text-xs-center">{{ props.item.breakfast }}</td> -->
+                    <!-- <td class="text-xs-center">{{ props.item.demand }}</td> -->
+                    <!-- <td class="text-xs-center">{{ props.item.note }}</td> -->
+                    <td class="text-xs-center">{{ props.item.arriveTime }}</td>
+                  </template>
+                </v-data-table>
+              </v-flex>
+            </v-layout>
             <!-- <v-layout row wrap>
               <v-flex xs12 md1>
                 <p>更多訂單訊息</p>
@@ -197,8 +222,10 @@
 </template>
 <script>
 import httpMethod from '@/utils/httpMethod';
+import { formatOrderStatus } from '@/utils/formatMethod';
 import dialogComponent from '@/views/layout/components/dialog.vue';
 import { dateTime, currencies, formatStringDate } from '@/utils/calculation';
+
 
 export default {
   name: 'occList',
@@ -218,7 +245,46 @@ export default {
         { text: '房間', value: 'subRoomName', sortable: false },
         { text: '操作', value: '', sortable: false },
       ],
+      detailHeaders: [
+        {
+          text: '訂單編號', value: 'orderId', sortable: false, align: 'center',
+        },
+        {
+          text: '訂房時間', value: 'createTime', sortable: false, align: 'center',
+        },
+        {
+          text: '訂單狀態', value: 'status', sortable: false, align: 'center',
+        },
+        {
+          text: '姓名', value: 'name', sortable: false, align: 'center',
+        },
+        {
+          text: '性別', value: 'gender', sortable: false, align: 'center',
+        },
+        {
+          text: '電話', value: 'phone', sortable: false, align: 'center',
+        },
+        {
+          text: '電子郵件', value: 'email', sortable: false, align: 'center',
+        },
+        {
+          text: '國籍', value: 'nationality', sortable: false, align: 'center',
+        },
+        {
+          text: '成人人數', value: 'numberAdult', sortable: false, align: 'center',
+        },
+        {
+          text: '小孩人數', value: 'numberChild', sortable: false, align: 'center',
+        },
+        // { text: '早餐', value: 'breakfast', sortable: false, align: 'center' },
+        // { text: '其他需求', value: 'demand', sortable: false, align: 'center' },
+        // { text: '備註', value: 'note', sortable: false, align: 'center' },
+        {
+          text: '預計抵達時間', value: 'arriveTime', sortable: false, align: 'center',
+        },
+      ],
       occList: [],
+      detailOrderList: {},
       valid: false,
       searchParams: this.getParamsOrigin(),
       searchTimeParams: [
@@ -245,6 +311,7 @@ export default {
     dateTime,
     currencies,
     formatStringDate,
+    formatOrderStatus,
     async getSubRoomList() {
       const res = await httpMethod({
         url: '/v1/api/room/options',
@@ -315,10 +382,13 @@ export default {
         params,
       });
       if (!res.code) {
-        console.log('TCL: methodGetOrderInfo -> res', res);
-        return res.data;
+        console.log('TCL: methodGetOrderInfo -> res', res.data);
+        this.detailOrderList[rowData._id] = [res.data];
+        console.log('TCL: methodGetOrderInfo -> this.detailOrderList', this.detailOrderList);
+      } else {
+        this.detailOrderList[rowData._id] = [];
       }
-      return [];
+      return true;
     },
   },
 };

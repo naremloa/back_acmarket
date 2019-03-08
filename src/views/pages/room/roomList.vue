@@ -34,6 +34,10 @@
         <template slot="items" slot-scope="props">
           <tr @click="props.expanded = !props.expanded">
             <td class="text-xs-center">{{ props.item.roomName }}</td>
+            <td class="text-xs-center">{{ currencies(props.item.price.lowSeasonWeekday) }}</td>
+            <td class="text-xs-center">{{ currencies(props.item.price.lowSeasonWeekend) }}</td>
+            <td class="text-xs-center">{{ currencies(props.item.price.peakSeasonWeekday) }}</td>
+            <td class="text-xs-center">{{ currencies(props.item.price.peakSeasonWeekend) }}</td>
             <td class="text-xs-center">
               <v-btn
                 small
@@ -117,6 +121,10 @@ export default {
       },
       headers: [
         { text: '房型名稱', value: 'name', sortable: false },
+        { text: '淡季平日單價', value: 'lowSeasonWeekday', sortable: false },
+        { text: '淡季假日單價', value: 'lowSeasonWeekend', sortable: false },
+        { text: '旺季平日單價', value: 'peakSeasonWeekday', sortable: false },
+        { text: '旺季假日單價', value: 'peakSeasonWeekend', sortable: false },
         // { text: '維修位置', value: 'position', sortable: false },
         // { text: '維修內容', value: 'content', sortable: false },
         // { text: '自修配件費', value: 'internalCost', sortable: false },
