@@ -18,6 +18,7 @@ const createActivitySchema = async ({
   mag = 0,
   activityPrice = 0,
   remainDay = 0,
+  code,
   account = '',
 }, update = false) => {
   const nowTime = new Date().getTime();
@@ -38,6 +39,7 @@ const createActivitySchema = async ({
   const status = 2;
   return {
     ...mainPart,
+    code,
     status,
     createTime,
     createAccount,
@@ -59,6 +61,7 @@ const addActivity = async (req, res) => {
   } = req;
   const startDate = dateTime(startTime);
   const endDate = dateTime(endTime);
+  const code = name;
   const existActivity = await activityFind({
     $or: [
       { startDate: { $lte: endDate }, endDate: { $gte: endDate } },
@@ -67,13 +70,36 @@ const addActivity = async (req, res) => {
   });
   if (existActivity.length > 0) return res.send(outputError('新增活動的活動時間不合法'));
   const activityObj = createActivitySchema({
-    name, roomActivityPrice, mag, activityPrice, remainDay, startDate, endDate,
+    name, roomActivityPrice, mag, activityPrice, remainDay, startDate, endDate, code,
   });
   const newActivity = await activityInsert(activityObj);
   return res(outputSuccess({}, '新增成功'));
 };
 
+// {roomActivityPrice: 380, mag: 2, activityPrice: 380, remainDay: 2, price: 2660}
+const getActivityRoomPriceByDay = ({
+  roomActivityPrice: r, mag: m, activityPrice: a, remainDay, price: p,
+}, day) => {
+  if (remainDay < day) return p;
+  return p + a + (r * m / (2 ** (day - 1)));
+};
+
+const getActivityTotalPrice = ({
+  roomActivityPrice: r, mag: m, activityPrice: a, remainDay, price: p,
+}, totalDay) => {
+  const cal = (localDay) => {
+    const tmp = (localDay * (p + a)) + (r * m * ((2 ** localDay) - 1) / (2 ** (localDay - 1)));
+    return tmp;
+  };
+  if (totalDay <= remainDay) {
+    return cal(totalDay);
+  }
+  return cal(remainDay) + (totalDay - remainDay) * p;
+};
+
 export {
   getActivity,
   addActivity,
+  getActivityRoomPriceByDay,
+  getActivityTotalPrice,
 };

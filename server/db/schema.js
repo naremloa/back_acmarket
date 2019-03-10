@@ -261,6 +261,7 @@ export const room = {
  */
 export const activity = {
   name: String,
+  code: String,
   startDate: Number,
   endDate: Number,
   roomActivityPrice: Number,
