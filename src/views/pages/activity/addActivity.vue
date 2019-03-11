@@ -105,7 +105,6 @@ import httpMethod from '@/utils/httpMethod';
 
 export default {
   name: 'addActivity',
-  props: ['openDialog'],
   data() {
     return {
       valid: false,
@@ -129,9 +128,6 @@ export default {
       ],
     };
   },
-  openDialog(val) {
-    if (val) this.activityParam = this.getParamsOrigin();
-  },
   methods: {
     getParamsOrigin() {
       return {
@@ -149,7 +145,6 @@ export default {
       this.$refs.form.resetValidation();
     },
     methodProcessParams() {
-      console.log('TCL: methodProcessParams -> methodProcessParams');
       const {
         nameShow,
         startTimeShow,
@@ -170,8 +165,6 @@ export default {
       this.addActivity(params);
     },
     async addActivity(params) {
-      console.log('TCL: addActivity -> params', params);
-      console.log('TCL: addOrder -> this.$refs.form.validate()', this.$refs.form.validate());
       if (this.$refs.form.validate()) {
         const res = await httpMethod({
           url: '/v1/api/activity/add',
