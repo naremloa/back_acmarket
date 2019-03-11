@@ -1,3 +1,4 @@
+import { omit } from 'lodash';
 import { outputSuccess, outputError } from '../utils/outputFormat';
 import {
   activityFind,
@@ -7,10 +8,14 @@ import {
   activityUpdateMany,
   activityFindOne,
 } from '../models/activity';
-import { dateTime } from '../utils/formatQuery';
+import { dateTime, chNumToDate } from '../utils/formatQuery';
 
 const getActivity = async (req, res) => {
-  const activity = await activityFind({});
+  const activity = (await activityFind({})).map(i => ({
+    ...(omit(i, ['startDate', 'endDate'])),
+    startTime: (new Date(chNumToDate(i.startDate))).getTime(),
+    endTime: (new Date(chNumToDate(i.startDate))).getTime(),
+  }));
   return res.send(outputSuccess(activity));
 };
 

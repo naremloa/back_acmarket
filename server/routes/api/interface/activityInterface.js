@@ -53,7 +53,7 @@ export const post = [
    * @apiParam {Number} endTime 結束時間
    * @apiParam {Number} roomActivityPrice 房型活動價基數(單位: 分)
    * @apiParam {Number} mag 倍率
-   * @apiParam {Number} activityPrice 活動額外價格(單位: 分)g
+   * @apiParam {Number} activityPrice 活動額外價格(單位: 分)
    * @apiParam {Number} remainDay 活動有效天數
    *
    */
