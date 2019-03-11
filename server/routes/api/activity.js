@@ -2,6 +2,10 @@ import { outputSuccess, outputError } from '../utils/outputFormat';
 import {
   activityFind,
   activityInsert,
+  activityFindByIdAndUpdate,
+  activityFindById,
+  activityUpdateMany,
+  activityFindOne,
 } from '../models/activity';
 import { dateTime } from '../utils/formatQuery';
 
@@ -97,9 +101,38 @@ const getActivityTotalPrice = ({
   return cal(remainDay) + (totalDay - remainDay) * p;
 };
 
+const toggleActivity = async (req, res) => {
+  const { body: { cid, status } } = req;
+  if (![1, 2].includes(Number(status))) return res.sedn('切換狀態值不合法');
+  // 停用
+  if (Number(status) === 0) {
+    const updateObj = { status: 2 };
+    await activityFindByIdAndUpdate(cid, updateObj);
+    return res.send(outputSuccess({}, '停用成功'));
+  }
+  // 啟用
+  const activity = await activityFindById(cid);
+  if (!activity) return res.send(outputError('找不到指定優惠活動'));
+  if (activity.endDate <= dateTime(new Date().getTime())
+    || activity.startDate >= dateTime(new Date().getTime())) {
+    return res.send(outputError('請調整活動時間'));
+  }
+  await activityUpdateMany({ status: 1 }, { status: 2 });
+  const updateObj = { status: 1 };
+  await activityFindByIdAndUpdate(cid, updateObj);
+  return res.send(outputSuccess({}, '啟用成功'));
+};
+
+const activityFindValid = async () => {
+  const res = await activityFindOne({ status: 1 });
+  return res;
+};
+
 export {
   getActivity,
   addActivity,
   getActivityRoomPriceByDay,
   getActivityTotalPrice,
+  toggleActivity,
+  activityFindValid,
 };

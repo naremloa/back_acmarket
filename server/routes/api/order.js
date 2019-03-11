@@ -5,7 +5,6 @@ import mongoose from 'mongoose';
 import {
   omitValueValid,
   formatDateQuery,
-  chNumToDate,
   getDatePriceKey,
   dateTime,
 } from '../utils/formatQuery';
@@ -27,6 +26,9 @@ import {
 import {
   getRoomAllMaxLengthAndPriceInfo,
 } from './room';
+import {
+  activityFindValid,
+} from './activity';
 import { outputSuccess, outputError } from '../utils/outputFormat';
 import {
   orderCheckedStauts,
@@ -120,7 +122,7 @@ const createOrderSchema = async ({
   const localRoomInfo = {};
   forOwn(roomInfoCount, (dateObj, roomCid) => {
     const { name: roomName, price } = roomAllInfo[roomCid];
-    forOwn(dateObj, (num, date) => {
+    forOwn(dateObj, ({ num }, date) => {
       const roomPrice = price[getDatePriceKey(date)];
       localRoomInfo[date] = [
         ...(localRoomInfo[date] || []),
@@ -150,8 +152,12 @@ const createOrderSchema = async ({
  * roomInfoCount
  * {
  *    5c5ed89dd6b4f80dbe3c1281: {
- *      20190217: 2,
- *      20190218: 1,
+ *      20190217: {
+ *        num: 2
+ *      },
+ *      20190218: {
+ *        num: 1
+ *      },
  *    }
  * }
  */
@@ -162,7 +168,9 @@ const getCountByRoomInfo = roomInfo => roomInfo
       ? { [date]: 1 }
       : {
         ...acc[roomCid],
-        [date]: (acc[roomCid][date] || 0) + 1,
+        [date]: {
+          num: (acc[roomCid][date] || { num: 0 }).num + 1,
+        },
       },
   }), {});
 
@@ -207,6 +215,8 @@ const addOrder = async (req, res) => {
 
   const roomAllInDateInfo = await getRoomCidOccByDate(roomInfoCount);
 
+  const activity = await activityFindValid();
+
   // 借totalPrice判斷，若為false則房間訂單不合法，若為數字，則房間訂單成立，並同時給出應計總價
   let totalPrice = true;
   // 遍歷所有訂單房型
@@ -215,10 +225,8 @@ const addOrder = async (req, res) => {
     // 單一房型下最大房間數量和單價
     const { max, price } = roomAllInfo[keyRoomCid];
     // 遍歷當前訂單房型下的入住時間
-    forOwn(valueRoomCid, (valueDate, keyDate) => {
+    forOwn(valueRoomCid, ({ num }, keyDate) => {
       if (totalPrice === false) return;
-      // 房間預定數量
-      const num = valueDate;
       // 房間入住時間價格
       const subRoomPrice = price[getDatePriceKey(keyDate)];
 
