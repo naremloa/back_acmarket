@@ -68,7 +68,7 @@ export const post = [
    * @apiGroup Activity
    *
    * @apiParam {String} cid activity cid
-   * @apiParam {Number} status 狀態(1: 啟用, 2: 停用)
+   * @apiParam {Number} status 狀態(1: 啟用, 0: 停用)
    */
   ['/activity/toggle/status',
     middlewareCheckLoginStatusSession, middlewareCheckAuthorization,
