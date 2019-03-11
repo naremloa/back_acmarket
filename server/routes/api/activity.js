@@ -95,7 +95,7 @@ const modifyActivity = async (req, res) => {
   const startDate = dateTime(startTime);
   const endDate = dateTime(endTime);
   const code = name;
-  const updateObj = createActivitySchema({
+  const updateObj = await createActivitySchema({
     name, roomActivityPrice, mag, activityPrice, remainDay, startDate, endDate, code,
   });
   const result = await activityFindByIdAndUpdate(cid, updateObj);
