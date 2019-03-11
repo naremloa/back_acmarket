@@ -120,8 +120,8 @@
       >
         <template slot="items" slot-scope="props">
           <td class="text-xs-center">{{ props.item.name }}</td>
-          <td class="text-xs-center">{{ dateTime(props.item.startTime) }}</td>
-          <td class="text-xs-center">{{ dateTime(props.item.endTime) }}</td>
+          <td class="text-xs-center">{{ dateTime(props.item.startTime, true) }}</td>
+          <td class="text-xs-center">{{ dateTime(props.item.endTime, true) }}</td>
           <td class="text-xs-center">{{ currencies(props.item.roomActivityPrice) }}</td>
           <td class="text-xs-center">{{ props.item.mag }}</td>
           <td class="text-xs-center">{{ currencies(props.item.activityPrice) }}</td>
@@ -136,7 +136,7 @@
               @click="methodVerifyStatus(props.item)"
             >{{ props.item.status !== 1 ? '啟用' : '停用' }}</v-btn>
             <v-btn small @click="methodUpdateActivity(props.item)">
-              <v-icon>mdi-square-edit-outline</v-icon>操作
+              <v-icon>mdi-square-edit-outline</v-icon>修改
             </v-btn>
           </td>
         </template>
@@ -204,7 +204,7 @@ export default {
         { text: '創建日期', value: 'createTime', sortable: false },
         { text: '創建用戶', value: 'createAccount', sortable: false },
         { text: '狀態', value: 'status', sortable: false },
-        { text: '修改操作', value: '', sortable: false },
+        { text: '操作', value: '', sortable: false },
       ],
       activityList: [],
       valid: false,

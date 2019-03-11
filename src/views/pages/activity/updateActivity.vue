@@ -102,7 +102,7 @@
 </template>
 <script>
 import httpMethod from '@/utils/httpMethod';
-import { dateTime } from '@/utils/calculation';
+import { getDate } from '@/utils/formatMethod';
 
 export default {
   name: 'updateActivity',
@@ -140,7 +140,7 @@ export default {
     this.formatProps(this.contentData);
   },
   methods: {
-    dateTime,
+    getDate,
     getParamsOrigin() {
       return {
         cid: null,
@@ -169,10 +169,10 @@ export default {
       this.activityParams.nameShow = name;
       this.activityParams.startTimeShow = startTime.toString().length !== 13
         ? ''
-        : this.dateTime(startTime);
+        : this.getDate(startTime, 'fullDate');
       this.activityParams.endTimeShow = startTime.toString().length !== 13
         ? ''
-        : this.dateTime(endTime);
+        : this.getDate(endTime, 'fullDate');
       this.activityParams.roomActivityPriceShow = (Number(roomActivityPrice) || 0) / 100;
       this.activityParams.magShow = mag;
       this.activityParams.activityPriceShow = (Number(activityPrice) || 0) / 100;
@@ -183,54 +183,54 @@ export default {
       this.$refs.form.resetValidation();
     },
     methodProcessParams() {
-      const {
-        cid,
-        nameShow,
-        startTimeShow,
-        endTimeShow,
-        roomActivityPriceShow,
-        magShow,
-        activityPriceShow,
-        remainDayShow,
-      } = this.activityParams;
-      const params = {};
-      if (cid) params.cid = cid;
-      if (nameShow) params.name = nameShow;
-      if (startTimeShow) params.startTime = new Date(startTimeShow).valueOf();
-      if (endTimeShow) params.endTime = new Date(endTimeShow).valueOf();
-      if (roomActivityPriceShow) params.roomActivityPrice = roomActivityPriceShow * 100;
-      if (magShow) params.mag = magShow;
-      if (activityPriceShow) params.totalPrice = activityPriceShow * 100;
-      if (remainDayShow) params.remainDay = remainDayShow;
-      this.updateActivity(params);
+      if (this.$refs.form.validate()) {
+        const {
+          cid,
+          nameShow,
+          startTimeShow,
+          endTimeShow,
+          roomActivityPriceShow,
+          magShow,
+          activityPriceShow,
+          remainDayShow,
+        } = this.activityParams;
+        const params = {};
+        if (cid) params.cid = cid;
+        if (nameShow) params.name = nameShow;
+        if (startTimeShow) params.startTime = new Date(startTimeShow).valueOf();
+        if (endTimeShow) params.endTime = new Date(endTimeShow).valueOf();
+        if (roomActivityPriceShow) params.roomActivityPrice = roomActivityPriceShow * 100;
+        if (magShow) params.mag = magShow;
+        if (activityPriceShow) params.activityPrice = activityPriceShow * 100;
+        if (remainDayShow) params.remainDay = remainDayShow;
+        this.updateActivity(params);
+      }
     },
     async updateActivity(params) {
-      if (this.$refs.form.validate()) {
-        const res = await httpMethod({
-          url: '/v1/api/activity/update',
-          method: 'POST',
-          data: params,
-        });
-        console.log(res);
-        let alert = null;
-        if (!res.code) {
-          alert = {
-            open: true,
-            text: `${res.msg}`,
-            color: 'success',
-          };
-        } else {
-          alert = {
-            open: true,
-            text: res.msg || '修改失敗，請重新再試，或聯絡客服人員',
-            color: 'error',
-          };
-        }
-        this.$store.commit('global/setNotifySetting', alert);
-        // this.orderList = res.data;
-        this.methodCancelUpdateActivity();
-        this.$emit('execOtherMethod');
+      const res = await httpMethod({
+        url: '/v1/api/activity/update',
+        method: 'POST',
+        data: params,
+      });
+      console.log(res);
+      let alert = null;
+      if (!res.code) {
+        alert = {
+          open: true,
+          text: `${res.msg}`,
+          color: 'success',
+        };
+      } else {
+        alert = {
+          open: true,
+          text: res.msg || '修改失敗，請重新再試，或聯絡客服人員',
+          color: 'error',
+        };
       }
+      this.$store.commit('global/setNotifySetting', alert);
+      // this.orderList = res.data;
+      this.methodCancelUpdateActivity();
+      this.$emit('execOtherMethod');
     },
     methodCancelUpdateActivity() {
       this.methodFormReset();
