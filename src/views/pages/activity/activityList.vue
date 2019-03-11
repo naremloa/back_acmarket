@@ -130,8 +130,13 @@
           <td class="text-xs-center">{{ props.item.createAccount }}</td>
           <td class="text-xs-center">{{ props.item.status === 1 ? '啟用' : '停用' }}</td>
           <td class="text-xs-center">
+            <v-btn
+              small
+              :color="props.item.status !== 1 ? 'success' : 'error'"
+              @click="methodVerifyStatus(props.item)"
+            >{{ props.item.status !== 1 ? '啟用' : '停用' }}</v-btn>
             <v-btn small @click="methodUpdateActivity(props.item)">
-              <v-icon>mdi-square-edit-outline</v-icon>修改活動
+              <v-icon>mdi-square-edit-outline</v-icon>操作
             </v-btn>
           </td>
         </template>
@@ -148,27 +153,36 @@
         </template>
       </v-data-table>
     </v-card>
-    <dialogComponent
+    <confirmDialog
       :openDialog="confirmDialogInfo.openDialog"
-      @valueChange="methodChangeOpenDialog"
+      @valueChange="methodChangeOpenConfirmDialog"
       :title="confirmDialogInfo.title"
-      :contentFilePath="confirmDialogInfo.contentFilePath"
-      :contentData="confirmDialogInfo.contentData"
+      :content="confirmDialogInfo.content"
       :confirmMethod="confirmDialogInfo.confirmMethod"
-      :otherMethod="confirmDialogInfo.otherMethod"
-      :width="confirmDialogInfo.width"
+    />
+    <dialogComponent
+      :openDialog="dialogInfo.openDialog"
+      @valueChange="methodChangeOpenDialog"
+      :title="dialogInfo.title"
+      :contentFilePath="dialogInfo.contentFilePath"
+      :contentData="dialogInfo.contentData"
+      :confirmMethod="dialogInfo.confirmMethod"
+      :otherMethod="dialogInfo.otherMethod"
+      :width="dialogInfo.width"
     />
   </div>
 </template>
 <script>
 import httpMethod from '@/utils/httpMethod';
 import constList from '@/utils/const';
+import confirmDialog from '@/views/layout/components/confirmDialog.vue';
 import dialogComponent from '@/views/layout/components/dialog.vue';
 import { dateTime, currencies } from '@/utils/calculation';
 
 export default {
   name: 'activityList',
   components: {
+    confirmDialog,
     dialogComponent,
   },
   data() {
@@ -210,6 +224,12 @@ export default {
       // ],
       selectMenu: [false, false, false, false, false, false, false, false],
       confirmDialogInfo: {
+        openDialog: false,
+        title: '',
+        content: '',
+        confirmMethod: null,
+      },
+      dialogInfo: {
         openDialog: false,
         title: '',
         contentFilePath: 'pages/activity/addActivity.vue',
@@ -285,11 +305,11 @@ export default {
       this.getActivityList(params);
     },
     methodChangeOpenDialog(val) {
-      this.confirmDialogInfo.openDialog = val;
+      this.dialogInfo.openDialog = val;
     },
     methodAddActivity() {
-      this.confirmDialogInfo = {
-        ...this.confirmDialogInfo,
+      this.dialogInfo = {
+        ...this.dialogInfo,
         openDialog: true,
         title: '新增活動',
         contentFilePath: 'pages/activity/addActivity.vue',
@@ -298,8 +318,8 @@ export default {
       };
     },
     methodUpdateActivity(rowData) {
-      this.confirmDialogInfo = {
-        ...this.confirmDialogInfo,
+      this.dialogInfo = {
+        ...this.dialogInfo,
         openDialog: true,
         title: '修改活動',
         contentFilePath: 'pages/activity/updateActivity.vue',
@@ -307,6 +327,49 @@ export default {
         contentData: rowData,
         width: 1000,
       };
+    },
+    methodChangeOpenConfirmDialog(val) {
+      this.confirmDialogInfo.openDialog = val;
+    },
+    methodVerifyStatus(rowData, pass) {
+      console.log('TCL: methodVerifyStatus -> rowData', rowData);
+      const { _id, status, name } = rowData;
+      const params = {
+        cid: _id,
+        status: status === 1 ? 2 : 1,
+      };
+      this.confirmDialogInfo = {
+        ...this.confirmDialogInfo,
+        openDialog: true,
+        title: '變更活動狀態',
+        content: `您確定變更活動： ${name} 的狀態為 ${status !== 1 ? '啟用' : '停用'}`,
+        confirmMethod: () => this.updateActivityStatus(params),
+      };
+    },
+    async updateActivityStatus(params) {
+      const res = await httpMethod({
+        url: '/v1/api/activity/toggle/status',
+        method: 'POST',
+        data: params,
+      });
+      let alert = null;
+      if (!res.code) {
+        if (res.data) {
+          alert = {
+            open: true,
+            text: `${res.msg}`,
+            color: 'success',
+          };
+        }
+      } else {
+        alert = {
+          open: true,
+          text: res.msg || '變更失敗，請重新再試，或聯絡客服人員',
+          color: 'error',
+        };
+      }
+      this.$store.commit('global/setNotifySetting', alert);
+      this.getActivityList();
     },
   },
 };

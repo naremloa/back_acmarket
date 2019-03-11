@@ -167,8 +167,12 @@ export default {
       } = rowData;
       this.activityParams.cid = _id;
       this.activityParams.nameShow = name;
-      this.activityParams.startTimeShow = this.dateTime(startTime);
-      this.activityParams.endTimeShow = this.dateTime(endTime);
+      this.activityParams.startTimeShow = startTime.toString().length !== 13
+        ? ''
+        : this.dateTime(startTime);
+      this.activityParams.endTimeShow = startTime.toString().length !== 13
+        ? ''
+        : this.dateTime(endTime);
       this.activityParams.roomActivityPriceShow = (Number(roomActivityPrice) || 0) / 100;
       this.activityParams.magShow = mag;
       this.activityParams.activityPriceShow = (Number(activityPrice) || 0) / 100;

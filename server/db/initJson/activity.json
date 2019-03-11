@@ -1,8 +1,8 @@
 [
   {
     "name": "😄的活動",
-    "starDate": "20190217",
-    "endDate": "20190920",
+    "startTime": "1552320000000",
+    "endTime": "1552406400000",
     "roomActivityPrice": "380",
     "mag": "2",
     "activityPrice": "380",
