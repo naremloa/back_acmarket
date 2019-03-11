@@ -77,7 +77,24 @@ const addActivity = async (req, res) => {
     name, roomActivityPrice, mag, activityPrice, remainDay, startDate, endDate, code,
   });
   const newActivity = await activityInsert(activityObj);
-  return res(outputSuccess({}, '新增成功'));
+  return res.send(outputSuccess({}, '新增成功'));
+};
+
+const modifyActivity = async (req, res) => {
+  const {
+    body: {
+      cid, name, startTime, endTime, roomActivityPrice, mag, activityPrice, remainDay,
+    },
+  } = req;
+  const startDate = dateTime(startTime);
+  const endDate = dateTime(endTime);
+  const code = name;
+  const updateObj = createActivitySchema({
+    name, roomActivityPrice, mag, activityPrice, remainDay, startDate, endDate, code,
+  });
+  const result = await activityFindByIdAndUpdate(cid, updateObj);
+  if (!result) return res.send(outputError('修改異常'));
+  return res.send(outputSuccess({}, '修改成功'));
 };
 
 // {roomActivityPrice: 380, mag: 2, activityPrice: 380, remainDay: 2, price: 2660}
@@ -103,7 +120,7 @@ const getActivityTotalPrice = ({
 
 const toggleActivity = async (req, res) => {
   const { body: { cid, status } } = req;
-  if (![1, 2].includes(Number(status))) return res.sedn('切換狀態值不合法');
+  if (![1, 2].includes(Number(status))) return res.send('切換狀態值不合法');
   // 停用
   if (Number(status) === 0) {
     const updateObj = { status: 2 };
@@ -135,4 +152,5 @@ export {
   getActivityTotalPrice,
   toggleActivity,
   activityFindValid,
+  modifyActivity,
 };

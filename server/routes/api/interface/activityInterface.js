@@ -6,6 +6,7 @@ import {
   getActivity,
   addActivity,
   toggleActivity,
+  modifyActivity,
 } from '../activity';
 
 export const get = [
@@ -30,14 +31,35 @@ export const post = [
    * @apiParam {String} name 活動名稱
    * @apiParam {Number} startTime 開始時間
    * @apiParam {Number} endTime 結束時間
-   * @apiParam {Number} roomActivityPrice 房型活動價基數
+   * @apiParam {Number} roomActivityPrice 房型活動價基數(單位: 分)
    * @apiParam {Number} mag 倍率
-   * @apiParam {Number} activityPrice 活動額外價格
+   * @apiParam {Number} activityPrice 活動額外價格(單位: 分)
    * @apiParam {Number} remainDay 活動有效天數
    */
   ['/activity/add',
     middlewareCheckLoginStatusSession, middlewareCheckAuthorization,
     addActivity],
+
+  /**
+   * @api {post} /activity/update 修改活動接口
+   * @apiPermission login admin
+   * @apiName activityUpdate
+   * @apiName activityUpdate
+   * @apiGroup Activity
+   *
+   * @apiParam {String} cid 活動cid
+   * @apiParam {String} name 活動名稱
+   * @apiParam {Number} startTime 開始時間
+   * @apiParam {Number} endTime 結束時間
+   * @apiParam {Number} roomActivityPrice 房型活動價基數(單位: 分)
+   * @apiParam {Number} mag 倍率
+   * @apiParam {Number} activityPrice 活動額外價格(單位: 分)g
+   * @apiParam {Number} remainDay 活動有效天數
+   *
+   */
+  ['/activity/modify',
+    middlewareCheckLoginStatusSession, middlewareCheckAuthorization,
+    modifyActivity],
 
   /**
    * @api {post} /activity/toggle/status  停啟用接口
