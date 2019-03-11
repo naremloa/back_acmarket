@@ -86,7 +86,7 @@ export default new Router({
           },
         },
         {
-          path: 'roomRepair/list',
+          path: 'activityRepair/list',
           name: 'roomRepairList',
           component: () => import('@/views/pages/roomRepair/roomRepairList.vue'),
           meta: {
@@ -115,6 +115,14 @@ export default new Router({
           component: () => import('@/views/pages/room/occList.vue'),
           meta: {
             title: '佔用列表',
+          },
+        },
+        {
+          path: 'activity/list',
+          name: 'activity',
+          component: () => import('@/views/pages/activity/activityList.vue'),
+          meta: {
+            title: '活動列表',
           },
         },
       ],
