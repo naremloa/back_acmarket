@@ -128,7 +128,7 @@ const getActivityTotalPrice = ({
 
 const toggleActivity = async (req, res) => {
   const { body: { cid, status } } = req;
-  if (![1, 2].includes(Number(status))) return res.send('切換狀態值不合法');
+  if (![0, 1].includes(Number(status))) return res.send(outputError('切換狀態值不合法'));
   // 停用
   if (Number(status) === 0) {
     const updateObj = { status: 2 };
