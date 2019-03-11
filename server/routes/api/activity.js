@@ -14,7 +14,7 @@ const getActivity = async (req, res) => {
   const activity = (await activityFind({})).map(i => ({
     ...(omit(i, ['startDate', 'endDate'])),
     startTime: (new Date(chNumToDate(i.startDate))).getTime(),
-    endTime: (new Date(chNumToDate(i.startDate))).getTime(),
+    endTime: (new Date(chNumToDate(i.endDate))).getTime(),
   }));
   return res.send(outputSuccess(activity));
 };
@@ -91,13 +91,15 @@ const modifyActivity = async (req, res) => {
     body: {
       cid, name, startTime, endTime, roomActivityPrice, mag, activityPrice, remainDay,
     },
+    session: { userInfo: { account } },
   } = req;
   const startDate = dateTime(startTime);
   const endDate = dateTime(endTime);
   const code = name;
   const updateObj = await createActivitySchema({
-    name, roomActivityPrice, mag, activityPrice, remainDay, startDate, endDate, code,
-  });
+    name, roomActivityPrice, mag, activityPrice, remainDay, startDate, endDate, code, account,
+  }, true);
+  console.log(updateObj);
   const result = await activityFindByIdAndUpdate(cid, updateObj);
   if (!result) return res.send(outputError('修改異常'));
   return res.send(outputSuccess({}, '修改成功'));
