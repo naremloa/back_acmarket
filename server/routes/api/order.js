@@ -7,6 +7,7 @@ import {
   formatDateQuery,
   getDatePriceKey,
   dateTime,
+  dateMinus,
 } from '../utils/formatQuery';
 import {
   orderFind,
@@ -28,6 +29,7 @@ import {
 } from './room';
 import {
   activityFindValid,
+  getActivityRoomPriceByDay,
 } from './activity';
 import { outputSuccess, outputError } from '../utils/outputFormat';
 import {
@@ -96,6 +98,7 @@ const createOrderSchema = async ({
   note = '',
   roomInfoCount,
   roomAllInfo,
+  activity = null,
 }, update = false) => {
   const nowTime = new Date().getTime();
   // update
@@ -122,12 +125,15 @@ const createOrderSchema = async ({
   const localRoomInfo = {};
   forOwn(roomInfoCount, (dateObj, roomCid) => {
     const { name: roomName, price } = roomAllInfo[roomCid];
-    forOwn(dateObj, ({ num }, date) => {
+    forOwn(dateObj, ({ num, index = 1 }, date) => {
       const roomPrice = price[getDatePriceKey(date)];
+      const totalRoomPrice = activity
+        ? getActivityRoomPriceByDay({ ...activity, price: roomPrice }, index)
+        : roomPrice;
       localRoomInfo[date] = [
         ...(localRoomInfo[date] || []),
         {
-          roomName, roomPrice, roomCount: num, subTotal: num * roomPrice,
+          roomName, totalRoomPrice, roomCount: num, subTotal: num * totalRoomPrice,
         },
       ];
     });
@@ -154,25 +160,74 @@ const createOrderSchema = async ({
  *    5c5ed89dd6b4f80dbe3c1281: {
  *      20190217: {
  *        num: 2
+ *        index: 1 (with activity)
  *      },
  *      20190218: {
  *        num: 1
+ *        index: 2 (with activity)
  *      },
  *    }
  * }
  */
-const getCountByRoomInfo = roomInfo => roomInfo
-  .reduce((acc, { date, roomCid }) => ({
-    ...acc,
-    [roomCid]: !isObject(acc[roomCid])
-      ? { [date]: 1 }
-      : {
-        ...acc[roomCid],
-        [date]: {
-          num: (acc[roomCid][date] || { num: 0 }).num + 1,
+const getCountByRoomInfo = (roomInfo, activity = false) => {
+  const tmp = roomInfo
+    .reduce((acc, { date, roomCid }) => ({
+      ...acc,
+      [roomCid]: !isObject(acc[roomCid])
+        ? { [date]: { num: 1 } }
+        : {
+          ...acc[roomCid],
+          [date]: {
+            num: (acc[roomCid][date] || { num: 0 }).num + 1,
+          },
         },
-      },
-  }), {});
+    }), {});
+  if (!activity) return tmp;
+  let valid = true;
+  forOwn(tmp, (valueRoomObj) => {
+    if (!valid) return;
+    const dateArr = keys(valueRoomObj).sort();
+    dateArr.forEach((date) => {
+      if (!valid) return;
+      const ytd = dateMinus(date);
+      if (valueRoomObj[ytd] !== undefined) {
+        if (valueRoomObj[ytd].num < valueRoomObj[date].num) valid = false;
+        else valueRoomObj[date].index = valueRoomObj[ytd].index + 1;
+      } else valueRoomObj[date].index = 1;
+    });
+  });
+  if (!valid) return false;
+  return tmp;
+};
+
+// 測試用
+const orderTest = async (req, res) => {
+  const {
+    body: { roomInfo },
+  } = req;
+  const activity = await activityFindValid();
+  const roomInfoCount = getCountByRoomInfo(roomInfo, !!activity);
+
+  let totalPrice = 0;
+  forOwn(roomInfoCount, (valueRoomCid, keyRoomCid) => {
+    if (totalPrice === false) return;
+    // 單一房型下最大房間數量和單價
+    const price = 2660;
+    // 遍歷當前訂單房型下的入住時間
+    forOwn(valueRoomCid, ({ num, index = 1 }, keyDate) => {
+      if (totalPrice === false) return;
+      // 房間入住時間價格
+      const subRoomPrice = price;
+      const totalSubRoomPrice = activity
+        ? getActivityRoomPriceByDay({ ...activity, price: subRoomPrice }, index)
+        : subRoomPrice;
+
+      totalPrice += (totalSubRoomPrice * num);
+      console.log('check', totalSubRoomPrice, keyDate, keyRoomCid);
+    });
+  });
+  return res.send(outputSuccess(totalPrice));
+};
 
 const addOrder = async (req, res) => {
   const {
@@ -204,6 +259,8 @@ const addOrder = async (req, res) => {
     ? 'guestFromFront'
     : sess.userInfo && sess.userInfo.account;
 
+  const activity = await activityFindValid();
+
   // 處理房型房間信息
   const roomAllInfo = await getRoomAllMaxLengthAndPriceInfo();
   const roomAllCid = keys(roomAllInfo);
@@ -211,11 +268,10 @@ const addOrder = async (req, res) => {
     return res.send(outputError('訂單中存在未知房型，生成訂單失敗'));
   }
 
-  const roomInfoCount = getCountByRoomInfo(roomInfo);
+  const roomInfoCount = getCountByRoomInfo(roomInfo, !!activity);
 
   const roomAllInDateInfo = await getRoomCidOccByDate(roomInfoCount);
 
-  const activity = await activityFindValid();
 
   // 借totalPrice判斷，若為false則房間訂單不合法，若為數字，則房間訂單成立，並同時給出應計總價
   let totalPrice = true;
@@ -225,10 +281,13 @@ const addOrder = async (req, res) => {
     // 單一房型下最大房間數量和單價
     const { max, price } = roomAllInfo[keyRoomCid];
     // 遍歷當前訂單房型下的入住時間
-    forOwn(valueRoomCid, ({ num }, keyDate) => {
+    forOwn(valueRoomCid, ({ num, index = 1 }, keyDate) => {
       if (totalPrice === false) return;
       // 房間入住時間價格
       const subRoomPrice = price[getDatePriceKey(keyDate)];
+      const totalSubRoomPrice = activity
+        ? getActivityRoomPriceByDay({ ...activity, price: subRoomPrice }, index)
+        : subRoomPrice;
 
       // 當前房型無佔用, 或當前房型有佔用, 但佔用時間與遍歷時間不一樣, 即 佔用數為 0
       const occNum = roomAllInDateInfo[keyRoomCid] === undefined
@@ -238,7 +297,7 @@ const addOrder = async (req, res) => {
         totalPrice = false;
         return;
       }
-      totalPrice += (subRoomPrice * num);
+      totalPrice += (totalSubRoomPrice * num);
     });
   });
   if (totalPrice === false) return res.send(outputError('新增訂單異常，occ查詢不過'));
@@ -259,6 +318,7 @@ const addOrder = async (req, res) => {
     arriveTime,
     roomInfoCount,
     roomAllInfo,
+    activity,
   });
   const newOrder = await orderInsert(newOrderObj);
   console.log('newOrder', newOrder);
@@ -400,4 +460,5 @@ export {
   addOrder,
   updateOrder,
   updateOrderStatus,
+  orderTest,
 };

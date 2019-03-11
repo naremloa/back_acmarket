@@ -1,11 +1,11 @@
 <template>
   <div class="order-list">
-    <!-- <v-layout row wrap justify-end>
-      <v-btn @click="methodAddOrder">
+    <v-layout row wrap justify-end>
+      <v-btn @click="methodBackTest">
         <v-icon>mdi-plus</v-icon>
-        新增訂單
+        測試訂單
       </v-btn>
-    </v-layout> -->
+    </v-layout>
     <v-expansion-panel class="mb-2">
       <v-expansion-panel-content class="accent">
         <div slot="header" class="subheading">搜尋選項</div>
@@ -513,6 +513,28 @@ export default {
         return this.currencies(val);
       }
       return val || '無';
+    },
+    async methodBackTest() {
+      const data = {
+        roomInfo: [
+          { date: 20190217, roomCid: 'a' },
+          { date: 20190217, roomCid: 'a' },
+          { date: 20190217, roomCid: 'b' },
+          { date: 20190217, roomCid: 'c' },
+          { date: 20190218, roomCid: 'a' },
+          { date: 20190218, roomCid: 'b' },
+          { date: 20190219, roomCid: 'a' },
+          { date: 20190219, roomCid: 'b' },
+          { date: 20190220, roomCid: 'a' },
+          { date: 20190220, roomCid: 'b' },
+          { date: 20190221, roomCid: 'a' },
+        ],
+      };
+      const res = await httpMethod({
+        url: '/v1/api/order/test',
+        method: 'POST',
+        data,
+      });
     },
   },
 };
