@@ -66,7 +66,7 @@ const addActivity = async (req, res) => {
       activityPrice,
       remainDay,
     },
-    session: { userInfo: account },
+    session: { userInfo: { account } },
   } = req;
   const startDate = dateTime(startTime);
   const endDate = dateTime(endTime);
@@ -78,9 +78,10 @@ const addActivity = async (req, res) => {
     ],
   });
   if (existActivity.length > 0) return res.send(outputError('新增活動的活動時間不合法'));
-  const activityObj = createActivitySchema({
-    name, roomActivityPrice, mag, activityPrice, remainDay, startDate, endDate, code,
+  const activityObj = await createActivitySchema({
+    name, roomActivityPrice, mag, activityPrice, remainDay, startDate, endDate, code, account,
   });
+  console.log('check', activityObj);
   const newActivity = await activityInsert(activityObj);
   return res.send(outputSuccess({}, '新增成功'));
 };
