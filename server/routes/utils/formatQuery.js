@@ -1,6 +1,9 @@
 import {
   has, omit, omitBy, isNumber,
 } from 'lodash';
+import {
+  dayMilli,
+} from './constVar';
 
 export const omitDateKey = (dateKeyArr, data) => {
   const localDateKeyArr = dateKeyArr.map(i => [`${i}TimeStart`, `${i}TimeEnd`]);
@@ -100,4 +103,14 @@ export const getDateRangeArr = (startTime, endTime) => {
     return arr;
   }
   return false;
+};
+
+export const datePlus = (dateNum, num = 1) => {
+  const time = (new Date(chNumToDate(dateNum))).getTime();
+  return dateTime(time + (num * dayMilli));
+};
+
+export const dateMinus = (dateNum, num = 1) => {
+  const time = (new Date(chNumToDate(dateNum))).getTime();
+  return dateTime(time - (num * dayMilli));
 };

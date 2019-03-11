@@ -7,6 +7,7 @@ import {
   addOrder,
   updateOrder,
   updateOrderStatus,
+  orderTest,
 } from '../order';
 import {
   getOccDetailList,
@@ -103,4 +104,8 @@ export const post = [
   ['/order/update/status',
     middlewareCheckLoginStatusSession, middlewareCheckAuthorization,
     updateOrderStatus],
+
+  ['/order/test',
+    middlewareCheckLoginStatusSession, middlewareCheckAuthorization,
+    orderTest],
 ];
