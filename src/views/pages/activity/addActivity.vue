@@ -102,6 +102,7 @@
 </template>
 <script>
 import httpMethod from '@/utils/httpMethod';
+import { getDate } from '@/utils/formatMethod';
 
 export default {
   name: 'addActivity',
@@ -129,6 +130,7 @@ export default {
     };
   },
   methods: {
+    getDate,
     getParamsOrigin() {
       return {
         nameShow: null,
@@ -145,52 +147,52 @@ export default {
       this.$refs.form.resetValidation();
     },
     methodProcessParams() {
-      const {
-        nameShow,
-        startTimeShow,
-        endTimeShow,
-        roomActivityPriceShow,
-        magShow,
-        activityPriceShow,
-        remainDayShow,
-      } = this.activityParams;
-      const params = {};
-      if (nameShow) params.name = nameShow;
-      if (startTimeShow) params.startTime = new Date(startTimeShow).valueOf();
-      if (endTimeShow) params.endTime = new Date(endTimeShow).valueOf();
-      if (roomActivityPriceShow) params.roomActivityPrice = roomActivityPriceShow * 100;
-      if (magShow) params.mag = magShow;
-      if (activityPriceShow) params.totalPrice = activityPriceShow * 100;
-      if (remainDayShow) params.remainDay = remainDayShow;
-      this.addActivity(params);
+      if (this.$refs.form.validate()) {
+        const {
+          nameShow,
+          startTimeShow,
+          endTimeShow,
+          roomActivityPriceShow,
+          magShow,
+          activityPriceShow,
+          remainDayShow,
+        } = this.a;
+        const params = {};
+        if (nameShow) params.name = nameShow;
+        if (startTimeShow) params.startTime = this.getDate(startTimeShow, 'timestamp');
+        if (endTimeShow) params.endTime = this.getDate(endTimeShow, 'timestamp');
+        if (roomActivityPriceShow) params.roomActivityPrice = roomActivityPriceShow * 100;
+        if (magShow) params.mag = magShow;
+        if (activityPriceShow) params.activityPrice = activityPriceShow * 100;
+        if (remainDayShow) params.remainDay = remainDayShow;
+        this.addActivity(params);
+      }
     },
     async addActivity(params) {
-      if (this.$refs.form.validate()) {
-        const res = await httpMethod({
-          url: '/v1/api/activity/add',
-          method: 'POST',
-          data: params,
-        });
-        console.log(res);
-        let alert = null;
-        if (!res.code) {
-          alert = {
-            open: true,
-            text: `${res.msg}`,
-            color: 'success',
-          };
-        } else {
-          alert = {
-            open: true,
-            text: res.msg || '新增失敗，請重新再試，或聯絡客服人員',
-            color: 'error',
-          };
-        }
-        this.$store.commit('global/setNotifySetting', alert);
-        // this.orderList = res.data;
-        this.methodCancelAddActivity();
-        this.$emit('execOtherMethod');
+      const res = await httpMethod({
+        url: '/v1/api/activity/add',
+        method: 'POST',
+        data: params,
+      });
+      console.log(res);
+      let alert = null;
+      if (!res.code) {
+        alert = {
+          open: true,
+          text: `${res.msg}`,
+          color: 'success',
+        };
+      } else {
+        alert = {
+          open: true,
+          text: res.msg || '新增失敗，請重新再試，或聯絡客服人員',
+          color: 'error',
+        };
       }
+      this.$store.commit('global/setNotifySetting', alert);
+      // this.orderList = res.data;
+      this.methodCancelAddActivity();
+      this.$emit('execOtherMethod');
     },
     methodCancelAddActivity() {
       this.methodFormReset();
