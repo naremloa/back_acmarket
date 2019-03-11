@@ -138,9 +138,8 @@ const toggleActivity = async (req, res) => {
   // 啟用
   const activity = await activityFindById(cid);
   if (!activity) return res.send(outputError('找不到指定優惠活動'));
-  if (activity.endDate <= dateTime(new Date().getTime())
-    || activity.startDate >= dateTime(new Date().getTime())) {
-    return res.send(outputError('請調整活動時間'));
+  if (activity.endDate < dateTime(new Date().getTime())) {
+    return res.send(outputError('請調整活動結束時間'));
   }
   await activityUpdateMany({ status: 1 }, { status: 2 });
   const updateObj = { status: 1 };
@@ -149,7 +148,12 @@ const toggleActivity = async (req, res) => {
 };
 
 const activityFindValid = async () => {
-  const res = await activityFindOne({ status: 1 });
+  const nowDate = dateTime((new Date()).getTime());
+  const res = await activityFindOne({
+    status: 1,
+    startDate: { $lte: nowDate },
+    endDate: { $gte: nowDate },
+  });
   return res;
 };
 
