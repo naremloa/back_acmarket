@@ -57,7 +57,7 @@ export const post = [
    * @apiParam {Number} remainDay 活動有效天數
    *
    */
-  ['/activity/modify',
+  ['/activity/update',
     middlewareCheckLoginStatusSession, middlewareCheckAuthorization,
     modifyActivity],
 
