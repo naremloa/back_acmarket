@@ -156,7 +156,7 @@ export default {
           magShow,
           activityPriceShow,
           remainDayShow,
-        } = this.a;
+        } = this.activityParams;
         const params = {};
         if (nameShow) params.name = nameShow;
         if (startTimeShow) params.startTime = this.getDate(startTimeShow, 'timestamp');
@@ -182,6 +182,8 @@ export default {
           text: `${res.msg}`,
           color: 'success',
         };
+        this.methodCancelAddActivity();
+        this.$emit('execOtherMethod');
       } else {
         alert = {
           open: true,
@@ -191,8 +193,6 @@ export default {
       }
       this.$store.commit('global/setNotifySetting', alert);
       // this.orderList = res.data;
-      this.methodCancelAddActivity();
-      this.$emit('execOtherMethod');
     },
     methodCancelAddActivity() {
       this.methodFormReset();

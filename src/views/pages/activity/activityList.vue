@@ -117,28 +117,49 @@
         rows-per-page-text="每頁顯示筆數"
         :rows-per-page-items="rowsPerPageItems"
         :pagination.sync="pagination"
+        expand
+        item-key="_id"
       >
         <template slot="items" slot-scope="props">
-          <td class="text-xs-center">{{ props.item.name }}</td>
-          <td class="text-xs-center">{{ dateTime(props.item.startTime, true) }}</td>
-          <td class="text-xs-center">{{ dateTime(props.item.endTime, true) }}</td>
-          <td class="text-xs-center">{{ currencies(props.item.roomActivityPrice) }}</td>
-          <td class="text-xs-center">{{ props.item.mag }}</td>
-          <td class="text-xs-center">{{ currencies(props.item.activityPrice) }}</td>
-          <td class="text-xs-center">{{ props.item.remainDay }}</td>
-          <td class="text-xs-center">{{ dateTime(props.item.createTime) }}</td>
-          <td class="text-xs-center">{{ props.item.createAccount }}</td>
-          <td class="text-xs-center">{{ props.item.status === 1 ? '啟用' : '停用' }}</td>
-          <td class="text-xs-center">
-            <v-btn
-              small
-              :color="props.item.status !== 1 ? 'success' : 'error'"
-              @click="methodVerifyStatus(props.item)"
-            >{{ props.item.status !== 1 ? '啟用' : '停用' }}</v-btn>
-            <v-btn small @click="methodUpdateActivity(props.item)">
-              <v-icon>mdi-square-edit-outline</v-icon>修改
-            </v-btn>
-          </td>
+          <tr @click="methodProcessExpand(props.item), props.expanded = !props.expanded">
+            <td class="text-xs-center">{{ props.item.name }}</td>
+            <td class="text-xs-center">{{ dateTime(props.item.startTime, true) }}</td>
+            <td class="text-xs-center">{{ dateTime(props.item.endTime, true) }}</td>
+            <td class="text-xs-center">{{ currencies(props.item.roomActivityPrice) }}</td>
+            <td class="text-xs-center">{{ props.item.mag }}</td>
+            <td class="text-xs-center">{{ currencies(props.item.activityPrice) }}</td>
+            <td class="text-xs-center">{{ props.item.remainDay }}</td>
+            <td class="text-xs-center">{{ dateTime(props.item.createTime) }}</td>
+            <td class="text-xs-center">{{ props.item.createAccount }}</td>
+            <td class="text-xs-center">{{ props.item.status === 1 ? '啟用' : '停用' }}</td>
+            <td class="text-xs-center">
+              <v-btn
+                small
+                :color="props.item.status !== 1 ? 'success' : 'error'"
+                @click.stop="methodVerifyStatus(props.item)"
+              >{{ props.item.status !== 1 ? '啟用' : '停用' }}</v-btn>
+              <v-btn small @click.stop="methodUpdateActivity(props.item)">
+                <v-icon>mdi-square-edit-outline</v-icon>修改
+              </v-btn>
+            </td>
+          </tr>
+        </template>
+        <template slot="expand" slot-scope="props">
+          <div class="order-list__detail-list pa-3 pl-5 accent">
+            <v-layout row wrap>
+              <v-flex xs12>
+                <p>訂單訊息</p>
+              </v-flex>
+              <v-flex xs12 md3 class="order-list__detail-list--content">
+                <v-text-field
+                  type="number"
+                  v-model="expandList[props.item._id].roomUnitPrice"
+                  label="房間單價"
+                  readonly
+                ></v-text-field>
+              </v-flex>
+            </v-layout>
+          </div>
         </template>
         <v-alert slot="no-results" :value="true" color="warning" icon="mdi-alert">
           找不到有關於 "{{ search }}" 的資料
@@ -223,6 +244,7 @@ export default {
       //   { label: '修改結束時間', key: 'modifyTimeEndShow' },
       // ],
       selectMenu: [false, false, false, false, false, false, false, false],
+      expandList: {},
       confirmDialogInfo: {
         openDialog: false,
         title: '',
@@ -336,7 +358,7 @@ export default {
       const { _id, status, name } = rowData;
       const params = {
         cid: _id,
-        status: status === 1 ? 2 : 1,
+        status: status === 1 ? 0 : 1,
       };
       this.confirmDialogInfo = {
         ...this.confirmDialogInfo,
@@ -370,6 +392,14 @@ export default {
       }
       this.$store.commit('global/setNotifySetting', alert);
       this.getActivityList();
+    },
+    methodProcessExpand(rowData) {
+      console.log('TCL: methodProcessExpand -> rowData', rowData);
+      this.expandList[rowData._id] = {
+        roomUnitPrice: 0,
+        nthOfDay: 0,
+        totalDay: 0,
+      };
     },
   },
 };

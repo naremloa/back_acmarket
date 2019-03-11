@@ -220,6 +220,8 @@ export default {
           text: `${res.msg}`,
           color: 'success',
         };
+        this.methodCancelUpdateActivity();
+        this.$emit('execOtherMethod');
       } else {
         alert = {
           open: true,
@@ -229,8 +231,6 @@ export default {
       }
       this.$store.commit('global/setNotifySetting', alert);
       // this.orderList = res.data;
-      this.methodCancelUpdateActivity();
-      this.$emit('execOtherMethod');
     },
     methodCancelUpdateActivity() {
       this.methodFormReset();
