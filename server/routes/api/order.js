@@ -52,14 +52,7 @@ const getOrder = async (req, res) => {
   const query = formatDateQuery(
     ['create'],
     omitValueValid({
-      orderId,
-      name,
-      phone,
-      nationality,
-      breakfast,
-      status,
-      createStartTime,
-      createEndTime,
+      orderId, name, phone, nationality, breakfast, status, createStartTime, createEndTime,
     }),
   );
   if (outOfTimeSign) {
@@ -79,6 +72,28 @@ const getOrder = async (req, res) => {
     };
   });
   res.send(outputSuccess(handleOutOfTimeAndTimeOutAboutOrder));
+};
+
+const getRoomInfoByRoomInfoCount = ({ roomInfoCount, roomAllInfo, activity = false }) => {
+  const localRoomInfo = {};
+  forOwn(roomInfoCount, (dateObj, roomCid) => {
+    const { name: roomName, price } = roomAllInfo[roomCid];
+    forOwn(dateObj, ({ num, index = 1 }, date) => {
+      const roomPrice = price[getDatePriceKey(date)];
+      const totalRoomPrice = activity
+        ? getActivityRoomPriceByDay({ ...activity, price: roomPrice }, index)
+        : roomPrice;
+      localRoomInfo[date] = [
+        ...(localRoomInfo[date] || []),
+        {
+          roomName,
+          roomPrice: totalRoomPrice,
+          roomCount: num,
+          subTotal: num * totalRoomPrice,
+        },
+      ];
+    });
+  });
 };
 
 const createOrderSchema = async ({
@@ -121,22 +136,7 @@ const createOrderSchema = async ({
   const count = await orderCountByCreateTime(nowTime);
   const orderId = Number(`${dateTime(nowTime)}${count.toString().padStart(3, '0')}`) + 1;
   const totalDeposit = totalPrice * depositPercent || 0;
-  const localRoomInfo = {};
-  forOwn(roomInfoCount, (dateObj, roomCid) => {
-    const { name: roomName, price } = roomAllInfo[roomCid];
-    forOwn(dateObj, ({ num, index = 1 }, date) => {
-      const roomPrice = price[getDatePriceKey(date)];
-      const totalRoomPrice = activity
-        ? getActivityRoomPriceByDay({ ...activity, price: roomPrice }, index)
-        : roomPrice;
-      localRoomInfo[date] = [
-        ...(localRoomInfo[date] || []),
-        {
-          roomName, totalRoomPrice, roomCount: num, subTotal: num * totalRoomPrice,
-        },
-      ];
-    });
-  });
+  const localRoomInfo = getRoomInfoByRoomInfoCount({ roomInfoCount, roomAllInfo, activity });
   return {
     ...mainPart,
     orderId,
@@ -237,22 +237,7 @@ const checkOrder = async (req, res) => {
   }
   const roomAllInfo = await getRoomAllMaxLengthAndPriceInfo();
 
-  const localRoomInfo = {};
-  forOwn(roomInfoCount, (dateObj, roomCid) => {
-    const { name: roomName, price } = roomAllInfo[roomCid];
-    forOwn(dateObj, ({ num, index = 1 }, date) => {
-      const roomPrice = price[getDatePriceKey(date)];
-      const totalRoomPrice = activity
-        ? getActivityRoomPriceByDay({ ...activity, price: roomPrice }, index)
-        : roomPrice;
-      localRoomInfo[date] = [
-        ...(localRoomInfo[date] || []),
-        {
-          roomName, totalRoomPrice, roomCount: num, subTotal: num * totalRoomPrice,
-        },
-      ];
-    });
-  });
+  const localRoomInfo = getRoomInfoByRoomInfoCount({ roomInfoCount, roomAllInfo, activity });
   return res.send(outputSuccess(localRoomInfo, '查詢成功'));
 };
 
