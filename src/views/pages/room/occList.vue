@@ -371,22 +371,21 @@ export default {
       };
     },
     async methodGetOrderInfo(rowData) {
-      console.log('TCL: methodGetOrderInfo -> rowData', rowData);
-      const params = {
-        occCid: rowData._id,
-        orderCid: rowData.orderCid,
-      };
-      const res = await httpMethod({
-        url: '/v1/api/occ/get/orderInfo',
-        method: 'GET',
-        params,
-      });
-      if (!res.code) {
-        console.log('TCL: methodGetOrderInfo -> res', res.data);
-        this.detailOrderList[rowData._id] = [res.data];
-        console.log('TCL: methodGetOrderInfo -> this.detailOrderList', this.detailOrderList);
-      } else {
-        this.detailOrderList[rowData._id] = [];
+      if (!this.detailOrderList[rowData._id]) {
+        const params = {
+          occCid: rowData._id,
+          orderCid: rowData.orderCid,
+        };
+        const res = await httpMethod({
+          url: '/v1/api/occ/get/orderInfo',
+          method: 'GET',
+          params,
+        });
+        if (!res.code) {
+          this.detailOrderList[rowData._id] = [res.data];
+        } else {
+          this.detailOrderList[rowData._id] = [];
+        }
       }
       return true;
     },

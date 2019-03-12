@@ -177,13 +177,13 @@
                 small
                 @click.stop="methodUpdateStatus(props.item)"
               >{{ formatOrderStatus(props.item.status) }}</v-btn>
-            </td>
-            <!-- <td class="text-xs-center">{{ props.item.latestModifyAccount }}</td> -->
-            <td class="text-xs-center">
               <v-btn small @click.stop="methodUpdateOrder(props.item)">
                 <v-icon>mdi-square-edit-outline</v-icon>修改訂單
               </v-btn>
             </td>
+            <!-- <td class="text-xs-center">{{ props.item.latestModifyAccount }}</td> -->
+            <!-- <td class="text-xs-center">
+            </td> -->
             <!-- <td class="text-xs-center">{{ dateTime(props.item.latestModifyTime) }}</td> -->
             <!-- <td class="text-xs-center">{{ props.item.note }}</td> -->
           </tr>
