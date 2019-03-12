@@ -108,16 +108,17 @@ const modifyActivity = async (req, res) => {
 // {roomActivityPrice: 380, mag: 2, activityPrice: 380, remainDay: 2, price: 2660}
 const getActivityRoomPriceByDay = ({
   roomActivityPrice: r, mag: m, activityPrice: a, remainDay, price: p,
-}, day) => {
+}, day, activity = true) => {
   if (remainDay < day) return p;
-  return p + a + (r * m / (2 ** (day - 1)));
+  return p + (r * m / (2 ** (day - 1))) + (activity ? a : 0);
 };
 
 const getActivityTotalPrice = ({
   roomActivityPrice: r, mag: m, activityPrice: a, remainDay, price: p,
-}, totalDay) => {
+}, totalDay, activity = true) => {
   const cal = (localDay) => {
-    const tmp = (localDay * (p + a)) + (r * m * ((2 ** localDay) - 1) / (2 ** (localDay - 1)));
+    const tmp = (localDay * p) + (r * m * ((2 ** localDay) - 1) / (2 ** (localDay - 1)));
+    if (activity) return tmp + (localDay * a);
     return tmp;
   };
   if (totalDay <= remainDay) {
