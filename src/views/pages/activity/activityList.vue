@@ -148,15 +148,50 @@
           <div class="order-list__detail-list pa-3 pl-5 accent">
             <v-layout row wrap>
               <v-flex xs12>
-                <p>訂單訊息</p>
+                <div>
+                  <span>活動房價試算</span>
+                  <v-switch
+                    v-model="expandList[props.item._id].activity"
+                    label="參加活動"
+                    color="primary"
+                    @change="methodGetActivityRoomPriceByDay(props.item,props.item._id),
+                      methodGetActivityTotalPrice(props.item,props.item._id)"
+                  ></v-switch>
+                </div>
               </v-flex>
-              <v-flex xs12 md3 class="order-list__detail-list--content">
+              <v-flex xs12 md2 class="order-list__detail-list--content">
                 <v-text-field
                   type="number"
-                  v-model="expandList[props.item._id].roomUnitPrice"
+                  v-model.number="expandList[props.item._id].roomUnitPrice"
                   label="房間單價"
-                  readonly
+                  min="0"
+                  @change="methodGetActivityRoomPriceByDay(props.item,props.item._id),
+                    methodGetActivityTotalPrice(props.item,props.item._id)"
                 ></v-text-field>
+              </v-flex>
+              <v-flex xs12 md2 offset-md1 class="order-list__detail-list--content">
+                <v-text-field
+                  type="number"
+                  v-model.number="expandList[props.item._id].nthOfDay"
+                  label="第n天"
+                  min="1"
+                  @change="methodGetActivityRoomPriceByDay(props.item,props.item._id)"
+                ></v-text-field>
+              </v-flex>
+              <v-flex xs12 md2 class="order-list__detail-list--content">
+                當天單價：{{expandList[props.item._id].nthOfPrice}}
+              </v-flex>
+              <v-flex xs12 md2 class="order-list__detail-list--content">
+                <v-text-field
+                  type="number"
+                  v-model.number="expandList[props.item._id].totalDay"
+                  label="總天數"
+                  min="1"
+                  @change="methodGetActivityTotalPrice(props.item,props.item._id)"
+                ></v-text-field>
+              </v-flex>
+              <v-flex xs12 md2 class="order-list__detail-list--content">
+                所有天數的總價：{{expandList[props.item._id].totalPrice}}
               </v-flex>
             </v-layout>
           </div>
@@ -196,6 +231,7 @@
 <script>
 import httpMethod from '@/utils/httpMethod';
 import constList from '@/utils/const';
+import { getActivityRoomPriceByDay, getActivityTotalPrice } from '@/utils/formatMethod';
 import confirmDialog from '@/views/layout/components/confirmDialog.vue';
 import dialogComponent from '@/views/layout/components/dialog.vue';
 import { dateTime, currencies } from '@/utils/calculation';
@@ -266,6 +302,8 @@ export default {
   methods: {
     dateTime,
     currencies,
+    getActivityRoomPriceByDay,
+    getActivityTotalPrice,
     // formatCashType(type) {
     //   const res = constList.cashTypeList.filter(item => item.id === type)[0];
     //   return res ? res.value : '';
@@ -395,11 +433,57 @@ export default {
     },
     methodProcessExpand(rowData) {
       console.log('TCL: methodProcessExpand -> rowData', rowData);
-      this.expandList[rowData._id] = {
+      this.$set(this.expandList, rowData._id, {
+        activity: true,
         roomUnitPrice: 0,
         nthOfDay: 0,
+        nthOfPrice: 0,
         totalDay: 0,
-      };
+        totalPrice: 0,
+      });
+      // this.expandList[rowData._id] = {
+      //   roomUnitPrice: 0,
+      //   nthOfDay: 0,
+      //   nthOfPrice: 0,
+      //   totalDay: 0,
+      //   totalPrice: 0,
+      // };
+    },
+    methodGetActivityRoomPriceByDay(rowData, id) {
+      if (this.expandList[id].nthOfDay && this.expandList[id].roomUnitPrice) {
+        const params = {
+          roomActivityPrice: rowData.roomActivityPrice,
+          mag: rowData.mag,
+          activityPrice: rowData.activityPrice,
+          remainDay: rowData.remainDay,
+          price: this.expandList[id].roomUnitPrice * 100,
+        };
+        this.$set(this.expandList[id], 'nthOfPrice', this.currencies(this.getActivityRoomPriceByDay(
+          params,
+          this.expandList[id].nthOfDay,
+          this.expandList[id].activity,
+        )));
+      } else {
+        this.$set(this.expandList[id], 'nthOfPrice', 0);
+      }
+    },
+    methodGetActivityTotalPrice(rowData, id) {
+      if (this.expandList[id].totalDay && this.expandList[id].roomUnitPrice) {
+        const params = {
+          roomActivityPrice: rowData.roomActivityPrice,
+          mag: rowData.mag,
+          activityPrice: rowData.activityPrice,
+          remainDay: rowData.remainDay,
+          price: this.expandList[id].roomUnitPrice * 100,
+        };
+        this.$set(this.expandList[id], 'totalPrice', this.currencies(this.getActivityTotalPrice(
+          params,
+          this.expandList[id].totalDay,
+          this.expandList[id].activity,
+        )));
+      } else {
+        this.$set(this.expandList[id], 'totalPrice', 0);
+      }
     },
   },
 };

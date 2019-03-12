@@ -44,4 +44,27 @@ export const formatNumberDate = (numberDate) => {
   return `${year}/${month}/${date}`;
 };
 
-export const formatOrderStatus = statusId => constList.orderStatusList.find(item => item.id === statusId).value;
+export const formatOrderStatus = statusId => constList.orderStatusList
+  .find(item => item.id === statusId).value;
+
+// {roomActivityPrice: 380, mag: 2, activityPrice: 380, remainDay: 2, price: 2660}
+export const getActivityRoomPriceByDay = ({
+  roomActivityPrice: r, mag: m, activityPrice: a, remainDay, price: p,
+}, day, activity = true) => {
+  if (remainDay < day) return p;
+  return p + (r * m / (2 ** (day - 1))) + (activity ? a : 0);
+};
+
+export const getActivityTotalPrice = ({
+  roomActivityPrice: r, mag: m, activityPrice: a, remainDay, price: p,
+}, totalDay, activity = true) => {
+  const cal = (localDay) => {
+    const tmp = (localDay * p) + (r * m * ((2 ** localDay) - 1) / (2 ** (localDay - 1)));
+    if (activity) return tmp + (localDay * a);
+    return tmp;
+  };
+  if (totalDay <= remainDay) {
+    return cal(totalDay);
+  }
+  return cal(remainDay) + (totalDay - remainDay) * p;
+};
