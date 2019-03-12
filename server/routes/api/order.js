@@ -94,6 +94,7 @@ const getRoomInfoByRoomInfoCount = ({ roomInfoCount, roomAllInfo, activity = fal
       ];
     });
   });
+  return localRoomInfo;
 };
 
 const createOrderSchema = async ({
