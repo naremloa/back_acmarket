@@ -1,9 +1,7 @@
 <template>
   <v-navigation-drawer
-    :value="showDrawer"
+    :value="localDrawer"
     @input="ts"
-    :mini-variant="!localDrawer"
-    mini-variant-width="36"
     app
     width="180"
     class="secondary"
@@ -50,11 +48,6 @@ export default {
       localDrawer: this.drawer,
       list: [],
     };
-  },
-  computed: {
-    showDrawer() {
-      return this.$vuetify.breakpoint.lgAndUp || this.localDrawer;
-    },
   },
   watch: {
     localDrawer(val, oldVal) {
