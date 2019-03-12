@@ -17,7 +17,6 @@ import {
   orderCountByCreateTime,
 } from '../models/order';
 import {
-  getOccByDateAndRoomCidObj,
   addOcc,
   getRoomCidOccByDate,
 } from './occ';
@@ -229,6 +228,34 @@ const orderTest = async (req, res) => {
   return res.send(outputSuccess(totalPrice));
 };
 
+const checkOrder = async (req, res) => {
+  const { query: { roomInfo }, session: sess } = req;
+  const activity = await activityFindValid();
+  const roomInfoCount = getCountByRoomInfo(roomInfo, !!activity);
+  if (!!activity && !roomInfoCount) {
+    return res.send(outputError('檢測到該訂單訂房組合較為複雜，請電聯民宿協助訂房'));
+  }
+  const roomAllInfo = await getRoomAllMaxLengthAndPriceInfo();
+
+  const localRoomInfo = {};
+  forOwn(roomInfoCount, (dateObj, roomCid) => {
+    const { name: roomName, price } = roomAllInfo[roomCid];
+    forOwn(dateObj, ({ num, index = 1 }, date) => {
+      const roomPrice = price[getDatePriceKey(date)];
+      const totalRoomPrice = activity
+        ? getActivityRoomPriceByDay({ ...activity, price: roomPrice }, index)
+        : roomPrice;
+      localRoomInfo[date] = [
+        ...(localRoomInfo[date] || []),
+        {
+          roomName, totalRoomPrice, roomCount: num, subTotal: num * totalRoomPrice,
+        },
+      ];
+    });
+  });
+  return res.send(outputSuccess(localRoomInfo, '查詢成功'));
+};
+
 const addOrder = async (req, res) => {
   const {
     body: {
@@ -269,6 +296,9 @@ const addOrder = async (req, res) => {
   }
 
   const roomInfoCount = getCountByRoomInfo(roomInfo, !!activity);
+  if (!!activity && !roomInfoCount) {
+    return res.send(outputError('檢測到該訂單訂房組合較為複雜，請電聯民宿協助訂房'));
+  }
 
   const roomAllInDateInfo = await getRoomCidOccByDate(roomInfoCount);
 
@@ -322,7 +352,6 @@ const addOrder = async (req, res) => {
   });
   const newOrder = await orderInsert(newOrderObj);
   console.log('newOrder', newOrder);
-  // TODO: 新增訂單同時，塞進occ表中佔位
 
   await addOcc(
     roomInfo.map(({ date, roomCid }) => {
@@ -330,9 +359,7 @@ const addOrder = async (req, res) => {
       return { date, roomCid, price: price[getDatePriceKey(date)] };
     }),
     newOrder._id,
-  );
-  // TODO:
-  return res.send(outputSuccess({}, '新增訂單'));
+  ); return res.send(outputSuccess({}, '新增訂單'));
 };
 
 const updateOrder = async (req, res) => {
@@ -461,4 +488,5 @@ export {
   updateOrder,
   updateOrderStatus,
   orderTest,
+  checkOrder,
 };
