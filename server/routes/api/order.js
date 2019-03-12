@@ -392,6 +392,8 @@ const checkedOrder = async (cid) => {
   const res = await occDeleteManyByOrderCid(cid);
 };
 
+const calRefund = (refund, date) => 0;
+
 /**
  * 訂單狀態更新規則:
  * 已下訂單 1: 已付訂金(2), 已退訂(6), 無效(8)
@@ -446,6 +448,9 @@ const updateOrderStatus = async (req, res) => {
   const {
     body: {
       cid,
+      deposit,
+      price,
+      refund,
       status: afterStatus,
     },
     session: sess,
@@ -456,10 +461,50 @@ const updateOrderStatus = async (req, res) => {
   // 判斷是否符合狀態更新規則
   if (!verifyOrderStatusChange(targetOrder.status, afterStatus)) return res.send(outputError('更新狀態值異常'));
   // 執行更新狀態後必要操作
+  const updateMainPart = {};
+  let checkedOrderStatus = false;
+  switch (Number(afterStatus)) {
+    case 2:
+      if (!deposit) return res.send(outputError('請確認訂金金額'));
+      updateMainPart.totalValidDeposit = deposit;
+      break;
+    case 3:
+      if (!price) return res.send(outputError('請確認餘款金額'));
+      updateMainPart.totalValidPrice = price;
+      break;
+    case 4:
+      if (!price) return res.send(outputError('請確認是否收齊房費'));
+      break;
+    case 5:
+      checkedOrderStatus = true;
+      break;
+    case 6:
+      checkedOrderStatus = true;
+      updateMainPart.totalRefund = calRefund(
+        targetOrder.totalValidPrice || targetOrder.totalValidDeposit,
+        targetOrder.createTime,
+      );
+      break;
+    case 7:
+      if (!refund) return res.send(outputError('請確認退款金額'));
+      updateMainPart.totalValidRefund = refund;
+      break;
+    case 8:
+      checkedOrderStatus = true;
+      break;
+    default:
+      return res.send(outputError('狀態更新異常'));
+  }
+
+  if (checkedOrderStatus) {
+    const result = await checkedOrder(cid);
+    if (!result) return res.send(outputError('結單過程異常，終止結單'));
+  }
 
   const { userInfo: { account } } = sess;
   const nowTime = new Date().getTime();
   const updateObj = {
+    ...updateMainPart,
     afterStatus,
     latestModifyAccount: account,
     lastestModifyTime: nowTime,
