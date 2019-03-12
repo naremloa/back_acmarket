@@ -21,6 +21,7 @@ import {
 } from './room';
 import {
   activityFindValid,
+  getActivityRoomPriceByDay,
 } from './activity';
 import {
   orderFindById,
@@ -100,9 +101,18 @@ const getOcc = async (req, res) => {
   const roomInfo = (await roomFind({}))
     .map(({
       _id, name, price, roomList,
-    }) => ({
-      _id, name, price, length: roomList.length,
-    }))
+    }) => {
+      const tmp = {
+        _id, name, price, length: roomList.length,
+      };
+      if (!activity) return tmp;
+      const keyArr = keys(price);
+      const activityPrice = keyArr.reduce((acc, cur) => ({
+        ...acc,
+        [cur]: getActivityRoomPriceByDay({ ...activity, price: price[cur] }, 1),
+      }), {});
+      return { ...tmp, price: activityPrice };
+    })
     .reduce((acc, {
       _id, name, price, length,
     }) => ({ ...acc, [_id.toString()]: { name, price, length } }), {});
