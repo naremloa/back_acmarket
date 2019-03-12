@@ -52,16 +52,6 @@ export const get = [
    */
   ['/front/occ/list',
     getOcc],
-
-  /**
-   * @api {get} /front/check/order 確認訂單價錢明細
-   * @apiPermission none
-   * @apiName checkOrder
-   *
-   * @param {Array<Object>} roomInfo 訂房明細(同新增訂單)
-   */
-  ['/front/check/order',
-    checkOrder],
 ];
 
 export const post = [
@@ -85,4 +75,14 @@ export const post = [
    */
   ['/front/order/new',
     addOrder],
+
+  /**
+   * @api {post} /front/check/order 確認訂單價錢明細
+   * @apiPermission none
+   * @apiName checkOrder
+   *
+   * @param {Array<Object>} roomInfo 訂房明細(同新增訂單)
+   */
+  ['/front/check/order',
+    checkOrder],
 ];

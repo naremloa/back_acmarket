@@ -20,6 +20,9 @@ import {
   getSubRoomAboutAll,
 } from './room';
 import {
+  activityFindValid,
+} from './activity';
+import {
   orderFindById,
 } from '../models/order';
 
@@ -89,7 +92,11 @@ const getOcc = async (req, res) => {
   const { startDate, endDate } = data;
 
   if (!startDate || !endDate) return res.send(outputError('查詢條件有誤'));
+
+  const activity = await activityFindValid();
+
   const query = { date: { $gte: startDate, $lt: endDate } };
+
   const roomInfo = (await roomFind({}))
     .map(({
       _id, name, price, roomList,

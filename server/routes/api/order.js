@@ -229,7 +229,7 @@ const orderTest = async (req, res) => {
 };
 
 const checkOrder = async (req, res) => {
-  const { query: { roomInfo }, session: sess } = req;
+  const { body: { roomInfo }, session: sess } = req;
   const activity = await activityFindValid();
   const roomInfoCount = getCountByRoomInfo(roomInfo, !!activity);
   if (!!activity && !roomInfoCount) {
