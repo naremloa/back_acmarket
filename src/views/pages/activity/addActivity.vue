@@ -120,7 +120,8 @@ export default {
       numberParams: [
         { label: '房型活動價基數', key: 'roomActivityPriceShow' },
         { label: '倍率', key: 'magShow' },
-        { label: '活動額外價格', key: 'activityPriceShow' },
+        { label: '活動價基數率', key: 'activityPriceShow' },
+        { label: '活動額外價格', key: 'extraActivityPriceShow' },
         { label: '活動有效天數', key: 'remainDayShow' },
       ],
       selectMenu: [false, false, false, false, false, false, false, false],
@@ -139,6 +140,7 @@ export default {
         roomActivityPriceShow: null,
         magShow: null,
         activityPriceShow: null,
+        extraActivityPriceShow: null,
         remainDayShow: null,
       };
     },
@@ -155,6 +157,7 @@ export default {
           roomActivityPriceShow,
           magShow,
           activityPriceShow,
+          extraActivityPriceShow,
           remainDayShow,
         } = this.activityParams;
         const params = {};
@@ -163,7 +166,8 @@ export default {
         if (endTimeShow) params.endTime = this.getDate(endTimeShow, 'timestamp');
         if (roomActivityPriceShow) params.roomActivityPrice = roomActivityPriceShow * 100;
         if (magShow) params.mag = magShow;
-        if (activityPriceShow) params.activityPrice = activityPriceShow * 100;
+        if (activityPriceShow) params.activityPrice = activityPriceShow;
+        if (extraActivityPriceShow) params.extraActivityPriceShow = extraActivityPriceShow * 100;
         if (remainDayShow) params.remainDay = remainDayShow;
         this.addActivity(params);
       }

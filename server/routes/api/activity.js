@@ -26,6 +26,7 @@ const createActivitySchema = async ({
   roomActivityPrice = 0,
   mag = 0,
   activityPrice = 0,
+  extraActivityPrice = 0,
   remainDay = 0,
   code,
   account = '',
@@ -38,6 +39,7 @@ const createActivitySchema = async ({
     roomActivityPrice,
     mag,
     activityPrice,
+    extraActivityPrice,
     remainDay,
     modifyTIme: nowTime,
     modifyAcount: account,
@@ -64,6 +66,7 @@ const addActivity = async (req, res) => {
       roomActivityPrice,
       mag,
       activityPrice,
+      extraActivityPrice,
       remainDay,
     },
     session: { userInfo: { account } },
@@ -79,7 +82,7 @@ const addActivity = async (req, res) => {
   });
   if (existActivity.length > 0) return res.send(outputError('新增活動的活動時間不合法'));
   const activityObj = await createActivitySchema({
-    name, roomActivityPrice, mag, activityPrice, remainDay, startDate, endDate, code, account,
+    name, roomActivityPrice, mag, activityPrice, extraActivityPrice, remainDay, startDate, endDate, code, account,
   });
   console.log('check', activityObj);
   const newActivity = await activityInsert(activityObj);
@@ -89,7 +92,8 @@ const addActivity = async (req, res) => {
 const modifyActivity = async (req, res) => {
   const {
     body: {
-      cid, name, startTime, endTime, roomActivityPrice, mag, activityPrice, remainDay,
+      cid, name, startTime, endTime,
+      roomActivityPrice, mag, activityPrice, extraActivityPrice, remainDay,
     },
     session: { userInfo: { account } },
   } = req;
@@ -97,7 +101,7 @@ const modifyActivity = async (req, res) => {
   const endDate = dateTime(endTime);
   const code = name;
   const updateObj = await createActivitySchema({
-    name, roomActivityPrice, mag, activityPrice, remainDay, startDate, endDate, code, account,
+    name, roomActivityPrice, mag, activityPrice, extraActivityPrice, remainDay, startDate, endDate, code, account,
   }, true);
   console.log(updateObj);
   const result = await activityFindByIdAndUpdate(cid, updateObj);
@@ -105,20 +109,20 @@ const modifyActivity = async (req, res) => {
   return res.send(outputSuccess({}, '修改成功'));
 };
 
-// {roomActivityPrice: 380, mag: 2, activityPrice: 380, remainDay: 2, price: 2660}
+// {roomActivityPrice: 7, mag: 2, activityPrice: 7, extraActivityPrice: 0, remainDay: 2, price: 2660}
 const getActivityRoomPriceByDay = ({
-  roomActivityPrice: r, mag: m, activityPrice: a, remainDay, price: p,
+  roomActivityPrice: r, mag: m, activityPrice: a, extraActivityPrice: e, remainDay, price: p,
 }, day, activity = true) => {
   if (remainDay < day) return p;
-  return p + (r * m / (2 ** (day - 1))) + (activity ? a : 0);
+  return p + (p / r * m / (2 ** (day - 1))) + (activity ? (p / a + e) : 0);
 };
 
 const getActivityTotalPrice = ({
-  roomActivityPrice: r, mag: m, activityPrice: a, remainDay, price: p,
+  roomActivityPrice: r, mag: m, activityPrice: a, extraActivityPrice: e, remainDay, price: p,
 }, totalDay, activity = true) => {
   const cal = (localDay) => {
-    const tmp = (localDay * p) + (r * m * ((2 ** localDay) - 1) / (2 ** (localDay - 1)));
-    if (activity) return tmp + (localDay * a);
+    const tmp = (localDay * p) + (p / r * m * ((2 ** localDay) - 1) / (2 ** (localDay - 1)));
+    if (activity) return tmp + (localDay * (p / a + e));
     return tmp;
   };
   if (totalDay <= remainDay) {

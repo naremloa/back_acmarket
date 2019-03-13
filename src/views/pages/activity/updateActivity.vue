@@ -119,9 +119,10 @@ export default {
         { label: '結束時間', key: 'endTimeShow' },
       ],
       numberParams: [
-        { label: '房型活動價基數', key: 'roomActivityPriceShow' },
+        { label: '房型活動價基數率', key: 'roomActivityPriceShow' },
         { label: '倍率', key: 'magShow' },
-        { label: '活動額外價格', key: 'activityPriceShow' },
+        { label: '活動價基數率', key: 'activityPriceShow' },
+        { label: '活動額外價格', key: 'extraActivityPriceShow' },
         { label: '活動有效天數', key: 'remainDayShow' },
       ],
       selectMenu: [false, false, false, false, false, false, false, false],
@@ -150,6 +151,7 @@ export default {
         roomActivityPriceShow: null,
         magShow: null,
         activityPriceShow: null,
+        extraActivityPriceShow: null,
         remainDayShow: null,
       };
     },
@@ -163,6 +165,7 @@ export default {
         roomActivityPrice,
         mag,
         activityPrice,
+        extraActivityPrice,
         remainDay,
       } = rowData;
       this.activityParams.cid = _id;
@@ -173,9 +176,10 @@ export default {
       this.activityParams.endTimeShow = startTime.toString().length !== 13
         ? ''
         : this.getDate(endTime, 'fullDate');
-      this.activityParams.roomActivityPriceShow = (Number(roomActivityPrice) || 0) / 100;
+      this.activityParams.roomActivityPriceShow = roomActivityPrice;
       this.activityParams.magShow = mag;
-      this.activityParams.activityPriceShow = (Number(activityPrice) || 0) / 100;
+      this.activityParams.activityPriceShow = activityPrice;
+      this.activityParams.extraActivityPriceShow = (Number(extraActivityPrice) || 0) / 100;
       this.activityParams.remainDayShow = remainDay;
     },
     methodFormReset() {
@@ -192,6 +196,7 @@ export default {
           roomActivityPriceShow,
           magShow,
           activityPriceShow,
+          extraActivityPriceShow,
           remainDayShow,
         } = this.activityParams;
         const params = {};
@@ -199,9 +204,10 @@ export default {
         if (nameShow) params.name = nameShow;
         if (startTimeShow) params.startTime = new Date(startTimeShow).valueOf();
         if (endTimeShow) params.endTime = new Date(endTimeShow).valueOf();
-        if (roomActivityPriceShow) params.roomActivityPrice = roomActivityPriceShow * 100;
+        if (roomActivityPriceShow) params.roomActivityPrice = roomActivityPriceShow;
         if (magShow) params.mag = magShow;
-        if (activityPriceShow) params.activityPrice = activityPriceShow * 100;
+        if (activityPriceShow) params.activityPrice = activityPriceShow;
+        if (extraActivityPriceShow) params.extraActivityPrice = extraActivityPriceShow * 100;
         if (remainDayShow) params.remainDay = remainDayShow;
         this.updateActivity(params);
       }

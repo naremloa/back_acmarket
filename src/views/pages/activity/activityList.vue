@@ -125,9 +125,10 @@
             <td class="text-xs-center">{{ props.item.name }}</td>
             <td class="text-xs-center">{{ dateTime(props.item.startTime, true) }}</td>
             <td class="text-xs-center">{{ dateTime(props.item.endTime, true) }}</td>
-            <td class="text-xs-center">{{ currencies(props.item.roomActivityPrice) }}</td>
+            <td class="text-xs-center">{{ props.item.roomActivityPrice }}</td>
             <td class="text-xs-center">{{ props.item.mag }}</td>
-            <td class="text-xs-center">{{ currencies(props.item.activityPrice) }}</td>
+            <td class="text-xs-center">{{ props.item.activityPrice }}</td>
+            <td class="text-xs-center">{{ currencies(props.item.extraActivityPrice) }}</td>
             <td class="text-xs-center">{{ props.item.remainDay }}</td>
             <td class="text-xs-center">{{ dateTime(props.item.createTime) }}</td>
             <td class="text-xs-center">{{ props.item.createAccount }}</td>
@@ -254,9 +255,10 @@ export default {
         { text: '活動名稱', value: 'name', sortable: false },
         { text: '開始時間', value: 'startTime', sortable: false },
         { text: '結束時間', value: 'endTime', sortable: false },
-        { text: '房型活動價基數', value: 'roomActivityPrice', sortable: false },
+        { text: '房型活動價基數率', value: 'roomActivityPrice', sortable: false },
         { text: '倍率', value: 'mag', sortable: false },
-        { text: '活動額外價格', value: 'activityPrice', sortable: false },
+        { text: '活動價基數率', value: 'activityPrice', sortable: false },
+        { text: '活動額外價格', value: 'extraActivityPrice', sortable: false },
         { text: '活動有效天數', value: 'remainDay', sortable: false },
         { text: '創建日期', value: 'createTime', sortable: false },
         { text: '創建用戶', value: 'createAccount', sortable: false },
@@ -455,6 +457,7 @@ export default {
           roomActivityPrice: rowData.roomActivityPrice,
           mag: rowData.mag,
           activityPrice: rowData.activityPrice,
+          extraActivityPrice: rowData.extraActivityPrice,
           remainDay: rowData.remainDay,
           price: this.expandList[id].roomUnitPrice * 100,
         };
@@ -473,6 +476,7 @@ export default {
           roomActivityPrice: rowData.roomActivityPrice,
           mag: rowData.mag,
           activityPrice: rowData.activityPrice,
+          extraActivityPrice: rowData.extraActivityPrice,
           remainDay: rowData.remainDay,
           price: this.expandList[id].roomUnitPrice * 100,
         };

@@ -249,9 +249,10 @@ export const room = {
  * @param {String} name 活動名稱
  * @param {Number} startDate 開始日期
  * @param {Number} endDate 結束日期
- * @param {Number} roomActivityPrice 房型活動價基數
+ * @param {Number} roomActivityPrice 房型活動價基數率(基於房型底價)
  * @param {Number} mag 倍率(根據活動指定有效時間內，逐天減半)
- * @param {Number} activityPrice 活動額外價格
+ * @param {Number} activityPrice 活動價基數率(基於房型底價)
+ * @param {Number} extraActivityPrice 活動額外價格
  * @param {Number} remainDay 活動有效天數
  * @param {Number} status 活動狀態(1: 啟用, 2: 停用, 3: 逾期)
  * @param {Number} createTime 創建時間
@@ -267,6 +268,7 @@ export const activity = {
   roomActivityPrice: Number,
   mag: Number,
   activityPrice: Number,
+  extraActivityPrice: Number,
   remainDay: Number,
   status: Number,
   createTime: Number,

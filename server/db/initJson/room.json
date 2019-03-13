@@ -1,6 +1,6 @@
 [
   {
-    "name": "星空超值雙人房",
+    "name": "星空號雙人房",
     "content": {
       "intro": "我是A介紹",
       "regulation": "我是A須知",
@@ -15,7 +15,7 @@
     "roomList": []
   },
   {
-    "name": "星空豪華雙人房",
+    "name": "星空號四人房",
     "content": {
       "intro": "我是B介紹",
       "regulation": "我是B須知",
@@ -30,7 +30,7 @@
     "roomList": []
   },
   {
-    "name": "星空銀河四人房",
+    "name": "彩虹堡雙人房",
     "content": {
       "intro": "我是C介紹",
       "regulation": "我是C須知",
@@ -45,7 +45,7 @@
     "roomList": []
   },
   {
-    "name": "彩虹夢幻雙人房",
+    "name": "彩虹堡四人房",
     "content": {
       "intro": "我是C介紹",
       "regulation": "我是C須知",
@@ -56,21 +56,6 @@
       "lowSeasonWeekend": 260000,
       "peakSeasonWeekday": 260000,
       "peakSeasonWeekend": 288000
-    },
-    "roomList": []
-  },
-  {
-    "name": "彩虹炫麗四人房",
-    "content": {
-      "intro": "我是C介紹",
-      "regulation": "我是C須知",
-      "refund": "我是C退房"
-    },
-    "price": {
-      "lowSeasonWeekday": 380000,
-      "lowSeasonWeekend": 420000,
-      "peakSeasonWeekday": 420000,
-      "peakSeasonWeekend": 520000
     },
     "roomList": []
   }
