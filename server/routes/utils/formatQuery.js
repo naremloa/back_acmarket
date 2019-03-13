@@ -106,11 +106,18 @@ export const getDateRangeArr = (startTime, endTime) => {
 };
 
 export const datePlus = (dateNum, num = 1) => {
-  const time = (new Date(chNumToDate(dateNum))).getTime();
+  const time = (new Date(chNumToDate(dateNum))).setHours(0, 0, 0, 0);
   return dateTime(time + (num * dayMilli));
 };
 
 export const dateMinus = (dateNum, num = 1) => {
-  const time = (new Date(chNumToDate(dateNum))).getTime();
+  const time = (new Date(chNumToDate(dateNum))).setHours(0, 0, 0, 0);
   return dateTime(time - (num * dayMilli));
+};
+
+export const getDateDiff = (a, b) => {
+  const aTime = (new Date(chNumToDate(a))).setHours(0, 0, 0, 0);
+  const bTime = (new Date(chNumToDate(b))).setHours(0, 0, 0, 0);
+  const diff = (Math.abs(aTime - bTime)) / dayMilli;
+  return Number.isNaN(diff) ? false : diff;
 };

@@ -16,3 +16,19 @@ export const fake = {};
 export const dayMilli = 86400000;
 
 export const depositPercent = 0.3;
+
+export const diffRefundPercent = {
+  1: 0.2,
+  2: 0.3,
+  3: 0.3,
+  4: 0.4,
+  5: 0.4,
+  6: 0.4,
+  7: 0.5,
+  8: 0.5,
+  9: 0.5,
+  10: 0.7,
+  11: 0.7,
+  12: 0.7,
+  13: 0.7,
+};

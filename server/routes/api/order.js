@@ -8,6 +8,7 @@ import {
   getDatePriceKey,
   dateTime,
   dateMinus,
+  getDateDiff,
 } from '../utils/formatQuery';
 import {
   orderFind,
@@ -35,7 +36,9 @@ import {
   orderCheckedStauts,
   dayMilli,
   depositPercent,
+  diffRefundPercent,
 } from '../utils/constVar';
+import accCal from '../utils/accCal';
 
 const { ObjectId } = mongoose.Types;
 
@@ -392,7 +395,15 @@ const checkedOrder = async (cid) => {
   const res = await occDeleteManyByOrderCid(cid);
 };
 
-const calRefund = (refund, date) => 0;
+// TODO:
+const calRefund = (refund, date) => {
+  const now = dateTime((new Date()).getTime());
+  const diff = getDateDiff(date, now);
+  if (diff === false) return false;
+  if (diff >= 14) return refund;
+  if (diff <= 0) return 0;
+  return accCal.accMul(refund, diffRefundPercent[diff]);
+};
 
 /**
  * 訂單狀態更新規則:
@@ -482,8 +493,9 @@ const updateOrderStatus = async (req, res) => {
       checkedOrderStatus = true;
       updateMainPart.totalRefund = calRefund(
         targetOrder.totalValidPrice || targetOrder.totalValidDeposit,
-        targetOrder.createTime,
+        keys(targetOrder.roomInfo).sort()[0],
       );
+      if (updateMainPart.totalRefund === false) return res.send(outputError('計算時間不合法'));
       break;
     case 7:
       if (!refund) return res.send(outputError('請確認退款金額'));
