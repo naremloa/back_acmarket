@@ -156,9 +156,9 @@
           >
             <td class="text-xs-center">{{ props.item.orderId }}</td>
             <td class="text-xs-center">{{ props.item.name }}</td>
-            <td class="text-xs-center">{{ props.item.gender }}</td>
+            <!-- <td class="text-xs-center">{{ props.item.gender }}</td> -->
             <td class="text-xs-center">{{ props.item.phone }}</td>
-            <td class="text-xs-center">{{ props.item.nationality }}</td>
+            <!-- <td class="text-xs-center">{{ props.item.nationality }}</td> -->
             <!-- <td class="text-xs-center">{{ props.item.numberAdult }}</td>
             <td class="text-xs-center">{{ props.item.numberChild }}</td> -->
             <!-- <td class="text-xs-center">{{ dateTime(props.item.checkInTime) }}</td> -->
@@ -170,16 +170,21 @@
             <td class="text-xs-right">{{ currencies(props.item.totalValidDeposit) }}</td>
             <td class="text-xs-right">{{ currencies(props.item.totalPrice) }}</td>
             <td class="text-xs-right">{{ currencies(props.item.totalValidPrice) }}</td>
+            <td class="text-xs-right">{{ currencies(props.item.totalRefund) }}</td>
+            <td class="text-xs-right">{{ currencies(props.item.totalValidRefund) }}</td>
             <td class="text-xs-center">
-              <div v-if="props.item.status === 5">{{ formatOrderStatus(props.item.status) }}</div>
-              <v-btn
-                v-else
-                small
-                @click.stop="methodUpdateStatus(props.item)"
-              >{{ formatOrderStatus(props.item.status) }}</v-btn>
-              <v-btn small @click.stop="methodUpdateOrder(props.item)">
-                <v-icon>mdi-square-edit-outline</v-icon>修改訂單
-              </v-btn>
+              <div v-if="[5, 7, 8].includes(props.item.status)">
+                {{ formatOrderStatus(props.item.status) }}
+              </div>
+              <template v-else>
+                <v-btn
+                  small
+                  @click.stop="methodUpdateStatus(props.item)"
+                >{{ formatOrderStatus(props.item.status) }}</v-btn>
+                <v-btn small @click.stop="methodUpdateOrder(props.item)">
+                  <v-icon>mdi-square-edit-outline</v-icon>修改訂單
+                </v-btn>
+              </template>
             </td>
             <!-- <td class="text-xs-center">{{ props.item.latestModifyAccount }}</td> -->
             <!-- <td class="text-xs-center">
@@ -269,7 +274,7 @@ export default {
       headers: [
         { text: '訂單編號', value: 'orderId', sortable: false },
         { text: '姓名', value: 'name', sortable: false },
-        { text: '性別', value: 'gender', sortable: false },
+        // { text: '性別', value: 'gender', sortable: false },
         { text: '電話', value: 'phone', sortable: false },
         // { text: '電子郵件', value: 'email', sortable: false },
         // { text: '成人人數', value: 'numberAdult', sortable: false },
@@ -283,9 +288,11 @@ export default {
         { text: '實收總訂金', value: 'totalValidDeposit', sortable: false },
         { text: '應收總價', value: 'totalPrice', sortable: false },
         { text: '實收總價', value: 'totalValidPrice', sortable: false },
+        { text: '應退金額', value: 'totalRefund', sortable: false },
+        { text: '實退金額', value: 'totalValidRefund', sortable: false },
         { text: '訂單狀態', value: 'status', sortable: false },
         // { text: '最近操作訂單帳號', value: 'latestModifyAccount', sortable: false },
-        { text: '操作', value: '', sortable: false },
+        // { text: '操作', value: '', sortable: false },
         // { text: '最近操作訂單時間', value: 'latestModifyTime', sortable: false },
         // { text: '備註', value: 'note', sortable: false },
       ],

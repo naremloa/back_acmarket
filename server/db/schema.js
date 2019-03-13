@@ -60,7 +60,7 @@ export const login = {
  * @apiParam {Number} totalRefund  應退總價(單位: 分)
  * @apiParam {Number} totalValidRefund  實退總價(單位: 分)
  * @apiParam {Number} status  訂單狀態
- * 1: 下訂單, 2: 已付訂金, 3: 已付尾款, 4: 已入住, 5: 結單, 6: 已退訂, 7: 退訂結單, 8: 無效
+ * 1: 下訂單, 2: 已付訂金, 3: 已付全額, 4: 已入住, 5: 結單, 6: 已退訂, 7: 退訂結單, 8: 無效
  * @apiParam {String} latestModifyAccount  最近操作訂單帳號
  * @apiParam {Number} latestModifyTime  最近操作訂單時間
  */

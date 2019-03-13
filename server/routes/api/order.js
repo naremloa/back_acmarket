@@ -139,7 +139,7 @@ const createOrderSchema = async ({
   // create
   const count = await orderCountByCreateTime(nowTime);
   const orderId = Number(`${dateTime(nowTime)}${count.toString().padStart(3, '0')}`) + 1;
-  const totalDeposit = totalPrice * depositPercent || 0;
+  const totalDeposit = accCal.accMul(totalPrice, depositPercent) || 0;
   const localRoomInfo = getRoomInfoByRoomInfoCount({ roomInfoCount, roomAllInfo, activity });
   return {
     ...mainPart,
@@ -476,15 +476,16 @@ const updateOrderStatus = async (req, res) => {
   let checkedOrderStatus = false;
   switch (Number(afterStatus)) {
     case 2:
-      if (!deposit) return res.send(outputError('請確認訂金金額'));
-      updateMainPart.totalValidDeposit = deposit;
+      if (deposit === undefined) return res.send(outputError('請確認訂金金額'));
+      updateMainPart.totalValidDeposit = Number(deposit);
       break;
     case 3:
-      if (!price) return res.send(outputError('請確認餘款金額'));
+      if (price === undefined) return res.send(outputError('請確認全額金額'));
       updateMainPart.totalValidPrice = price;
       break;
     case 4:
-      if (!price) return res.send(outputError('請確認是否收齊房費'));
+      if (price === undefined) return res.send(outputError('請確認是否收齊房費'));
+      if (Number(price) !== targetOrder.totalValidPrice) return res.send(outputError('金額有誤'));
       break;
     case 5:
       checkedOrderStatus = true;
@@ -498,8 +499,8 @@ const updateOrderStatus = async (req, res) => {
       if (updateMainPart.totalRefund === false) return res.send(outputError('計算時間不合法'));
       break;
     case 7:
-      if (!refund) return res.send(outputError('請確認退款金額'));
-      updateMainPart.totalValidRefund = refund;
+      if (refund === undefined) return res.send(outputError('請確認退款金額'));
+      updateMainPart.totalValidRefund = Number(refund);
       break;
     case 8:
       checkedOrderStatus = true;
@@ -510,14 +511,14 @@ const updateOrderStatus = async (req, res) => {
 
   if (checkedOrderStatus) {
     const result = await checkedOrder(cid);
-    if (!result) return res.send(outputError('結單過程異常，終止結單'));
+    if (result) return res.send(outputError('結單過程異常，終止結單'));
   }
 
   const { userInfo: { account } } = sess;
   const nowTime = new Date().getTime();
   const updateObj = {
     ...updateMainPart,
-    afterStatus,
+    status: afterStatus,
     latestModifyAccount: account,
     lastestModifyTime: nowTime,
   };

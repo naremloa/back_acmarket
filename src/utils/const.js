@@ -25,12 +25,12 @@ const constList = {
   orderStatusList: [
     { id: 1, value: '下訂單(未付定金)' },
     { id: 2, value: '已付訂金' },
-    { id: 3, value: '已付尾款' },
+    { id: 3, value: '已付全額' },
     { id: 4, value: '已入住' },
-    { id: 5, value: '結單(已退房)' },
+    { id: 5, value: '已退房(結單)' },
     { id: 6, value: '已退訂' },
-    { id: 7, value: '退訂結單' },
-    { id: 8, value: '無效' },
+    { id: 7, value: '已退金額(結單)' },
+    { id: 8, value: '無效(結單)' },
   ],
   cashTypeList: [
     { id: 1, value: '現金' },
