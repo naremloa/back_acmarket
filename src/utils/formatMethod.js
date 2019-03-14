@@ -48,14 +48,14 @@ export const formatOrderStatus = statusId => constList.orderStatusList
   .find(item => item.id === statusId).value;
 
 // {roomActivityPrice: 7, mag: 2, activityPrice: 7, extraActivityPrice: 0, remainDay: 2, price: 2660}
-const getActivityRoomPriceByDay = ({
+export const getActivityRoomPriceByDay = ({
   roomActivityPrice: r, mag: m, activityPrice: a, extraActivityPrice: e, remainDay, price: p,
 }, day, activity = true) => {
   if (remainDay < day) return p;
   return p + (p / r * m / (2 ** (day - 1))) + (activity ? (p / a + e) : 0);
 };
 
-const getActivityTotalPrice = ({
+export const getActivityTotalPrice = ({
   roomActivityPrice: r, mag: m, activityPrice: a, extraActivityPrice: e, remainDay, price: p,
 }, totalDay, activity = true) => {
   const cal = (localDay) => {
