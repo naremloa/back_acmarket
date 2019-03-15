@@ -112,6 +112,8 @@ export default {
       activityParams: this.getParamsOrigin(),
       activityItemParams1: [
         { label: '活動名稱', key: 'nameShow', require: true },
+        { label: '活動描述', key: 'descShow' },
+        { label: '活動前台描述', key: 'labelShow', require: true },
       ],
       activityTimeParams: [
         { label: '開始時間', key: 'startTimeShow' },
@@ -135,6 +137,8 @@ export default {
     getParamsOrigin() {
       return {
         nameShow: null,
+        descShow: null,
+        labelShow: null,
         startTimeShow: null,
         endTimeShow: null,
         roomActivityPriceShow: null,
@@ -152,6 +156,8 @@ export default {
       if (this.$refs.form.validate()) {
         const {
           nameShow,
+          descShow,
+          labelShow,
           startTimeShow,
           endTimeShow,
           roomActivityPriceShow,
@@ -162,6 +168,8 @@ export default {
         } = this.activityParams;
         const params = {};
         if (nameShow) params.name = nameShow;
+        if (descShow) params.desc = descShow;
+        if (labelShow) params.label = labelShow;
         if (startTimeShow) params.startTime = this.getDate(startTimeShow, 'timestamp');
         if (endTimeShow) params.endTime = this.getDate(endTimeShow, 'timestamp');
         if (roomActivityPriceShow) params.roomActivityPrice = roomActivityPriceShow * 100;

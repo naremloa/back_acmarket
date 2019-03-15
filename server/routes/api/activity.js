@@ -21,6 +21,8 @@ const getActivity = async (req, res) => {
 
 const createActivitySchema = async ({
   name,
+  desc,
+  label,
   startDate,
   endDate,
   roomActivityPrice = 0,
@@ -34,6 +36,8 @@ const createActivitySchema = async ({
   const nowTime = new Date().getTime();
   const mainPart = {
     name,
+    desc,
+    label,
     startDate,
     endDate,
     roomActivityPrice,
@@ -61,6 +65,8 @@ const addActivity = async (req, res) => {
   const {
     body: {
       name,
+      desc,
+      label,
       startTime,
       endTime,
       roomActivityPrice,
@@ -82,9 +88,19 @@ const addActivity = async (req, res) => {
   });
   if (existActivity.length > 0) return res.send(outputError('新增活動的活動時間不合法'));
   const activityObj = await createActivitySchema({
-    name, roomActivityPrice, mag, activityPrice, extraActivityPrice, remainDay, startDate, endDate, code, account,
+    name,
+    desc,
+    label,
+    roomActivityPrice,
+    mag,
+    activityPrice,
+    extraActivityPrice,
+    remainDay,
+    startDate,
+    endDate,
+    code,
+    account,
   });
-  console.log('check', activityObj);
   const newActivity = await activityInsert(activityObj);
   return res.send(outputSuccess({}, '新增成功'));
 };
@@ -92,7 +108,7 @@ const addActivity = async (req, res) => {
 const modifyActivity = async (req, res) => {
   const {
     body: {
-      cid, name, startTime, endTime,
+      cid, name, desc, label, startTime, endTime,
       roomActivityPrice, mag, activityPrice, extraActivityPrice, remainDay,
     },
     session: { userInfo: { account } },
@@ -101,9 +117,19 @@ const modifyActivity = async (req, res) => {
   const endDate = dateTime(endTime);
   const code = name;
   const updateObj = await createActivitySchema({
-    name, roomActivityPrice, mag, activityPrice, extraActivityPrice, remainDay, startDate, endDate, code, account,
+    name,
+    desc,
+    label,
+    roomActivityPrice,
+    mag,
+    activityPrice,
+    extraActivityPrice,
+    remainDay,
+    startDate,
+    endDate,
+    code,
+    account,
   }, true);
-  console.log(updateObj);
   const result = await activityFindByIdAndUpdate(cid, updateObj);
   if (!result) return res.send(outputError('修改異常'));
   return res.send(outputSuccess({}, '修改成功'));

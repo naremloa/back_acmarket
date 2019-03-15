@@ -113,6 +113,8 @@ export default {
       activityParams: this.getParamsOrigin(),
       activityItemParams1: [
         { label: '活動名稱', key: 'nameShow', require: true },
+        { label: '活動描述', key: 'descShow' },
+        { label: '活動前台描述', key: 'labelShow', require: true },
       ],
       activityTimeParams: [
         { label: '開始時間', key: 'startTimeShow' },
@@ -146,6 +148,8 @@ export default {
       return {
         cid: null,
         nameShow: null,
+        descShow: null,
+        labelShow: null,
         startTimeShow: null,
         endTimeShow: null,
         roomActivityPriceShow: null,
@@ -160,6 +164,8 @@ export default {
       const {
         _id,
         name,
+        desc,
+        label,
         startTime,
         endTime,
         roomActivityPrice,
@@ -170,6 +176,8 @@ export default {
       } = rowData;
       this.activityParams.cid = _id;
       this.activityParams.nameShow = name;
+      this.activityParams.descShow = desc;
+      this.activityParams.labelShow = label;
       this.activityParams.startTimeShow = startTime.toString().length !== 13
         ? ''
         : this.getDate(startTime, 'fullDate');
@@ -191,6 +199,8 @@ export default {
         const {
           cid,
           nameShow,
+          descShow,
+          labelShow,
           startTimeShow,
           endTimeShow,
           roomActivityPriceShow,
@@ -202,6 +212,8 @@ export default {
         const params = {};
         if (cid) params.cid = cid;
         if (nameShow) params.name = nameShow;
+        if (descShow) params.desc = descShow;
+        if (labelShow) params.label = labelShow;
         if (startTimeShow) params.startTime = new Date(startTimeShow).valueOf();
         if (endTimeShow) params.endTime = new Date(endTimeShow).valueOf();
         if (roomActivityPriceShow) params.roomActivityPrice = roomActivityPriceShow;

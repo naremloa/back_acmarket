@@ -134,10 +134,18 @@ const getOcc = async (req, res) => {
     }), {}),
   }), {});
   const result = {
+    activity: activity
+      ? {
+        label: activity.label,
+        name: activity.name,
+        startTime: activity.startDate,
+        endTime: activity.endDate,
+      }
+      : undefined,
     occ: completeOccInfo,
     info: roomInfo,
   };
-  return res.send(outputSuccess(result, '查詢成功'));
+  return res.send(outputSuccess(omitValueValid(result), '查詢成功'));
 };
 
 /**

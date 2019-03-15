@@ -247,6 +247,8 @@ export const room = {
 /**
  * activitySchema
  * @param {String} name 活動名稱
+ * @param {String} desc 活動描述
+ * @param {String} label 活動前台描述
  * @param {Number} startDate 開始日期
  * @param {Number} endDate 結束日期
  * @param {Number} roomActivityPrice 房型活動價基數率(基於房型底價)
@@ -263,6 +265,8 @@ export const room = {
 export const activity = {
   name: String,
   code: String,
+  desc: String,
+  label: String,
   startDate: Number,
   endDate: Number,
   roomActivityPrice: Number,
