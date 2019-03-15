@@ -153,7 +153,7 @@
                   <span>活動房價試算</span>
                   <v-switch
                     v-model="expandList[props.item._id].activity"
-                    label="參加活動"
+                    label="參加方案"
                     color="primary"
                     @change="methodGetActivityRoomPriceByDay(props.item,props.item._id),
                       methodGetActivityTotalPrice(props.item,props.item._id)"
