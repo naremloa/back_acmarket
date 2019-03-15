@@ -77,14 +77,16 @@ const getOrder = async (req, res) => {
   res.send(outputSuccess(handleOutOfTimeAndTimeOutAboutOrder));
 };
 
-const getRoomInfoByRoomInfoCount = ({ roomInfoCount, roomAllInfo, activity = false }) => {
+const getRoomInfoByRoomInfoCount = ({
+  roomInfoCount, roomAllInfo, activity = false, join = false,
+}) => {
   const localRoomInfo = {};
   forOwn(roomInfoCount, (dateObj, roomCid) => {
     const { name: roomName, price } = roomAllInfo[roomCid];
     forOwn(dateObj, ({ num, index = 1 }, date) => {
       const roomPrice = price[getDatePriceKey(date)];
       const totalRoomPrice = activity
-        ? getActivityRoomPriceByDay({ ...activity, price: roomPrice }, index)
+        ? getActivityRoomPriceByDay({ ...activity, price: roomPrice }, index, join)
         : roomPrice;
       localRoomInfo[date] = [
         ...(localRoomInfo[date] || []),
@@ -233,7 +235,7 @@ const orderTest = async (req, res) => {
 };
 
 const checkOrder = async (req, res) => {
-  const { body: { roomInfo }, session: sess } = req;
+  const { body: { roomInfo, join }, session: sess } = req;
   const activity = await activityFindValid();
   const roomInfoCount = getCountByRoomInfo(roomInfo, !!activity);
   if (!!activity && !roomInfoCount) {
@@ -241,7 +243,9 @@ const checkOrder = async (req, res) => {
   }
   const roomAllInfo = await getRoomAllMaxLengthAndPriceInfo();
 
-  const localRoomInfo = getRoomInfoByRoomInfoCount({ roomInfoCount, roomAllInfo, activity });
+  const localRoomInfo = getRoomInfoByRoomInfoCount({
+    roomInfoCount, roomAllInfo, activity, join,
+  });
   return res.send(outputSuccess(localRoomInfo, '查詢成功'));
 };
 
