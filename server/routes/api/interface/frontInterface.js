@@ -70,6 +70,7 @@ export const post = [
    * @param {Number}  numberAdult 成人人數
    * @param {Number}  numberChild 幼兒人數
    * @param {String}  note 備註
+   * @param {Boolean} join 是否参与活动
    * @param {Array<String>}  demand 訂單人額外需求
    * @param {Array<Object>}  roomInfo 訂房明細
    */

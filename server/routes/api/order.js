@@ -257,6 +257,7 @@ const addOrder = async (req, res) => {
       numberAdult,
       numberChild,
       note,
+      join,
       demand,
       arriveTime,
       /**
@@ -305,7 +306,7 @@ const addOrder = async (req, res) => {
       // 房間入住時間價格
       const subRoomPrice = price[getDatePriceKey(keyDate)];
       const totalSubRoomPrice = activity
-        ? getActivityRoomPriceByDay({ ...activity, price: subRoomPrice }, index)
+        ? getActivityRoomPriceByDay({ ...activity, price: subRoomPrice }, index, !!join)
         : subRoomPrice;
 
       // 當前房型無佔用, 或當前房型有佔用, 但佔用時間與遍歷時間不一樣, 即 佔用數為 0
