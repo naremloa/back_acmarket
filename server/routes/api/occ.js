@@ -87,7 +87,7 @@ const checkTimeSearch = async (startTime, endTime) => {
 
 // 前台，查詢佔用obj
 const getOcc = async (req, res) => {
-  const { query: { startTime, endTime } } = req;
+  const { query: { startTime, endTime, join } } = req;
   const [err, data] = await formatTryCatch(checkTimeSearch(startTime, endTime));
   if (err) return res.send(outputError(err.message));
   const { startDate, endDate } = data;
@@ -109,7 +109,7 @@ const getOcc = async (req, res) => {
       const keyArr = keys(price);
       const activityPrice = keyArr.reduce((acc, cur) => ({
         ...acc,
-        [cur]: getActivityRoomPriceByDay({ ...activity, price: price[cur] }, 1),
+        [cur]: getActivityRoomPriceByDay({ ...activity, price: price[cur] }, 1, !!join),
       }), {});
       return { ...tmp, price: activityPrice };
     })
