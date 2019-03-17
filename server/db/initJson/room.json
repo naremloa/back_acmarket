@@ -1,6 +1,7 @@
 [
   {
     "name": "星空號雙人房",
+    "allowing": false,
     "content": {
       "intro": "我是A介紹",
       "regulation": "我是A須知",
@@ -16,6 +17,7 @@
   },
   {
     "name": "星空號四人房",
+    "allowing": false,
     "content": {
       "intro": "我是B介紹",
       "regulation": "我是B須知",
@@ -31,6 +33,7 @@
   },
   {
     "name": "彩虹堡雙人房",
+    "allowing": false,
     "content": {
       "intro": "我是C介紹",
       "regulation": "我是C須知",
@@ -46,6 +49,7 @@
   },
   {
     "name": "彩虹堡四人房",
+    "allowing": false,
     "content": {
       "intro": "我是C介紹",
       "regulation": "我是C須知",
