@@ -11,12 +11,16 @@ import {
 import {
   checkNotAllowingRooms,
 } from '../room';
+import { outputSuccess, outputError } from '../../utils/outputFormat';
 
 async function checkRoom(req, res, next) {
   const result = await checkNotAllowingRooms();
   // 有被停用的房型
-  if (result) return;
+  if (result) {
+    return res.send(outputError('房型未開放，暫停訂房'));
+  }
   next();
+  return true;
 }
 
 export const get = [
