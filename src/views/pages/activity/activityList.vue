@@ -393,7 +393,7 @@ export default {
     methodChangeOpenConfirmDialog(val) {
       this.confirmDialogInfo.openDialog = val;
     },
-    methodVerifyStatus(rowData, pass) {
+    methodVerifyStatus(rowData) {
       console.log('TCL: methodVerifyStatus -> rowData', rowData);
       const { _id, status, name } = rowData;
       const params = {

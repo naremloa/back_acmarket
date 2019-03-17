@@ -38,7 +38,13 @@
             <td class="text-xs-center">{{ currencies(props.item.price.lowSeasonWeekend) }}</td>
             <td class="text-xs-center">{{ currencies(props.item.price.peakSeasonWeekday) }}</td>
             <td class="text-xs-center">{{ currencies(props.item.price.peakSeasonWeekend) }}</td>
+            <td class="text-xs-center">{{ props.item.allowing ? '啟用' : '停用' }}</td>
             <td class="text-xs-center">
+              <v-btn
+                small
+                :color="!props.item.allowing ? 'success' : 'error'"
+                @click.stop="methodVerifyStatus(props.item)"
+              >{{ !props.item.allowing ? '啟用' : '停用' }}</v-btn>
               <v-btn
                 small
                 @click.stop="methodUpdateRoomType(props.item)"
@@ -88,20 +94,28 @@
         </template>
       </v-data-table>
     </v-card>
-    <dialogComponent
+    <confirmDialog
       :openDialog="confirmDialogInfo.openDialog"
-      @valueChange="methodChangeOpenDialog"
+      @valueChange="methodChangeOpenConfirmDialog"
       :title="confirmDialogInfo.title"
-      :contentFilePath="confirmDialogInfo.contentFilePath"
-      :contentData="confirmDialogInfo.contentData"
+      :content="confirmDialogInfo.content"
       :confirmMethod="confirmDialogInfo.confirmMethod"
-      :otherMethod="confirmDialogInfo.otherMethod"
-      :width="confirmDialogInfo.width"
+    />
+    <dialogComponent
+      :openDialog="dialogInfo.openDialog"
+      @valueChange="methodChangeOpenDialog"
+      :title="dialogInfo.title"
+      :contentFilePath="dialogInfo.contentFilePath"
+      :contentData="dialogInfo.contentData"
+      :confirmMethod="dialogInfo.confirmMethod"
+      :otherMethod="dialogInfo.otherMethod"
+      :width="dialogInfo.width"
     />
   </div>
 </template>
 <script>
 import httpMethod from '@/utils/httpMethod';
+import confirmDialog from '@/views/layout/components/confirmDialog.vue';
 import dialogComponent from '@/views/layout/components/dialog.vue';
 import { dateTime, currencies } from '@/utils/calculation';
 import constList from '@/utils/const';
@@ -109,6 +123,7 @@ import constList from '@/utils/const';
 export default {
   name: 'roomList',
   components: {
+    confirmDialog,
     dialogComponent,
   },
   data() {
@@ -125,6 +140,7 @@ export default {
         { text: '淡季假日單價', value: 'lowSeasonWeekend', sortable: false },
         { text: '旺季平日單價', value: 'peakSeasonWeekday', sortable: false },
         { text: '旺季假日單價', value: 'peakSeasonWeekend', sortable: false },
+        { text: '開啟/關閉房型', value: 'allowing', sortable: false },
         // { text: '維修位置', value: 'position', sortable: false },
         // { text: '維修內容', value: 'content', sortable: false },
         // { text: '自修配件費', value: 'internalCost', sortable: false },
@@ -159,6 +175,12 @@ export default {
       // ],
       // selectMenu: [false, false, false, false],
       confirmDialogInfo: {
+        openDialog: false,
+        title: '',
+        content: '',
+        confirmMethod: null,
+      },
+      dialogInfo: {
         openDialog: false,
         title: '',
         contentFilePath: 'pages/room/addSubRoom.vue',
@@ -243,11 +265,11 @@ export default {
     //   this.getRoomTypeList(params);
     // },
     methodChangeOpenDialog(val) {
-      this.confirmDialogInfo.openDialog = val;
+      this.dialogInfo.openDialog = val;
     },
     // methodAddSubRoomRepair() {
-    //   this.confirmDialogInfo = {
-    //     ...this.confirmDialogInfo,
+    //   this.dialogInfo = {
+    //     ...this.dialogInfo,
     //     openDialog: true,
     //     title: '新增房型',
     //     contentFilePath: 'pages/room/addRoomType.vue',
@@ -255,8 +277,8 @@ export default {
     //   };
     // },
     methodUpdateRoomType(rowData) {
-      this.confirmDialogInfo = {
-        ...this.confirmDialogInfo,
+      this.dialogInfo = {
+        ...this.dialogInfo,
         openDialog: true,
         title: '更新房型',
         contentFilePath: 'pages/room/updateRoomType.vue',
@@ -267,8 +289,8 @@ export default {
     },
     async methodAddSubRoom(rowData) {
       console.log('TCL: methodAddSubRoom -> rowData', rowData);
-      this.confirmDialogInfo = {
-        ...this.confirmDialogInfo,
+      this.dialogInfo = {
+        ...this.dialogInfo,
         openDialog: true,
         title: rowData.roomName ? `新增 ${rowData.roomName} 的房間` : '新增房間',
         contentFilePath: 'pages/room/addSubRoom.vue',
@@ -277,10 +299,13 @@ export default {
         width: 500,
       };
     },
+    methodChangeOpenConfirmDialog(val) {
+      this.confirmDialogInfo.openDialog = val;
+    },
     methodUpdateSubRoom(rowData) {
       console.log('TCL: methodUpdateSubRoom -> rowData', rowData);
-      this.confirmDialogInfo = {
-        ...this.confirmDialogInfo,
+      this.dialogInfo = {
+        ...this.dialogInfo,
         openDialog: true,
         title: '修改房間',
         contentFilePath: 'pages/room/updateSubRoom.vue',
@@ -288,6 +313,46 @@ export default {
         contentData: rowData,
         width: 500,
       };
+    },
+    methodVerifyStatus(rowData) {
+      console.log('TCL: methodVerifyStatus -> rowData', rowData);
+      const { roomCid, allowing, roomName } = rowData;
+      const params = {
+        cid: roomCid,
+        status: !allowing,
+      };
+      this.confirmDialogInfo = {
+        ...this.confirmDialogInfo,
+        openDialog: true,
+        title: '變更啟用狀態',
+        content: `您確定變更： ${roomName} 的狀態為 ${!allowing ? '啟用' : '停用'}`,
+        confirmMethod: () => this.updateOrderStatus(params),
+      };
+    },
+    async updateOrderStatus(params) {
+      const res = await httpMethod({
+        url: '/v1/api/room/allowing/update',
+        method: 'POST',
+        data: params,
+      });
+      let alert = null;
+      if (!res.code) {
+        if (res.data) {
+          alert = {
+            open: true,
+            text: `${res.msg}`,
+            color: 'success',
+          };
+        }
+      } else {
+        alert = {
+          open: true,
+          text: res.msg || '變更失敗，請重新再試，或聯絡客服人員',
+          color: 'error',
+        };
+      }
+      this.$store.commit('global/setNotifySetting', alert);
+      this.getRoomTypeList();
     },
   },
 };
