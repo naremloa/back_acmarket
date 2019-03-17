@@ -8,6 +8,16 @@ import {
 import {
   getOcc,
 } from '../occ';
+import {
+  checkNotAllowingRooms,
+} from '../room';
+
+async function checkRoom(req, res, next) {
+  const result = await checkNotAllowingRooms();
+  // 有被停用的房型
+  if (result) return;
+  next();
+}
 
 export const get = [
   ['/front/location/get',
@@ -51,6 +61,7 @@ export const get = [
    * }
    */
   ['/front/occ/list',
+    checkRoom,
     getOcc],
 ];
 

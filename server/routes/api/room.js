@@ -214,6 +214,12 @@ const toggleAllowingRoom = async (req, res) => {
   return res.send(outputSuccess({}, `${status ? '開啟' : '關閉'}成功`));
 };
 
+const checkNotAllowingRooms = async () => {
+  const room = await roomFind({ allowing: false });
+  if (room.length) return true;
+  return false;
+};
+
 export {
   getRoomAll,
   addSubRoom,
@@ -224,4 +230,5 @@ export {
   getRoomOption,
   getSubRoomAboutAll,
   toggleAllowingRoom,
+  checkNotAllowingRooms,
 };
