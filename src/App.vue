@@ -34,7 +34,7 @@ export default {
   },
   mounted() {
     window.addEventListener('resize', this.onResize, { passive: true });
-    console.log('​onResize -> this.$vuetify.breakpoint', this.$vuetify.breakpoint);
+    // console.log('onResize -> this.$vuetify.breakpoint', this.$vuetify.breakpoint);
   },
   computed: {
     ...mapGetters({
@@ -43,7 +43,6 @@ export default {
   },
   methods: {
     onResize() {
-      // console.log('​onResize -> this.$vuetify.breakpoint', this.$vuetify.breakpoint);
     },
   },
   beforeDestroy() {

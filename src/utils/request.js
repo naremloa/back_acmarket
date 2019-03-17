@@ -28,7 +28,6 @@ service.interceptors.response.use(
       401: '登錄失效',
     };
     if ([401].includes(res.status)) {
-      console.log('check', res.status);
       if (handleErrorTimeout) clearTimeout(handleErrorTimeout);
       handleErrorTimeout = setTimeout(() => {
         errorRedirect(errorMsg[res.status]);
@@ -39,7 +38,6 @@ service.interceptors.response.use(
   },
   (error) => {
     const err = error;
-    console.log('error', err);
     return Promise.reject(err);
   },
 );

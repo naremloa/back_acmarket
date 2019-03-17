@@ -139,7 +139,6 @@ export default {
     },
   },
   mounted() {
-    console.log('TCL: mounted -> this.contentData', this.contentData);
     this.formatProps(this.contentData);
   },
   methods: {
@@ -160,7 +159,6 @@ export default {
       };
     },
     formatProps(rowData) {
-      console.log('TCL: formatProps -> rowData', rowData);
       const {
         _id,
         name,
@@ -230,7 +228,6 @@ export default {
         method: 'POST',
         data: params,
       });
-      console.log(res);
       let alert = null;
       if (!res.code) {
         alert = {

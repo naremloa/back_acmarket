@@ -319,7 +319,6 @@ export default {
       });
       if (!res.code) {
         this.subRoomList = res.data;
-        // console.log('​getOccList -> res.data', res.data);
       } else {
         this.subRoomList = [];
       }
@@ -348,7 +347,6 @@ export default {
       });
       if (!res.code) {
         this.occList = res.data;
-        console.log('​getOccList -> res.data', res.data);
       } else {
         this.occList = [];
       }

@@ -101,7 +101,6 @@ export default {
         method: 'POST',
         data: params,
       });
-      console.log('​handleLogin -> res', res);
       if (!res.code) {
         const alert = {
           open: true,
@@ -132,7 +131,6 @@ export default {
         method: 'POST',
         data: params,
       });
-      console.log('​handleRegister -> res', res);
       if (!res.code) {
         const alert = {
           open: true,

@@ -75,7 +75,6 @@ export default {
       };
     },
     formatProps(rowData) {
-      console.log('TCL: formatProps -> rowData', rowData);
       if (rowData) {
         const {
           accountId,
@@ -83,7 +82,6 @@ export default {
         } = rowData;
         this.userRoleParams.id = accountId;
         this.userRoleParams.role = role && role.id;
-        console.log('TCL: formatProps -> this.userRoleParams', this.userRoleParams);
       }
     },
     methodFormReset() {
@@ -107,7 +105,6 @@ export default {
           method: 'POST',
           data: params,
         });
-        console.log(res);
         let alert = null;
         if (!res.code) {
           alert = {

@@ -107,7 +107,6 @@ export default {
       });
       if (!res.code) {
         this.roleList = res.data;
-        console.log('​getRoleList -> res.data', res.data);
       } else {
         this.roleList = [];
       }

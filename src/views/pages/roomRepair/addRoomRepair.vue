@@ -135,14 +135,12 @@ export default {
       this.addOrder(params);
     },
     async addOrder(params) {
-      console.log('TCL: addOrder -> this.$refs.form.validate()', this.$refs.form.validate());
       if (this.$refs.form.validate()) {
         const res = await httpMethod({
           url: '/v1/api/room/maintenance/add',
           method: 'POST',
           data: params,
         });
-        console.log(res);
         let alert = null;
         if (!res.code) {
           alert = {

@@ -98,12 +98,10 @@ export default {
     },
   },
   mounted() {
-    console.log('TCL: mounted -> this.status', this.status);
     this.status = this.contentData.status;
   },
   methods: {
     async updateStatus(newStatus) {
-      console.log('TCL: updateStatus -> newStatus', newStatus);
       const { _id } = this.contentData;
       const { deposit, price, refund } = this.inputField;
       const params = {
@@ -118,7 +116,6 @@ export default {
         method: 'POST',
         data: params,
       });
-      console.log(res);
       let alert = null;
       if (!res.code) {
         alert = {

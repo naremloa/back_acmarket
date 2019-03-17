@@ -405,7 +405,6 @@ export default {
           method: 'POST',
           data: params,
         });
-        console.log(res);
         let alert = null;
         if (!res.code) {
           alert = {
