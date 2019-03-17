@@ -93,7 +93,7 @@ const getRoomAll = async (req, res) => {
   const result = [];
   roomAll.forEach((i) => {
     const {
-      _id, name, price, roomList,
+      _id, name, price, roomList, allowing,
     } = i;
     // const formatRoomList = roomList.map(rI => ({
     //   type: _id,
@@ -102,7 +102,7 @@ const getRoomAll = async (req, res) => {
     // }));
     // result.push(...formatRoomList);
     result.push({
-      roomCid: _id, roomName: name, subRoomList: roomList, price,
+      roomCid: _id, roomName: name, subRoomList: roomList, price, allowing,
     });
   });
   return res.send(outputSuccess(result));
