@@ -332,7 +332,6 @@ export default {
       });
       if (!res.code) {
         this.activityList = res.data;
-        console.log('​getActivityList -> res.data', res.data);
       } else {
         this.activityList = [];
       }
@@ -394,7 +393,6 @@ export default {
       this.confirmDialogInfo.openDialog = val;
     },
     methodVerifyStatus(rowData) {
-      console.log('TCL: methodVerifyStatus -> rowData', rowData);
       const { _id, status, name } = rowData;
       const params = {
         cid: _id,
@@ -434,7 +432,6 @@ export default {
       this.getActivityList();
     },
     methodProcessExpand(rowData) {
-      console.log('TCL: methodProcessExpand -> rowData', rowData);
       this.$set(this.expandList, rowData._id, {
         activity: true,
         roomUnitPrice: 0,

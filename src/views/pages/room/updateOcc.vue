@@ -77,12 +77,10 @@ export default {
       if (val) {
         this.getSubRoomList();
         this.formatProps(this.contentData);
-        console.log('TCL: contentData', this.contentData);
       }
     },
   },
   mounted() {
-    console.log('TCL: contentData', this.contentData);
     this.getSubRoomList();
     this.formatProps(this.contentData);
   },
@@ -102,7 +100,6 @@ export default {
         method: 'GET',
         params,
       });
-      console.log(res);
       let alert = null;
       if (!res.code) {
         // alert = {

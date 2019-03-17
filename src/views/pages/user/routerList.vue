@@ -75,7 +75,6 @@ export default {
       });
       if (!res.code) {
         this.roomRepairList = res.data;
-        console.log('​getroomRepairList -> res.data', res.data);
       } else {
         this.roomRepairList = [];
       }

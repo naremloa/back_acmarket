@@ -22,7 +22,6 @@ export default {
       const res = await httpMethod({
         url: '/v1/api/login/getAccount',
       });
-      console.log('res', res);
     },
   },
 };

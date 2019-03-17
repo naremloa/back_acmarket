@@ -261,7 +261,6 @@ export default {
       });
       if (!res.code) {
         this.cashList = res.data;
-        console.log('​getCashList -> res.data', res.data);
       } else {
         this.cashList = [];
       }

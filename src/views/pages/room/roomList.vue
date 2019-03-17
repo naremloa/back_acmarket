@@ -214,7 +214,6 @@ export default {
             roomTypeCid: item.roomCid,
           })),
         }));
-        console.log('​getroomTypeList -> res.data', res.data);
       } else {
         this.roomTypeList = [];
       }
@@ -288,7 +287,6 @@ export default {
       };
     },
     async methodAddSubRoom(rowData) {
-      console.log('TCL: methodAddSubRoom -> rowData', rowData);
       this.dialogInfo = {
         ...this.dialogInfo,
         openDialog: true,
@@ -303,7 +301,6 @@ export default {
       this.confirmDialogInfo.openDialog = val;
     },
     methodUpdateSubRoom(rowData) {
-      console.log('TCL: methodUpdateSubRoom -> rowData', rowData);
       this.dialogInfo = {
         ...this.dialogInfo,
         openDialog: true,
@@ -315,7 +312,6 @@ export default {
       };
     },
     methodVerifyStatus(rowData) {
-      console.log('TCL: methodVerifyStatus -> rowData', rowData);
       const { roomCid, allowing, roomName } = rowData;
       const params = {
         cid: roomCid,

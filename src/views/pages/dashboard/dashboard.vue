@@ -14,12 +14,12 @@ export default {
     };
   },
   mounted() {
-    console.log('​this.$vuetify.breakpoint', this.$vuetify.breakpoint);
+    // console.log('this.$vuetify.breakpoint', this.$vuetify.breakpoint);
   },
   methods: {
     onScroll(e) {
-      console.log('​onScroll -> e', e);
-      console.log('​this.$vuetify.breakpoint', this.$vuetify.breakpoint);
+      // console.log('onScroll -> e', e);
+      // console.log('this.$vuetify.breakpoint', this.$vuetify.breakpoint);
     },
   },
 };

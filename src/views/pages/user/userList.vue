@@ -275,7 +275,6 @@ export default {
       this.searchParams = this.getParamsOrigin();
     },
     methodProcessParams() {
-      console.log('TCL: methodProcessParams -> methodProcessParams');
       const {
         accountShow,
         accountAliasShow,
@@ -300,7 +299,6 @@ export default {
       this.getUserList(params);
     },
     async methodUpdateUserRole(rowData) {
-      console.log('TCL: methodUpdateUserRole -> rowData', rowData);
       this.dialogInfo = {
         ...this.dialogInfo,
         openDialog: true,

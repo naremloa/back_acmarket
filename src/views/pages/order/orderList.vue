@@ -415,7 +415,6 @@ export default {
         method: 'GET',
         params,
       });
-      console.log(res);
       // res.data[0].outOfTimeSign = true;
       // res.data[1].timeOutSign = true;
       this.orderList = res.data;

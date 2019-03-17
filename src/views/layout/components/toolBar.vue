@@ -61,11 +61,11 @@ export default {
       localDrawer: this.drawer,
       selectedTheme: null,
       profileMenu: [
-        {
-          title: '修改密碼',
-          clickEvent: this.methodChangePassword,
-          icon: 'mdi-square-edit-outline',
-        },
+        // {
+        //   title: '修改密碼',
+        //   clickEvent: this.methodChangePassword,
+        //   icon: 'mdi-square-edit-outline',
+        // },
         {
           title: '登出',
           clickEvent: this.methodLogout,
@@ -108,16 +108,14 @@ export default {
     },
   },
   methods: {
-    methodChangePassword() {
-      console.log('​ts -> ts');
-    },
+    // methodChangePassword() {
+    //   console.log('ts -> ts');
+    // },
     async methodLogout() {
-      console.log('​logout -> logout');
       const res = await httpMethod({
         url: '/v1/api/login/logout',
         method: 'POST',
       });
-      console.log('​handleLogin -> res', res);
       if (!res.code) {
         const alert = {
           open: true,
