@@ -224,6 +224,7 @@ export const occ = {
  */
 export const room = {
   name: String,
+  allowing: Boolean,
   content: {
     intro: String,
     regulation: String,

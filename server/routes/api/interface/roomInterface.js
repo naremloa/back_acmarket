@@ -8,6 +8,7 @@ import {
   updateRoom,
   updateSubRoom,
   getRoomAll,
+  toggleAllowingRoom,
 } from '../room';
 
 // ⚠️： 房間和房型有區別
@@ -22,7 +23,9 @@ export const post = [
    * @apiParam {String} cid 房型cid
    * @apiParam {String} name 房間名稱
    */
-  ['/room/subRoom/add', middlewareCheckLoginStatusSession, addSubRoom],
+  ['/room/subRoom/add',
+    middlewareCheckLoginStatusSession, middlewareCheckAuthorization,
+    addSubRoom],
 
   /**
    * @api {post} /room/update 更新房型信息
@@ -36,7 +39,9 @@ export const post = [
    * @apiParam {Number} peakNormalPrice 旺季平日單價
    * @apiParam {Number} peakHolidayPrice 旺季假日單價
    */
-  ['/room/update', middlewareCheckLoginStatusSession, updateRoom],
+  ['/room/update',
+    middlewareCheckLoginStatusSession, middlewareCheckAuthorization,
+    updateRoom],
 
   /**
    * @api {post} /room/subRoom/update 更新房間信息
@@ -47,7 +52,21 @@ export const post = [
    * @apiParam {String} id 房間id
    * @apiParam {String} name 房間名稱
    */
-  ['/room/subRoom/update', middlewareCheckLoginStatusSession, updateSubRoom],
+  ['/room/subRoom/update',
+    middlewareCheckLoginStatusSession, middlewareCheckAuthorization,
+    updateSubRoom],
+
+  /**
+   * @api {post} /room/allowing/update 開啟關閉房型
+   * @apiPermission login admin
+   * @apiName allowingUpdate
+   *
+   * @apiParam {String} cid 房型cid
+   * @apiParam {String} status 房型狀態(true: 開啟, false: 關閉)
+   */
+  ['/room/allowing/update',
+    middlewareCheckLoginStatusSession, middlewareCheckAuthorization,
+    toggleAllowingRoom],
 ];
 
 export const get = [

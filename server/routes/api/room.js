@@ -203,6 +203,17 @@ const getRoomDetail = async (req, res) => {
   return res.send(outputSuccess(detail, '查詢成功'));
 };
 
+const toggleAllowingRoom = async (req, res) => {
+  const {
+    body: { cid, status },
+  } = req;
+  const room = await roomFindById(cid);
+  if (!room) return res.send(outputError('不存在該房型'));
+  const updateObj = { allowing: !!status };
+  const result = await roomFindByIdAndUpdate(cid, updateObj);
+  return res.send(outputSuccess({}, `${status ? '開啟' : '關閉'}成功`));
+};
+
 export {
   getRoomAll,
   addSubRoom,
@@ -212,4 +223,5 @@ export {
   getRoomAllMaxLengthAndPriceInfo,
   getRoomOption,
   getSubRoomAboutAll,
+  toggleAllowingRoom,
 };
