@@ -1,1 +1,1 @@
-{"options":{},"indexes":[{"v":2,"key":{"_id":1},"name":"_id_","ns":"phelomi.users"},{"v":2,"key":{"id":1},"name":"id_1","background":true,"ns":"phelomi.users"}],"uuid":"5521b941cd9a4b0a84fee05b2b8475f2"}
+{"options":{},"indexes":[{"v":2,"key":{"_id":1},"name":"_id_","ns":"phelomi.users"},{"v":2,"key":{"id":1},"name":"id_1","background":true,"ns":"phelomi.users"}],"uuid":"50b91b99851f40c9b3fb19316b39b827"}
