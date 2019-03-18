@@ -87,7 +87,7 @@ const checkTimeSearch = async (startTime, endTime) => {
 
 // 前台，查詢佔用obj
 const getOcc = async (req, res) => {
-  const { query: { startTime, endTime, join } } = req;
+  const { query: { startTime, endTime, join = true } } = req;
   const [err, data] = await formatTryCatch(checkTimeSearch(startTime, endTime));
   if (err) return res.send(outputError(err.message));
   const { startDate, endDate } = data;
