@@ -3,11 +3,7 @@
  * @param {String}  account  帳號(key)
  * @param {String}  accountAlias  帳號名稱
  * @param {String}  password  密碼
- * @param {Number}  role  角色(0: 遊客 ... 100: admin)
- * @param {Number}  level  權限(暫時廢棄，固定為0)
- * @param {Number}  status  帳號狀態(0: 無審核通過, 1: 正常啟用, 2: 停用, 3: 刪除)
- * @param {Boolean} softDelete  軟刪除(false: 未刪, true: 已刪)
- * @param {String}  modifyUser  修改人
+ * @param {Number}  status  帳號狀態(0)
  * @param {Number}  registerTime  註冊時間
  * @param {Number}  modifyTime  修改時間
  * @param {Number}  lastLoginTime  最後登入時間
@@ -17,11 +13,7 @@ export const login = {
   account: String,
   accountAlias: String,
   password: String,
-  role: { type: 'ObjectId', ref: 'Role' },
-  level: Number,
   status: Number,
-  softDelete: Boolean,
-  modifyUser: String,
   registerTime: Number,
   modifyTime: Number,
   lastLoginTime: Number,
@@ -64,34 +56,34 @@ export const login = {
  * @apiParam {String} latestModifyAccount  最近操作訂單帳號
  * @apiParam {Number} latestModifyTime  最近操作訂單時間
  */
-export const order = {
-  // 訂單人資訊
-  name: String,
-  phone: String,
-  email: String,
-  nationality: String,
-  gender: String,
-  breakfast: String,
-  numberAdult: Number,
-  numberChild: Number,
-  demand: String,
-  arriveTime: String,
-  note: String,
-  // 房間資訊
-  roomInfo: Object,
-  // 訂單附加資訊
-  createTime: Number,
-  orderId: String,
-  totalDeposit: Number,
-  totalValidDeposit: Number,
-  totalPrice: Number,
-  totalValidPrice: Number,
-  totalRefund: Number,
-  totalValidRefund: Number,
-  status: Number,
-  latestModifyAccount: String,
-  latestModifyTime: Number,
-};
+// export const order = {
+//   // 訂單人資訊
+//   name: String,
+//   phone: String,
+//   email: String,
+//   nationality: String,
+//   gender: String,
+//   breakfast: String,
+//   numberAdult: Number,
+//   numberChild: Number,
+//   demand: String,
+//   arriveTime: String,
+//   note: String,
+//   // 房間資訊
+//   roomInfo: Object,
+//   // 訂單附加資訊
+//   createTime: Number,
+//   orderId: String,
+//   totalDeposit: Number,
+//   totalValidDeposit: Number,
+//   totalPrice: Number,
+//   totalValidPrice: Number,
+//   totalRefund: Number,
+//   totalValidRefund: Number,
+//   status: Number,
+//   latestModifyAccount: String,
+//   latestModifyTime: Number,
+// };
 
 /**
  * cashSchema
@@ -281,3 +273,31 @@ export const activity = {
   modifyTime: Number,
   modifyAccount: String,
 };
+
+export const furniture = {
+  name: String,
+  img: String,
+  price: Number,
+  owner: Array,
+  createTime: Number,
+  updateTime: Number,
+}
+
+/**
+ * status
+ * 0 已下訂
+ * 1 待發貨
+ * 2 已發貨
+ * 3 已付款
+ * 4 完成
+ * 9 刪除
+ */
+export const order = {
+  fId: { type: 'ObjectId' },
+  name: String,
+  createUser: String,
+  targetUser: String,
+  createTime: Number,
+  updateTime: Number,
+  status: Number,
+}

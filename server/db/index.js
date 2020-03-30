@@ -12,11 +12,12 @@ import {
   occ,
   room,
   activity,
+  furniture,
 } from './schema';
 
 const mongoose = require('mongoose');
 
-mongoose.connect('mongodb://127.0.0.1:27017/phelomi', {
+mongoose.connect('mongodb://127.0.0.1:27017/acmarket', {
   useNewUrlParser: true,
   useCreateIndex: true,
 });
@@ -67,6 +68,8 @@ const roomSchema = initSchema(room);
 
 const activitySchema = initSchema(activity);
 
+const furnitureSchema = initSchema(furniture);
+
 // model
 const Models = {
   User: Model('User', loginSchema),
@@ -80,6 +83,7 @@ const Models = {
   Occ: Model('Occ', occSchema),
   Room: Model('Room', roomSchema),
   Activity: Model('Activity', activitySchema),
+  Furniture: Model('Furniture', furnitureSchema),
 };
 
 export {

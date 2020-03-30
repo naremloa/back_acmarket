@@ -18,7 +18,7 @@ app.use(helmet.hidePoweredBy({ setTo: 'naremloa' }));
 // session 設置和連接
 const second = 1000;
 const hour = 3600 * second;
-const sessionName = 'phelomi';
+const sessionName = 'acmarket';
 app.use(session({
   name: sessionName,
   secret: 'keyboard cat',
