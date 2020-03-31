@@ -101,7 +101,11 @@ const changeStatusOrder = async (req, res) => {
   await orderFindByIdAndUpdate(id, item);
   if (status === 4) {
     const fItem = await furnitureFindById(item.fId);
-    if (fItem && fItem.owner.includes(userName)) fItem.owner.push(userName);
+    if (fItem) {
+      [item.createUser, userName].forEach(i => {
+        if (fItem.owner.includes(i)) fItem.owner.push(i);
+      })
+    }
     await furnitureFindByIdAndUpdate(fId, fItem);
   }
   const result = await orderFindById(id);
