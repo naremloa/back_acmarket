@@ -9,6 +9,7 @@ import {
   orderInsert,
   orderFindById,
   orderFindByIdAndUpdate,
+  orderFindByIdAndDelete,
 } from '../models/order';
 
 const { ObjectId } = mongoose.Types;
@@ -28,7 +29,14 @@ const getOrderOther = async (req, res) => {
   const { query: { createUser }, session: sess } = req;
   const userName = sess.userInfo && sess.userInfo.account;
   if (!userName) return res.send(outputError('無效操作用戶'));
-  const data = await orderFind({ createUser: { $ne: createUser }, status: { $ne: 4 } });
+  const data = await orderFind({
+    createUser: { $ne: createUser },
+    status: { $ne: 4 },
+    $or: [
+      { targetUser: '' },
+      { targetUser: userName },
+    ],
+  });
   if (isArray(data) && data.length > 0) {
     return res.send(outputSuccess(data));
   }
@@ -69,20 +77,36 @@ const addOrder = async (req, res) => {
 
 const changeStatusOrder = async (req, res) => {
   const {
-    body: {
-      id,
-      status,
-    },
+    body: { id, status },
     session: sess,
   } = req;
   const userName = sess.userInfo && sess.userInfo.account;
   if (!userName) return res.send(outputError('無效操作用戶'));
   const item = await orderFindById(id);
   if (!item) return res.send(outputError('無效操作id'));
-  if (item.status + 1 !== status) return res.send(outputError('無效操作'));
+  if (item.targetUser !== ''
+    && ![item.targetUser, item.createUser].includes(userName)) return res.send(outputError('已被其他用戶佔用'))
+  if (![1, -1].includes(item.status - status)) return res.send(outputError('無效操作'));
   item.status = status
+  // 已下訂狀態，只有創建訂單一方
+  if (status === 0) item.targetUser = '';
+  // 佔位狀態，建立訂單雙方
+  if (status === 1) item.targetUser = userName;
+  const nowTime = new Date().getTime();
+  item.updateTime = nowTime;
   await orderFindByIdAndUpdate(id, item);
-  return res.send(outputSuccess({}, '更新成功'));
+  const result = await orderFindById(id);
+  return res.send(outputSuccess(result, '更新成功'));
+}
+
+const delOrder = async (req, res) => {
+  const { body: { id }, session: sess } = req;
+  const userName = sess.userInfo && sess.userInfo.account;
+  if (!userName) return res.send(outputError('無效操作用戶'));
+  const item = await orderFindById(id);
+  if (!item) return res.send(outputError('無效操作id'));
+  await orderFindByIdAndDelete(id);
+  return res.send(outputSuccess({}, '刪除成功'));
 }
 
 export {
@@ -90,4 +114,5 @@ export {
   addOrder,
   changeStatusOrder,
   getOrderOther,
+  delOrder,
 };

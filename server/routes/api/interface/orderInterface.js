@@ -3,6 +3,7 @@ import {
   addOrder,
   changeStatusOrder,
   getOrderOther,
+  delOrder,
 } from '../order';
 
 export const get = [
@@ -13,6 +14,7 @@ export const get = [
 export const post = [
   ['/order/add', addOrder],
   ['/order/status/change', changeStatusOrder],
+  ['/order/del', delOrder],
   // ['/furniture/edit', editFurniture],
   // ['/furniture/sign', signOwner],
 ];

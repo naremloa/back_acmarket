@@ -6,7 +6,7 @@ const { Order } = Models;
 const { ObjectId } = mongoose.Types;
 
 const orderFind = async (query) => {
-  const res = await Order.find(query);
+  const res = await Order.find(query).sort({ updateTime: -1 });
   return res;
 }
 
@@ -28,10 +28,15 @@ const orderFindByIdAndUpdate = async (id, updateObj) => {
   return res;
 };
 
+const orderFindByIdAndDelete = async(id) => {
+  const res = await Order.findByIdAndDelete(id);
+  return res;
+}
+
 export {
   orderFind,
   orderInsert,
   orderFindById,
   orderFindByIdAndUpdate,
-  // furnitureInsert,
+  orderFindByIdAndDelete,
 };
