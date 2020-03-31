@@ -11,6 +11,10 @@ import {
   orderFindByIdAndUpdate,
   orderFindByIdAndDelete,
 } from '../models/order';
+import {
+  furnitureFindById,
+  furnitureFindByIdAndUpdate,
+} from '../models/furniture';
 
 const { ObjectId } = mongoose.Types;
 
@@ -95,6 +99,11 @@ const changeStatusOrder = async (req, res) => {
   const nowTime = new Date().getTime();
   item.updateTime = nowTime;
   await orderFindByIdAndUpdate(id, item);
+  if (status === 4) {
+    const fItem = await furnitureFindById(item.fId);
+    if (fItem && fItem.owner.includes(userName)) fItem.owner.push(userName);
+    await furnitureFindByIdAndUpdate(fId, fItem);
+  }
   const result = await orderFindById(id);
   return res.send(outputSuccess(result, '更新成功'));
 }
