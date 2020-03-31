@@ -61,14 +61,16 @@ const addFurniture = async (req, res) => {
 }
 
 const signOwner = async (req, res) => {
-  const { body: { id }, session: sess } = req;
+  const { body: { id, status }, session: sess } = req;
   const userName = sess.userInfo && sess.userInfo.account;
   if (!userName) return res.send(outputError('無效操作用戶'));
   const item = await furnitureFindById(id);
   if (!item) return res.send(outputError('無效操作id'));
-  if (!item.owner.includes(userName)) item.owner.push(userName);
+  if (status && !item.owner.includes(userName)) item.owner.push(userName);
+  else if (!status) item.owner = item.owner.filter(i => i !== userName);
   await furnitureFindByIdAndUpdate(id, item);
-  return res.send(outputSuccess({}, '更新成功'));
+  const result = await furnitureFindById(id);
+  return res.send(outputSuccess(result, '更新成功'));
 }
 const editFurniture = async (req, res) => {
   const {
@@ -84,7 +86,8 @@ const editFurniture = async (req, res) => {
   const nowTime = new Date().getTime();
   item = { ...item, name, img, price, updateTime: nowTime };
   await furnitureFindByIdAndUpdate(id, item);
-  return res.send(outputSuccess({}, '更新成功'));
+  const result = await furnitureFindById(id);
+  return res.send(outputSuccess(result, '更新成功'));
 }
 
 const uploadImg = async (req, res) => {
