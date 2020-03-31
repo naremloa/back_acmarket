@@ -106,7 +106,7 @@ const changeStatusOrder = async (req, res) => {
         if (!fItem.owner.includes(i)) fItem.owner.push(i);
       })
     }
-    await furnitureFindByIdAndUpdate(fId, fItem);
+    await furnitureFindByIdAndUpdate(item.fId, fItem);
   }
   const result = await orderFindById(id);
   return res.send(outputSuccess(result, '更新成功'));
