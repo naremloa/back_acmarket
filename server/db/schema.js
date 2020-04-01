@@ -274,7 +274,16 @@ export const activity = {
   modifyAccount: String,
 };
 
+/**
+ * type
+ * 0 未分類
+ * 1 家具
+ * 2 專輯
+ * 3 壁紙
+ * 4 柵欄
+ */
 export const furniture = {
+  type: Number,
   name: String,
   img: String,
   price: Number,

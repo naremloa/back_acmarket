@@ -31,11 +31,12 @@ const getFurniture = async (req, res) => {
 }
 
 const createAccountSchema = ({
-  name = '', img = '', owner = [], price = 0
+  name = '', img = '', owner = [], price = 0, type = 0,
 }) => {
   const nowTime = new Date().getTime();
   return {
     name,
+    type,
     img,
     price: price || 0,
     owner,
@@ -47,14 +48,14 @@ const createAccountSchema = ({
 const addFurniture = async (req, res) => {
   const {
     body: {
-      name, img, price
+      name, img, price, type
     },
     session: sess,
   } = req;
   const userName = sess.userInfo && sess.userInfo.account;
   if (!userName) return res.send(outputError('無效操作用戶'));
   const newFurniture = createAccountSchema({
-    name, img, price, owner: [userName],
+    name, img, price, type, owner: [userName],
   })
   const result = await furnitureInsert(newFurniture);
   return res.send(outputSuccess(result, '創建成功'));
@@ -75,7 +76,7 @@ const signOwner = async (req, res) => {
 const editFurniture = async (req, res) => {
   const {
     body: {
-      _id: id, name, img, price
+      _id: id, name, img, price, type
     },
     session: sess,
   } = req;
@@ -84,7 +85,7 @@ const editFurniture = async (req, res) => {
   let item = await furnitureFindById(id);
   if (!item) return res.send(outputError('無效操作id'));
   const nowTime = new Date().getTime();
-  item = { ...item, name, img, price, updateTime: nowTime };
+  item = { ...item, name, img, price, type, updateTime: nowTime };
   await furnitureFindByIdAndUpdate(id, item);
   const result = await furnitureFindById(id);
   return res.send(outputSuccess(result, '更新成功'));

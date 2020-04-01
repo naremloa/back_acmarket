@@ -53,13 +53,15 @@ const editTurnip = async (req, res) => {
   const userName = sess.userInfo && sess.userInfo.account;
   if (!userName) return res.send(outputError('無效操作用戶'));
   const nowTime = new Date();
+  if (nowTime.getHours() < 8 || nowTime.getHours() > 22) {
+    return res.send(outputError('黑心商店還沒開門'));
+  }
   const [minTime, maxTime] = generateScope(nowTime);
   const query = {
     createTime: { $gte: minTime, $lt: maxTime },
     createUser: userName,
   };
   const item = await turnipFindOne(query);
-  console.log('check findone', item);
   // 修改
   if (item) {
     const { _id: id } = item;
