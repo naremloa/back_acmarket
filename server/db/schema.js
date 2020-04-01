@@ -301,3 +301,10 @@ export const order = {
   updateTime: Number,
   status: Number,
 }
+
+export const turnip = {
+  price: Number,
+  createUser: String,
+  createTime: String,
+  updateTime: String,
+}

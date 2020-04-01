@@ -13,6 +13,7 @@ import {
   room,
   activity,
   furniture,
+  turnip,
 } from './schema';
 
 const mongoose = require('mongoose');
@@ -70,6 +71,8 @@ const activitySchema = initSchema(activity);
 
 const furnitureSchema = initSchema(furniture);
 
+const turnipSchema = initSchema(turnip);
+
 // model
 const Models = {
   User: Model('User', loginSchema),
@@ -84,6 +87,7 @@ const Models = {
   Room: Model('Room', roomSchema),
   Activity: Model('Activity', activitySchema),
   Furniture: Model('Furniture', furnitureSchema),
+  Turnip: Model('Turnip', turnipSchema),
 };
 
 export {
