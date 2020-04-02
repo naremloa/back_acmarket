@@ -33,7 +33,7 @@ const getFurniture = async (req, res) => {
 const createAccountSchema = ({
   name = '', img = '', owner = [], price = 0, type = 0,
 }) => {
-  const nowTime = new Date().getTime();
+  const nowTime = new Date(new Date().toLocaleString()).getTime();
   return {
     name,
     type,
@@ -84,7 +84,7 @@ const editFurniture = async (req, res) => {
   if (!userName) return res.send(outputError('無效操作用戶'));
   let item = await furnitureFindById(id);
   if (!item) return res.send(outputError('無效操作id'));
-  const nowTime = new Date().getTime();
+  const nowTime = new Date(new Date().toLocaleString()).getTime();
   item = { ...item, name, img, price, type, updateTime: nowTime };
   await furnitureFindByIdAndUpdate(id, item);
   const result = await furnitureFindById(id);

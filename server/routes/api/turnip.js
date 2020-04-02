@@ -29,7 +29,7 @@ const getTurnip = async (req, res) => {
   const { session: sess } = req;
   const userName = sess.userInfo && sess.userInfo.account;
   if (!userName) return res.send(outputError('無效操作用戶'));
-  const [minTime, maxTime] = generateScope(new Date());
+  const [minTime, maxTime] = generateScope(new Date(new Date().toLocaleString()));
   const query = {
     createTime: { $gte: minTime, $lt: maxTime }
   };
@@ -38,7 +38,7 @@ const getTurnip = async (req, res) => {
 };
 
 const createTurnipSchema = ({
-  price = 0, createUser, time = new Date().getTime()
+  price = 0, createUser, time = new Date(new Date().toLocaleString()).getTime()
 }) => {
   return {
     price,
@@ -52,7 +52,7 @@ const editTurnip = async (req, res) => {
   const { body: { price }, session: sess } = req;
   const userName = sess.userInfo && sess.userInfo.account;
   if (!userName) return res.send(outputError('無效操作用戶'));
-  const nowTime = new Date();
+  const nowTime = new Date(new Date().toLocaleString());
   if (nowTime.getHours() < 8 || nowTime.getHours() > 22) {
     return res.send(outputError('黑心商店還沒開門'));
   }

@@ -50,7 +50,7 @@ const getOrderOther = async (req, res) => {
 const createOrderSchema = ({
   fId, name, userName
 }) => {
-  const nowTime = new Date().getTime();
+  const nowTime = new Date(new Date().toLocaleString()).getTime();
   return {
     fId: ObjectId(fId),
     name,
@@ -96,7 +96,7 @@ const changeStatusOrder = async (req, res) => {
   if (status === 0) item.targetUser = '';
   // 佔位狀態，建立訂單雙方
   if (status === 1) item.targetUser = userName;
-  const nowTime = new Date().getTime();
+  const nowTime = new Date(new Date().toLocaleString()).getTime();
   item.updateTime = nowTime;
   await orderFindByIdAndUpdate(id, item);
   if (status === 4) {

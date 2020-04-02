@@ -35,7 +35,7 @@ const getCode = (req, res) => {
 const createAccountSchema = ({
   account, password,
 }) => {
-  const nowTime = new Date().getTime();
+  const nowTime = new Date(new Date().toLocaleString()).getTime();
   return {
     account,
     password,
@@ -110,7 +110,7 @@ const login = async (req, res) => {
       updateUserInfo(sess, userInfo);
       await userFindOneAndUpdate(
         { account: queryAccount },
-        { lastLoginTime: new Date().getTime() },
+        { lastLoginTime: new Date(new Date().toLocaleString()).getTime() },
       );
       res.send(outputSuccess(userInfo, '登入成功'));
     } else res.send(outputError('帳號狀態異常'));
